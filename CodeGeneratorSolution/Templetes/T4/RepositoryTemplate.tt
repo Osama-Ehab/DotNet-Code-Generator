@@ -1,0 +1,101 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Infrastructure.Interfaces;
+using <#= SolutionName #>.Infrastructure.Base; 
+using <#= SolutionName #>.Infrastructure.Mapping; 
+
+namespace <#= SolutionName #>.Infrastructure.Repositories
+{
+    public partial class <#= Table.ClassName #>Repository : BaseRepository<<#= Table.ClassName #>, <#= Table.PkType #>>, I<#= Table.ClassName #>Repository 
+    {
+        // 1. INJECTION
+        public <#= Table.ClassName #>Repository(IConfiguration configuration) : base(configuration)
+        {
+        }
+
+        // =========================================================
+        // 2. STANDARD CRUD (Implementing IRepository<T, TKey>)
+        // =========================================================
+
+        public async Task<<#= Table.ClassName #>> GetByIdAsync(<#= Table.PkType #> id)
+        {
+            var param = new SqlParameter("@<#= Table.PkName #>", id);
+            
+            // Utilizing the BaseRepository Tool
+            return await GetSingleAsync("usp_<#= Table.Name #>_GetById", param, reader => reader.ToEntity()); 
+        }
+
+        public async Task<List<<#= Table.ClassName #>>> GetAllAsync()
+        {
+            return await GetListAsync("usp_<#= Table.Name #>_GetAll", reader => reader.ToEntity());
+        }
+
+        public async Task<<#= Table.PkType #>> AddAsync(<#= Table.ClassName #> entity)
+        {
+            var parameters = GetParameters(entity, isUpdate: false);
+            return await AddAsync("usp_<#= Table.Name #>_Insert", parameters, "@New<#= Table.PkName #>");
+        }
+
+        public async Task<bool> UpdateAsync(<#= Table.ClassName #> entity)
+        {
+            var parameters = GetParameters(entity, isUpdate: true);
+            return await ExecuteNonQueryAsync("usp_<#= Table.Name #>_Update", parameters);
+        }
+
+        public async Task<bool> DeleteAsync(<#= Table.PkType #> id)
+        {
+            var param = new SqlParameter[] { new SqlParameter("@<#= Table.PkName #>", id) };
+            return await ExecuteNonQueryAsync("usp_<#= Table.Name #>_Delete", param);
+        }
+
+      
+
+        public SqlParameter[] GetParameters(<#= Table.ClassName #> entity, bool isUpdate)
+        {
+            var parameters = new List<SqlParameter>();
+<# foreach(var col in Table.Columns) { 
+    if (col.IsPrimaryKey) { #>
+            if (isUpdate) 
+                parameters.Add(new SqlParameter("<#= col.SqlParameterName #>", entity.<#= col.Name #>));
+<#  } else { #>
+            parameters.Add(new SqlParameter("<#= col.SqlParameterName #>", (object)entity.<#= col.Name #> ?? DBNull.Value));
+<#  } 
+} #>
+            return parameters.ToArray();
+        }
+
+        // =========================================================
+        // 3. READ-MODEL DTOs & UNIQUE SELECTORS
+        // =========================================================
+        
+        public async Task<List<<#= Table.ClassName #>ListDto>> GetListAsync()
+        {
+            // Utilizing the BaseRepository Tool to map directly to a ListDto!
+            return await GetListAsync("usp_<#= Table.Name #>_GetList", reader => reader.ToListDto());
+        }
+
+<# foreach(var col in Table.Columns.Where(c => c.IsUniqueSelector)) { #>
+        public async Task<<#= Table.ClassName #>DetailsDto> GetBy<#= col.Name #>Async(<#= col.CSharpType #> <#= col.CamelCaseName #>)
+        {
+            var param = new SqlParameter("<#= col.SqlParameterName #>", <#= col.CamelCaseName #>);
+            
+            // Utilizing the generic GetSingleAsync to return a DetailsDto instead of an Entity
+            return await GetSingleAsync("usp_<#= Table.Name #>_GetBy<#= col.Name #>", param, reader => reader.ToDetailsDTO()); 
+        }
+
+        public async Task<bool> ExistsAsync(<#= col.CSharpType #> <#= col.CamelCaseName #>)
+        {
+            var param =  new SqlParameter("<#= col.SqlParameterName #>",<#= col.CamelCaseName #>);
+            return await ExistsAsync("usp_<#= Table.Name #>_ExistsBy<#= col.Name #>", param);
+        }
+<# } #>
+    }
+}

@@ -1,0 +1,94 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<# 
+    var displayColumns = Table.DetailedColumns;
+#>
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.UI.Helpers; 
+
+namespace <#= SolutionName #>.UI.Controls
+{
+    public partial class ctrl<#= Table.ClassName #>ShowDetails : UserControl
+    {
+        private readonly I<#= Table.ClassName #>Service _service;
+        private <#= Table.PkType #> _currentId;
+
+        public ctrl<#= Table.ClassName #>ShowDetails(I<#= Table.ClassName #>Service service)
+        {
+            InitializeComponent();
+            _service = service;
+            
+            bool isHandled = false;
+            OnConfigureHeader(this.pnlHeader, this.pbHeaderIcon, this.lblHeaderTitle, ref isHandled);
+            
+            UpdateHeaderUI(isHandled);
+        }
+
+        // ====================================================
+        // 1. DYNAMIC HEADER LOGIC (View Mode Only!)
+        // ====================================================
+        private void UpdateHeaderUI(bool isHandled)
+        {
+            if (isHandled) return;
+
+            lblHeaderTitle.Text = "<#= Table.FriendlyName #> Details";
+            
+            // Assuming "view" or "details" is your standard read-only icon convention
+            ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "view"); 
+        }
+
+        partial void OnConfigureHeader(TableLayoutPanel headerPanel, PictureBox icon, Label title, ref bool isHandled);
+
+        // ====================================================
+        // 2. LOAD DATA (From Database)
+        // ====================================================
+        public async Task LoadDataAsync(<#= Table.PkType #> id)
+        {
+            var result = await _service.GetDetailsAsync(id);
+
+            if (result != null && result.IsSuccess && result.Data != null)
+            {
+                // Pass to the overloaded method below!
+                LoadData(result.Data);
+                PopupMessage(result);
+            }
+            
+            PopupMessage(result);
+        }
+
+        // ====================================================
+        // 3. LOAD DATA (From passed DTO - Used by Selector!)
+        // ====================================================
+        public void LoadData(<#= Table.ClassName #>DetailsDto dto)
+        {
+            if (dto == null) return;
+            
+            _currentId = dto.<#= Table.PkName #>;
+            FillControls(dto);
+        }
+
+        // ====================================================
+        // 4. DTO TO UI MAPPING
+        // ====================================================
+        private void FillControls(<#= Table.ClassName #>DetailsDto dto)
+        {
+<# foreach(var col in displayColumns) { 
+    if (col.CSharpType == "bool") { #>
+            lbl<#= col.Name #>Value.Text = dto.<#= col.Name #> ? "Yes" : "No";
+<#  } else if (col.CSharpType == "DateTime") { #>
+            lbl<#= col.Name #>Value.Text = dto.<#= col.Name #>.HasValue 
+                ? dto.<#= col.Name #>.Value.ToShortDateString() 
+                : "N/A";
+<#  } else if (col.CSharpType == "decimal" || col.CSharpType == "double") { #>
+            lbl<#= col.Name #>Value.Text = dto.<#= col.Name #>.ToString("C");
+<#  } else { #>
+            lbl<#= col.Name #>Value.Text = dto.<#= col.Name #>?.ToString() ?? "N/A";
+<#  }
+} #>
+        }
+    }
+}

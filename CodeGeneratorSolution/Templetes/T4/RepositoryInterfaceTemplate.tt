@@ -1,0 +1,24 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Core.Repositories.Base; // Import Base
+
+namespace <#= SolutionName #>.Infrastructure.Repositories
+{
+<# 
+    // Identify Primary Key Type (Default to int)
+    
+    
+#>
+    // INHERITANCE: Automatically gets Add, Update, Delete, GetById
+    public interface I<#= Table.ClassName #>Repository : IRepository<<#= Table.ClassName #>, <#= Table.PkType #>>
+    {
+        // This file is now CLEAN! 
+        // You only add specific methods here later if needed.
+        // Example: Task<User> GetByEmailAsync(string email);
+    }
+}

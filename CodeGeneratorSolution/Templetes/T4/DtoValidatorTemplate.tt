@@ -1,0 +1,132 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="CodeGeneratorSolution.Models" #>
+using System;
+using FluentValidation;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Base;
+
+namespace <#= SolutionName #>.Application.Validators
+{
+    // ====================================================
+    // 1. CREATE DTO VALIDATOR
+    // ====================================================
+    parial public class <#= Table.ClassName #>CreateDtoValidator : BaseValidator<<#= Table.ClassName #>CreateDto>
+    {
+        public <#= Table.ClassName #>CreateDtoValidator()
+        {
+<# 
+        // Create DTO does NOT need the Primary Key
+        foreach(var col in Table.CreateDtoColumns) 
+        { 
+            GenerateFluentRules(col); 
+        } 
+#>
+        }
+    }
+
+    // ====================================================
+    // 2. UPDATE DTO VALIDATOR
+    // ====================================================
+    parial public class <#= Table.ClassName #>UpdateDtoValidator : BaseValidator<<#= Table.ClassName #>UpdateDto>
+    {
+        public <#= Table.ClassName #>UpdateDtoValidator()
+        {
+<# 
+
+        // Add rules for the rest of the columns, but SKIP passwords (handled separately)
+        foreach(var col in Table.UpdateDtoColumns) 
+        { 
+            GenerateFluentRules(col); 
+        } 
+#>
+CustomizeRules();
+        }
+        parial void CustomizeRules();
+    }
+
+<# 
+    // ====================================================
+    // 3. CONDITIONAL PASSWORD VALIDATOR
+    // ====================================================
+    // Only generate this class IF the table actually has a "Password" column!
+    if (Table.HasPassword && Table.PkName != null) 
+    { 
+#>
+    parial public class Change<#= Table.ClassName #>PasswordDtoValidator : BaseValidator<Change<#= Table.ClassName #>PasswordDto>
+    {
+        public Change<#= Table.ClassName #>PasswordDtoValidator()
+        {
+            RuleFor(x => x.<#= Table.PrimaryKey.Name #>).GreaterThan(0);
+            RuleFor(x => x.OldPassword).NotEmpty().WithMessage("Old password is required.");
+            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).WithMessage("New password must be at least 8 characters.");
+        }
+    }
+<# 
+    } 
+#>
+}
+
+<#+ 
+    // ====================================================
+    // T4 HELPER METHOD (Runs during generation)
+    // ====================================================
+    private void GenerateFluentRules(ColumnDefinition col)
+    {
+        // Start building the rule string
+        string rules = $"            RuleFor(x => x.{col.Name})";
+        bool hasRule = false;
+
+        // 1. NULL CHECK (Don't use NotEmpty on booleans, as 'false' triggers it)
+        if (!col.IsNullable && col.CSharpType != "bool")
+        {
+            rules += $".NotEmpty().WithMessage(\"{col.Name} is required.\")";
+            hasRule = true;
+        }
+
+        // 2. STRING SPECIFIC RULES
+        if (col.CSharpType == "string")
+        {
+            // Max Length
+            if (col.MaxLength > 0 && col.MaxLength < 8000)
+            {
+                rules += $".MaximumLength({col.MaxLength}).WithMessage(\"{col.Name} cannot exceed {col.MaxLength} characters.\")";
+                hasRule = true;
+            }
+
+            // Email Heuristic
+            if (col.Name.EndsWith("Email") || col.Name == "EmailAddress")
+            {
+                rules += $".EmailAddress().WithMessage(\"A valid email format is required.\")";
+                hasRule = true;
+            }
+
+            // Phone Heuristic (Simple Regex)
+            if (col.Name.Contains("Phone"))
+            {
+                rules += $".Matches(@\"^\\+?[1-9]\\d{{1,14}}$\").WithMessage(\"Invalid phone number format.\")";
+                hasRule = true;
+            }
+
+            // Password Heuristic
+            if (col.Name.Contains("Password"))
+            {
+                rules += $".MinimumLength(8).WithMessage(\"Password must be at least 8 characters.\")";
+                hasRule = true;
+            }
+        }
+
+        // 3. NUMERIC/FOREIGN KEY HEURISTIC
+        if ((col.CSharpType == "int" || col.CSharpType == "long") && col.Name.EndsWith("Id"))
+        {
+            rules += $".GreaterThan(0).WithMessage(\"A valid {col.Name} must be selected.\")";
+            hasRule = true;
+        }
+
+        // If we found at least one rule to apply, write it to the file!
+        if (hasRule)
+        {
+            WriteLine(rules + ";");
+        }
+    }
+#>

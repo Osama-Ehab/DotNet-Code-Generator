@@ -1,0 +1,58 @@
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using S.Extensions.Configuration;
+using {{Namespace}}.UI.Forms;
+
+namespace {{Namespace}}
+{
+   public static class Program
+    {
+        // The Global Waiter
+        public static IServiceProvider ServiceProvider { get; private set; }
+        
+        // The Global Settings (appsettings.json)
+        public static IConfiguration Configuration { get; private set; }
+
+        [STAThread]
+        static void Main()
+        {
+            ApplicationConfiguration.Initialize();
+
+            // 1. Load appsettings.json (where your Connection String lives)
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            // 2. Create the Service Collection (The Blank Notebook)
+            var services = new ServiceCollection();
+
+            // 3. Register Configuration so Repositories can ask for it
+            services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddSingleton<INavigationService, WindowsFormsNavigationService>();
+
+            // 4. CALL YOUR GENERATED EXTENSION METHOD!
+            // This single line loads all 50+ of your tables into the DI container instantly.
+            services.AddGeneratedDependencies();
+
+            // 5. Register your WinForms
+            services.AddTransient<frmMain>();
+
+            // 6. Build the Provider (Hand the notebook to the Waiter)
+            ServiceProvider = services.BuildServiceProvider();
+
+            using (var scope = serviceProvider.CreateScope())
+            {
+                // Resolve the Main Form from the SCOPE, not the root!
+                var mainForm = scope.ServiceProvider.GetRequiredService<frmMain>();
+                
+                // Application.Run blocks the thread until the main form is closed.
+                // When the user exits the app, the scope is disposed cleanly.
+                Application.Run(mainForm);
+            }
+        }
+    
+    
+}

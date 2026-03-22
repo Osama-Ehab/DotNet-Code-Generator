@@ -1,0 +1,164 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<# 
+    var uniqueSelectors = Table.Columns.Where(c => c.IsUniqueSelector);
+#>
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.UI.Helpers; 
+using <#= SolutionName #>.UI.Interfaces;
+using CodeGeneratorSolution.EmbeddedResources.Application; // For Result<T>
+
+namespace <#= SolutionName #>.UI.Controls
+{
+    public partial class ctrl<#= Table.ClassName #>SelectorCard : UserControl, ISelectorControl<<#= Table.PkType #>>
+    {
+        // ====================================================
+        // 1. DYNAMIC FILTERING & STRATEGY PATTERN
+        // ====================================================
+        public enum FindBy 
+        { 
+<# foreach(var col in uniqueSelectors) { #>
+            <#= col.Name #>, 
+<# } #>
+        }
+
+        public readonly List<KeyValuePair<FindBy, string>> FilterDisplayNames = new List<KeyValuePair<FindBy, string>>
+        {
+<# foreach(var col in uniqueSelectors) { #>
+            new KeyValuePair<FindBy, string>(FindBy.<#= col.Name #>, "<#= col.FriendlyName #>"),
+<# } #>
+        };
+
+        private readonly Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDto>>>> _searchStrategies;
+
+        private readonly I<#= Table.ClassName #>Service _service;
+        private readonly ctrl<#= Table.ClassName #>ShowDetails _detailsCtrl;
+        private <#= Table.PkType #> _currentId;
+
+        public event EventHandler<IBaseDto> OnItemSelected;
+
+        public ctrl<#= Table.ClassName #>SelectorCard(I<#= Table.ClassName #>Service service, ctrl<#= Table.ClassName #>ShowDetails detailsCtrl)
+        {
+            InitializeComponent();
+            _service = service;
+            _detailsCtrl = detailsCtrl;
+            
+            _detailsCtrl.Dock = DockStyle.Fill;
+            this.pnlDetailsContainer.Controls.Add(_detailsCtrl);
+           
+            
+            cbFindBy.DataSource = new BindingSource(FilterDisplayNames, null);
+            cbFindBy.DisplayMember = "Value";
+            cbFindBy.ValueMember = "Key";
+
+            // 1. Initialize Default Strategies
+            _searchStrategies = InitializeSearchStrategies();
+            
+            // 2. NEW HOOK: Allow developer to add/override strategies dynamically
+            OnRegisterCustomSearchStrategies(_searchStrategies);
+        }
+
+        // ====================================================
+        // 2. STRATEGY INITIALIZATION
+        // ====================================================
+        private Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDto>>>> InitializeSearchStrategies()
+        {
+            return new Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDto>>>>
+            {
+<# foreach(var col in uniqueSelectors) { 
+    if (col.CSharpType == "string") { #>
+                { FindBy.<#= col.Name #>, async (text) => await _service.GetDetailsBy<#= col.Name #>Async(text) },
+<#  } else { #>
+                { FindBy.<#= col.Name #>, async (text) => 
+                    {
+                        if (!<#= col.CSharpType #>.TryParse(text, out var parsedValue))
+                            return Result<<#= Table.ClassName #>DetailsDto>.Failure("Invalid format for <#= col.FriendlyName #>.");
+                            
+                        return await _service.GetDetailsBy<#= col.Name #>Async(parsedValue);
+                    } 
+                },
+<#  }
+} #>
+            };
+        }
+
+        partial void OnRegisterCustomSearchStrategies(Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDto>>>> strategies);
+
+        // ====================================================
+        // 3. THE DECOUPLED SEARCH EXECUTION (Guard Clauses Applied)
+        // ====================================================
+        private async void btnSearch_Click(object sender, EventArgs e)
+        {
+            string searchText = txtSearch.Text.Trim();
+            
+            // Guards
+            if (string.IsNullOrEmpty(searchText)) return;
+            if (cbFindBy.SelectedValue == null) return;
+            if (!(cbFindBy.SelectedValue is FindBy selectedFilter)) return;
+
+            <#= Table.ClassName #>DetailsDto resultDto = null;
+            bool isCustomSearchHandled = false;
+
+            // HOOK: Allow complete bypass
+            OnCustomSearch(selectedFilter, searchText, ref resultDto, ref isCustomSearchHandled);
+
+            if (isCustomSearchHandled)
+            {
+                ProcessSearchResult(resultDto);
+                return; // Guard: Custom search finished it.
+            }
+
+            resultDto = await ExecuteSearchAsync(selectedFilter, searchText);
+            ProcessSearchResult(resultDto);
+        }
+
+        private async Task<<#= Table.ClassName #>DetailsDto> ExecuteSearchAsync(FindBy filter, string text)
+        {
+            // Guard: Strategy missing
+            if (!_searchStrategies.TryGetValue(filter, out var searchFunction)) return null; 
+
+            try
+            {
+                var result = await searchFunction(text);
+                
+                // Guard: Null safety
+                if (result == null) return null; 
+
+                // Guard: Success Path
+                if (result.IsSuccess) return result.Data;
+
+                // Expected BLL Failures (Validation, NotFound) handled gracefully by your central UI helper!
+                MessageServiceHelper.PopupMessage(result);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Catastrophic Infrastructure Failures (DB Offline, Out of Memory)
+                MessageServiceHelper.ShowError($"An unexpected infrastructure error occurred: {ex.Message}", "System Error");
+                return null;
+            }
+        }
+
+        private void ProcessSearchResult(<#= Table.ClassName #>DetailsDto resultDto)
+        {
+            // Guard: Search failed, clear UI
+            if (resultDto == null)
+            {
+                _detailsCtrl.LoadData(null); 
+                return; 
+            }
+
+            // Success Path
+            _currentId = resultDto.<#= Table.PkName #>;
+            _detailsCtrl.LoadData(resultDto);
+            OnItemSelected?.Invoke(this, (IBaseDto)resultDto);
+        }
+
+        partial void OnCustomSearch(FindBy filterType, string searchText, ref <#= Table.ClassName #>DetailsDto resultDto, ref bool isHandled);
+    }
+}

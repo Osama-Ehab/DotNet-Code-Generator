@@ -1,0 +1,159 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+namespace <#= SolutionName #>.UI.Controls
+{
+    partial class ctrl<#= Table.ClassName #>ShowDetails
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null)) { components.Dispose(); }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            
+<# 
+            // 0. PREPARE THE LIST OF COLUMNS (Using your new DetailedColumns property!)
+            var displayColumns = Table.DetailedColumns;
+            int totalCols = displayColumns.Count;
+            int halfPoint = (int)Math.Ceiling(totalCols / 2.0);
+
+            // 1. INSTANTIATE CONTROLS
+            foreach(var col in displayColumns) 
+            { 
+#>
+            this.lblIcon<#= col.Name #> = new System.Windows.Forms.Label();
+            this.lbl<#= col.Name #>Title = new System.Windows.Forms.Label();
+            this.lbl<#= col.Name #>Value = new System.Windows.Forms.Label();
+<#     
+    } 
+#>
+            
+              // ====================================================
+            // HEADER PANEL SETUP (Row 0: Icon, Row 1: Title)
+            // ====================================================
+            this.pnlHeader.ColumnCount = 1;
+            this.pnlHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlHeader.RowCount = 2;
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Height = 100;
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
+
+            // HEADER ICON
+            this.pbHeaderIcon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbHeaderIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            
+            // HEADER LABEL
+            this.lblHeaderTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblHeaderTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblHeaderTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblHeaderTitle.ForeColor = System.Drawing.Color.FromArgb(45, 45, 48);
+
+            this.pnlHeader.Controls.Add(this.pbHeaderIcon, 0, 0);
+            this.pnlHeader.Controls.Add(this.lblHeaderTitle, 0, 1);
+
+            // ====================================================
+            // CONTENT PANEL SETUP (Where the generated textboxes go)
+            // ====================================================
+            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContent.AutoScroll = true;
+
+            // ====================================================
+            // ADD CONTROLS TO MAIN USER CONTROL
+            // ====================================================
+            this.Controls.Add(this.pnlContent); // Fill goes first in Z-order
+            this.Controls.Add(this.pnlHeader);  // Top goes last so it stays at the top
+<# 
+            // 2. SET PROPERTIES AND 2-COLUMN AUTO-LAYOUT MATH
+            int startY = 130;
+            int yPos = startY; 
+            int iconX = 30;      
+            int titleX = 60;     
+            int valueX = 220;    
+            int verticalSpacing = 40;
+
+            for (int i = 0; i < totalCols; i++) 
+            { 
+                var col = displayColumns[i];
+
+                // COLUMN SPLIT LOGIC
+                if (i == halfPoint)
+                {
+                    yPos = startY;       
+                    iconX += 400;       
+                    titleX += 400;       
+                    valueX += 400;       
+                }
+#>
+            // 
+            // <#= col.Name #> Row
+            // 
+            this.lblIcon<#= col.Name #>.AutoSize = true;
+            this.lblIcon<#= col.Name #>.Font = new System.Drawing.Font("Segoe MDL2 Assets", 11F, System.Drawing.FontStyle.Bold);
+            this.lblIcon<#= col.Name #>.Location = new System.Drawing.Point(<#= iconX #>, <#= yPos #>);
+            this.lblIcon<#= col.Name #>.Text = "<#= col.IconCode #>";
+
+            this.lbl<#= col.Name #>Title.AutoSize = true;
+            this.lbl<#= col.Name #>Title.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lbl<#= col.Name #>Title.Location = new System.Drawing.Point(<#= titleX #>, <#= yPos #>);
+            this.lbl<#= col.Name #>Title.Text = "<#= col.FriendlyName #>:";
+
+            this.lbl<#= col.Name #>Value.AutoSize = true;
+            this.lbl<#= col.Name #>Value.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lbl<#= col.Name #>Value.Location = new System.Drawing.Point(<#= valueX #>, <#= yPos #>);
+            this.lbl<#= col.Name #>Value.Text = "???"; // Default placeholder
+
+<# 
+                yPos += verticalSpacing;
+            } 
+#>
+            // 
+            // ctrl<#= Table.ClassName #>ShowDetails Assembly
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+
+ <#      
+          
+            // 3. ADD TO CONTROLS COLLECTION
+            foreach(var col in displayColumns) 
+            { 
+#>
+            this.Controls.Add(this.lblIcon<#= col.Name #>);
+            this.Controls.Add(this.lbl<#= col.Name #>Title);
+            this.Controls.Add(this.lbl<#= col.Name #>Value);
+<#     
+    } 
+            int formHeight = startY + (halfPoint * verticalSpacing) + 40;
+#>
+            this.Name = "ctrl<#= Table.ClassName #>ShowDetails";
+            this.Size = new System.Drawing.Size(<#= iconX + 450 #>, <#= formHeight #>); 
+            
+            ((System.ComponentModel.ISupportInitialize)(this.pbEntityIcon)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+<# 
+        // 4. DECLARE CLASS FIELDS
+        foreach(var col in displayColumns) 
+        { 
+#>
+        private System.Windows.Forms.Label lblIcon<#= col.Name #>;
+        private System.Windows.Forms.Label lbl<#= col.Name #>Title;
+        private System.Windows.Forms.Label lbl<#= col.Name #>Value;
+<#    
+    } 
+#>
+    }
+}

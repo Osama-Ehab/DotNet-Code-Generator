@@ -1,0 +1,124 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.Infrastructure.Interfaces;
+using CodeGeneratorSolution.Templetes.Infrastructure; // For ServiceExecutor
+using CodeGeneratorSolution.Templetes.Infrastructure.Utilities; // For Result<T>
+
+namespace <#= SolutionName #>.Application.Services
+{
+
+   public class <#= Table.ClassName #>Service : BaseService, I<#= Table.ClassName #>Service
+    {
+        private readonly I<#= Table.ClassName #>Repository _repository;
+
+        // Dependency Injection now demands the Repo and the global Waiter (ServiceProvider)
+        public <#= Table.ClassName #>Service(
+            I<#= Table.ClassName #>Repository repository, 
+            IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+            _repository = repository;
+        }
+
+        public async Task<Result<IEnumerable<<#= Table.ClassName #>Dto>>> GetAllAsync()
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                var data = await _repository.GetAllAsync();
+                return Result<IEnumerable<<#= Table.ClassName #>Dto>>.Success(data.ForEach(r => r.ToDto).ToList());
+            });
+        }
+
+        public async Task<Result<IEnumerable<<#= Table.ClassName #>ListDto>>> GetListAsync()
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                var data = await _repository.GetListAsync();
+                return Result<IEnumerable<<#= Table.ClassName #>ListDto>>.Success(data);
+            });
+        }
+
+        public async Task<Result<<#= Table.ClassName #>Dto>> GetByIdAsync(Table.PkType id)
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                var data = await _repository.GetByIdAsync(id);
+                
+                if (data == null)
+                    return Result<<#= Table.ClassName #>Dto>.Failure("<#= Table.ClassName #> not found.");
+
+                return Result<<#= Table.ClassName #>Dto>.Success(data.ToDto);
+            });
+        }
+        public async Task<Result<<#= Table.ClassName #>DetailsDTO>> GetDetailedByIdAsync(Table.PkType id)
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                var data = await _repository.GetDetailedByIdAsync(id);
+                
+                if (data == null)
+                    return Result<<#= Table.ClassName #>Dto>.Failure("<#= Table.ClassName #> not found.");
+
+                return Result<<#= Table.ClassName #>Dto>.Success(data);
+            });
+        }
+
+        public async Task<Result<Table.PkType>> AddAsync(<#= Table.ClassName #>CreateDto dto)
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                // --- 1. FluentValidation Execution using the BaseService Helper ---
+                var validationResult = await ValidateDtoAsync(dto);
+                
+                if (!validationResult.IsSuccess)
+                {
+                    // Fails gracefully returning the FluentValidation error string
+                    return Result<bool>.Failure(validationResult.ErrorMessage);
+                }
+
+                // --- 2. Database Operation ---
+                Table.PkType NewId;
+
+                NewId = await _repository.AddAsync(dto.ToEntity()); // Ensure your AddAsync returns int/TKey
+
+                return Result<bool>.Success(NewId);
+            });
+
+        public async Task<Result<bool>> UpdateAsync(<#= Table.ClassName #>UpdateDto dto)
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                // --- 1. FluentValidation Execution using the BaseService Helper ---
+                var validationResult = await ValidateDtoAsync(dto);
+                
+                if (!validationResult.IsSuccess)
+                {
+                    // Fails gracefully returning the FluentValidation error string
+                    return Result<bool>.Failure(validationResult.ErrorMessage);
+                }
+
+                // --- 2. Database Operation ---
+                bool success;
+
+                success = await _repository.UpdateAsync(dto.ToEntity());
+
+                return Result<bool>.Success(success);
+            });
+        }
+
+        public async Task<Result<bool>> DeleteAsync(int id)
+        {
+            return await ServiceExecutor.RunActionAsync(async () =>
+            {
+                await _repository.DeleteAsync(id);
+            });
+        }
+    }
+}

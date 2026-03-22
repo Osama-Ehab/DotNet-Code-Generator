@@ -1,0 +1,59 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using CodeGeneratorSolution.Core.Entities.Base; 
+
+namespace <#= SolutionName #>.Core.Entities
+{
+<# 
+
+    // If table is auditable, find out what type 'CreatedBy' is (int, string, Guid?)
+    string userKeyType = "int"; // Default fallback
+    if (Table.IsAuditable)
+    {
+        var userCol = Table.Columns.FirstOrDefault(c => c.Name == "CreatedBy");
+        if (userCol != null)
+        {
+            userKeyType = userCol.CSharpType; // Could be "int", "int?", "Guid", etc.
+        }
+    }
+
+    // 3. Construct the Base Class string
+    string baseClass = Table.IsAuditable 
+        ? $"AuditableEntity<{Table.PkType}, {userKeyType}>" 
+        : $"BaseEntity<{Table.PkType}>";
+#>
+    public class <#= Table.ClassName #> : <#= baseClass #>
+    {
+<# 
+    foreach(var col in Table.Columns) 
+    {
+        // 1. SKIP Primary Key (Handled by BaseEntity)
+        if (col.IsPrimaryKey) continue;
+
+        // 2. SKIP Audit Fields (Handled by AuditableEntity)
+        if (col.IsAuditable) 
+            continue;
+
+        // 3. GENERATE PROPERTIES
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+        // ==========================================
+        // OPTIONAL: Navigation Properties for FKs
+        // ==========================================
+<# /*
+    // If CreatedBy is a Foreign Key, you might want the object too
+    if (isAuditable && Table.Columns.Any(c => c.Name == "CreatedBy" && c.IsForeignKey))
+    {
+#>
+        // Navigation Property (Optional, if you use full ORM or manual Joins)
+        // public User CreatorUser { get; set; }
+<# 
+    }*/
+#>
+    }
+}

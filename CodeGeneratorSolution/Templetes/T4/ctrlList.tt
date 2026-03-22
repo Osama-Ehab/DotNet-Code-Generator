@@ -1,0 +1,287 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="CodeGeneratorSolution.Models" #>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.UI.Events;
+using <#= SolutionName #>.UI.Interfaces;
+
+namespace <#= SolutionName #>.UI.Controls
+{
+
+    public partial class ctrl<#= Table.ClassName #>List : UserControl, IContentList
+    {
+
+    // DECLARE THE HOOK (Notice it has no body!)
+        partial void CustomizeContextMenu();
+
+
+
+// ====================================================
+        // 1. DYNAMIC FILTERING STRATEGY (T4 Generated)
+        // ====================================================
+        public enum FilterBy 
+        { 
+            None, 
+<# foreach(var col in Table.SearchableColumns) { #>
+            <#= col.Name #>, 
+<# } #>
+        }
+
+        private FilterBy _selectedFilter = FilterBy.None;
+        private List<<#= Table.ClassName #>ListDto> _allRecords;
+        private readonly I<#= Table.ClassName #>Service _service;
+
+        // CHANGED: Now a strongly-ordered List for perfect UI Binding!
+        public readonly List<KeyValuePair<FilterBy, string>> FilterDisplayNames = new List<KeyValuePair<FilterBy, string>>
+        {
+            new KeyValuePair<FilterBy, string>(FilterBy.None, "None"),
+<# foreach(var col in Table.SearchableColumns) { #>
+            new KeyValuePair<FilterBy, string>(FilterBy.<#= col.Name #>, "<#= col.FriendlyName #>"),
+<# } #>
+        };
+
+        private static readonly Dictionary<FilterBy, Func<<#= Table.ClassName #>ListDto, string, bool>> FilterStrategies =
+            new Dictionary<FilterBy, Func<<#= Table.ClassName #>ListDto, string, bool>>
+        {
+<# foreach(var col in Table.SearchableColumns) { 
+    if (col.HasAllowedValues) { #>
+                { FilterBy.<#= col.Name #>, (dto, text) => MatchDropdwonValues(dto, text, d => d.<#= col.Name #>) },
+<#  } else if (col.CSharpType == "string") { #>
+                { FilterBy.<#= col.Name #>, (dto, text) => MatchString(dto, text, d => d.<#= col.Name #>) },
+<#  } else { #>
+                { FilterBy.<#= col.Name #>, (dto, text) => MatchExact(dto, text, d => d.<#= col.Name #>) },
+<#  }
+}
+#>  
+};
+
+        // ====================================================
+        // 2. ICONTENTLIST IMPLEMENTATION 
+        // ====================================================
+        public Type EntityDtoType => typeof(<#= Table.ClassName #>ListDto);
+        public event EventHandler OnAddNewRequested;
+        public event EventHandler<DtoEventArgs> OnEditRequested;
+        public event EventHandler<DtoEventArgs> OnDetailsRequested;
+
+        // ====================================================
+        // 3. CONSTRUCTOR & INITIALIZATION
+        // ====================================================
+        public ctrl<#= Table.ClassName #>List(I<#= Table.ClassName #>Service service)
+        {
+            InitializeComponent();
+            _service = service;
+            _allRecords = new List<<#= Table.ClassName #>ListDto>();
+
+            // Setup Main Filter Dropdown
+            CustomizeContextMenu();
+            cbFilter.DataSource = new BindingSource(FilterDisplayNames, null);
+            cbFilter.DisplayMember = "Value";
+            cbFilter.ValueMember = "Key";
+
+        
+    bool isHandled = false;
+
+            // 3. THE HOOK IS SAFE HERE!
+            OnConfigureHeader(this.pnlHeader, this.pbHeaderIcon, this.lblHeaderTitle, ref isHandled);
+        UpdateHeaderUI(bool isHandled = false;);
+            
+        }
+
+        // ====================================================
+        // 1. DYNAMIC HEADER LOGIC
+        // ====================================================
+        private void UpdateHeaderUI(bool isHandled)
+        {
+            If(isHandled) return;
+
+            if (_mode == Mode.AddNew)
+            {
+                lblHeaderTitle.Text = "Add New <#= Table.ClassName #>";
+                // Uses your helper to grab the "Add" version of this table's icon
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "add"); 
+            }
+            else
+            {
+                lblHeaderTitle.Text = "Update <#= Table.ClassName #>";
+                // Uses your helper to grab the "Edit" version of this table's icon
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "edit"); 
+            }
+        }
+
+        partial void OnConfigureHeader(TableLayoutPanel headerPanel, PictureBox icon, Label title, ref bool isHandled);
+
+        public async Task LoadDataAsync()
+        {
+            var result = await _service.GetListAsync();
+            if (result.IsSuccess)
+            {
+                _allRecords = result.Data.ToList();
+                RefreshDataWithFilter();
+            }
+
+            PopupMessage(result);
+        }
+
+        private void SetRecordsCountLabel() => lblRecordCount.SetRecordsCount(dgvList.Rows.Count);
+
+        // ====================================================
+        // 4. SEARCH & FILTER EXECUTION
+        // ====================================================
+        private List<<#= Table.ClassName #>ListDto> GetFilteredRecords(FilterBy filterType, string searchText)
+        {
+            // If search text is empty (or "All" was selected), return everything
+            if (filterType == FilterBy.None || string.IsNullOrWhiteSpace(searchText))
+                return _allRecords;
+
+            searchText = searchText.Replace("'", "''"); 
+
+            if (FilterStrategies.TryGetValue(filterType, out var filterFunction))
+                return _allRecords.Where(dto => filterFunction(dto, searchText)).ToList();
+
+            return _allRecords;
+        }
+
+        private void RefreshDataWithFilter()
+        {
+            // Intelligently grab the search text from the visible control!
+            string searchText = txtSearch.Visible ? txtSearch.Text.Trim() : cbDropdownFilter.SelectedValue?.ToString() ?? "";
+            
+            dgvList.DataSource = GetFilteredRecords(_selectedFilter, searchText);
+            SetRecordsCountLabel();
+        }
+
+        private void cbFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!(cbFilter.SelectedValue is FilterBy selected)) return;
+            
+            _selectedFilter = selected;
+
+            // Reset UI Visibility
+            txtSearch.Visible = false;
+            cbDropdownFilter.Visible = false;
+
+            if (_selectedFilter == FilterBy.None) 
+            {
+                RefreshDataWithFilter();
+                return;
+            }
+
+           // 2. T4 Magic: Determine which control to show and populate it!
+            switch (_selectedFilter)
+            {
+<# 
+    // ==========================================================
+    // BLOCK 1: BOOLEAN COLUMNS (Grouped with Fall-Through!)
+    // ==========================================================
+    if (Table.DropdownStandardBooleanColumns.Any()) { 
+        foreach(var col in Table.DropdownStandardBooleanColumns) { 
+#>
+                case FilterBy.<#= col.Name #>:
+<#      } #>
+                    cbDropdownFilter.DataSource = GetBooleanFilterOptions();
+                    ShowDropdownFilter();
+                    break;
+<#  } #>
+
+<# 
+    // ==========================================================
+    // BLOCK 2: CUSTOM SQL ENUM COLUMNS (Generated Individually)
+    // ==========================================================
+    foreach(var col in Table.DropdownCustomColumns) { 
+#>
+                case FilterBy.<#= col.Name #>:
+                    cbDropdownFilter.DataSource = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("All", ""),
+<#      foreach(var val in col.AllowedFilterValues) { #>
+                        new KeyValuePair<string, string>("<#= val #>", "<#= val #>"),
+<#      } #>
+                    };
+                    ShowDropdownFilter();
+                    break;
+<#  } #>
+
+                default:
+                    txtSearch.Visible = true;
+                    txtSearch.Text = string.Empty;
+                    txtSearch.Focus();
+                    break;
+            }
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshDataWithFilter();
+        
+        private void cbDropdownFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbDropdownFilter.Visible) RefreshDataWithFilter();
+        }
+
+        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar)) return;
+
+            switch (_selectedFilter)
+            {
+<# foreach(var col in Table.SearchableColumns.Where(c => c.CSharpType == "int" || c.CSharpType == "long" || c.CSharpType == "short" || c.CSharpType == "byte")) { #>
+                case FilterBy.<#= col.Name #>:
+<# } #>
+                    e.Handled = !char.IsDigit(e.KeyChar);
+                    break;
+            }
+        }
+
+        // ====================================================
+        // 5. EVENT TRIGGERS
+        // ====================================================
+        // ... (Keep your existing btnAddNew, dgvList double click, and context menu events here) ...
+
+      // ====================================================
+        // 6. UI HELPERS
+        // ====================================================
+        private List<KeyValuePair<string, string>> GetBooleanFilterOptions()
+        {
+            return new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("All", ""),
+                new KeyValuePair<string, string>("Yes", "True"),
+                new KeyValuePair<string, string>("No", "False")
+            };
+        }
+
+        private void ShowDropdownFilter()
+        {
+            cbDropdownFilter.DisplayMember = "Key";
+            cbDropdownFilter.ValueMember = "Value";
+            cbDropdownFilter.Visible = true;
+        }
+
+        // ====================================================
+        // 7. SEARCH STRATEGY HELPERS
+        // ====================================================
+        private bool MatchString(<#= Table.ClassName #>ListDto dto, string searchText, Func<<#= Table.ClassName #>ListDto, string> valueSelector)
+        {
+            var value = valueSelector(dto);
+            return value != null && value.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool MatchExact(<#= Table.ClassName #>ListDto dto, string searchText, Func<<#= Table.ClassName #>ListDto, object> valueSelector)
+        {
+            var value = valueSelector(dto);
+            return value?.ToString() == searchText;
+        }
+
+        private bool MatchDropdwonValues(<#= Table.ClassName #>ListDto dto, string searchText, Func<<#= Table.ClassName #>ListDto, object> valueSelector)
+        {
+            var value = valueSelector(dto);
+            return value?.ToString().Equals(searchText, StringComparison.OrdinalIgnoreCase) ?? false;
+        }
+
+    }
+}

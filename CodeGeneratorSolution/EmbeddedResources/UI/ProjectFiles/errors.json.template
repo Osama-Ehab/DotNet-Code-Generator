@@ -1,0 +1,39 @@
+﻿{
+  "547": {
+    "Type": "ConstraintViolation",
+    "DefaultMessage": "This record is linked to other data and cannot be modified.",
+    "Contexts": [
+      {
+        "Contains": "DELETE statement",
+        "Message": "Cannot delete: This record is currently in use by other data."
+      },
+      {
+        "Contains": "INSERT statement",
+        "Message": "Invalid Link: The related record does not exist."
+      },
+      {
+        "Contains": "UPDATE statement",
+        "Message": "Cannot update: The related record is invalid."
+      }
+    ]
+  },
+  "2601": {
+    "Message": "Duplicate data found. This record already exists.",
+    "Type": "Conflict"
+  },
+  "2627": {
+    "Message": "Duplicate data found. This record already exists.",
+    "Type": "Conflict",
+    "Contexts": [] 
+  },
+  "2": {
+    "Message": "Unable to connect to the database server.",
+    "Type": "Database",
+    "Contexts": [] 
+  },
+  "53": {
+    "Message": "The database server was not found.",
+    "Type": "Database",
+    "Contexts": [] 
+  }
+}

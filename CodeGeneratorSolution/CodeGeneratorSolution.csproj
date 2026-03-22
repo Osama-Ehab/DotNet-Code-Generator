@@ -1,0 +1,315 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-Windows</TargetFramework>
+	  <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Sql\**" />
+    <EmbeddedResource Remove="Sql\**" />
+    <None Remove="Sql\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="EmbeddedResources\Application\Base\BaseService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Base\BaseValidator.cs" />
+    <Compile Remove="EmbeddedResources\Application\GenericResult.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\IService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Result.cs" />
+    <Compile Remove="EmbeddedResources\Application\Security\SecurityHelper.cs" />
+    <Compile Remove="EmbeddedResources\Application\ServiceExecutor.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\BaseDtoWithId.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IBaseDto.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IBaseDtoWithId.cs" />
+    <Compile Remove="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
+    <Compile Remove="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\BaseRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\IRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
+    <Compile Remove="EmbeddedResources\UI\CustomControls\RecordLabel.cs" />
+    <Compile Remove="EmbeddedResources\UI\Events\DtoEventArgs.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericManage.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\IContentList.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\INavigationService.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\IPopupBase.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\IPopupContent.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\ISaveableContent.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\ISaveableControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\ISelectorControl.cs" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\Application\Base\BaseService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Base\BaseValidator.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\GenericResult.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\IService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Result.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Security\SecurityHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\ServiceExecutor.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\BaseDtoWithId.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IBaseDto.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IBaseDtoWithId.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\BaseRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\IRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\CustomControls\RecordLabel.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Events\DtoEventArgs.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericManage.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IContentList.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\INavigationService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IPopupBase.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IPopupContent.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISaveableContent.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISaveableControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISelectorControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\appsettings.json.template" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\csproj.template" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\errors.json.template" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\Program.template" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Humanizer.Core" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageReference Include="System.CodeDom" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templetes\T4\ctrlAddEdit.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlAddEdit.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlAddEditDesigner.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlAddEditDesigner.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlListDesigner.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlListDesigner.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlList.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlList.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlSelectorCard.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlSelectorCard.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlSelectorCardDesigner.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlSelectorCardDesigner.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlShowDetailsDesigner.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlShowDetailsDesigner.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\ctrlShowDetails.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlShowDetails.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\DependencyInjectionTemplate.tt">
+      <LastGenOutput>DependencyInjectionTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\IEntityServiceTemplate.tt">
+      <LastGenOutput>IEntityServiceTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\DTOsTemplate.tt">
+      <LastGenOutput>DTOsTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\DataMapperTemplate.tt">
+      <LastGenOutput>DataMapperTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\MappingExtensionTemplate.tt">
+      <LastGenOutput>MappingExtensionTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\RepositoryInterfaceTemplate.tt">
+      <LastGenOutput>RepositoryInterfaceTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\SqlStoreProcedureTemplate.tt">
+      <LastGenOutput>SqlStoreProcedureTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\ServiceTemplate.tt">
+      <LastGenOutput>ServiceTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\DtoValidatorTemplate.tt">
+      <LastGenOutput>DtoValidatorTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\RepositoryTemplate.tt">
+      <LastGenOutput>RepositoryTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templetes\T4\EntityTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>EntityTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templetes\T4\WindowsFormsNavigationServiceTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>WindowsFormsNavigationServiceTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlAddEdit.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlAddEdit.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlAddEditDesigner.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlAddEditDesigner.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlList.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlList.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlListDesigner.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlListDesigner.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlSelectorCard.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlSelectorCard.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlSelectorCardDesigner.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlSelectorCardDesigner.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlShowDetails.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlShowDetails.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\ctrlShowDetailsDesigner.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlShowDetailsDesigner.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\DependencyInjectionTemplate.cs">
+      <DependentUpon>DependencyInjectionTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\IEntityServiceTemplate.cs">
+      <DependentUpon>IEntityServiceTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\DTOsTemplate.cs">
+      <DependentUpon>DTOsTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\DataMapperTemplate.cs">
+      <DependentUpon>DataMapperTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\MappingExtensionTemplate.cs">
+      <DependentUpon>MappingExtensionTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\RepositoryInterfaceTemplate.cs">
+      <DependentUpon>RepositoryInterfaceTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\SqlStoreProcedureTemplate.cs">
+      <DependentUpon>SqlStoreProcedureTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\ServiceTemplate.cs">
+      <DependentUpon>ServiceTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\DtoValidatorTemplate.cs">
+      <DependentUpon>DtoValidatorTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\RepositoryTemplate.cs">
+      <DependentUpon>RepositoryTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templetes\T4\EntityTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EntityTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templetes\T4\WindowsFormsNavigationServiceTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WindowsFormsNavigationServiceTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EmbeddedResources\UI\Interfaces\Forms\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

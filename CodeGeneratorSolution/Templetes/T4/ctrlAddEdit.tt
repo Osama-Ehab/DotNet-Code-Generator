@@ -1,0 +1,256 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+using System;
+using System.Windows.Forms;
+using System.Threading.Tasks;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.UI.Helpers; // For FormValidationHelper
+using <#= SolutionName #>.UI.Interfaces; // For ISaveableControl
+
+
+namespace <#= SolutionName #>.UI.Controls
+{
+    public partial class ctrl<#= Table.ClassName #>AddEdit : UserControl, ISaveableControl
+    {
+    // 1. Generate the Properties
+    public UserControl HeaderControl 
+    { 
+        get 
+        {
+            UserControl header = null;
+            // 2. Call the partial method hook!
+            OnProvideHeaderControl(ref header);
+            return header;
+        } 
+    }
+
+    public UserControl BottomControl 
+    { 
+        get 
+        {
+            UserControl bottom = null;
+            OnProvideBottomControl(ref bottom);
+            return bottom;
+        } 
+    }
+
+    // 3. Define the Partial Method Signatures
+    // If you don't implement these in a custom file, the C# compiler ignores them!
+    partial void OnProvideHeaderControl(ref UserControl header);
+    partial void OnProvideBottomControl(ref UserControl bottom);
+
+        public enum enMode { AddNew, Update }
+        
+        private enMode _mode = enMode.AddNew;
+        private readonly I<#= Table.ClassName #>Service _service;
+        private <#= Table.PkType #> _currentId;
+
+
+        public event EventHandler OnCancelRequested;  
+        public event EventHandler OnSaveRequested;  
+        public event EventHandler OnSaveComplete;  
+
+        // 1. Declare the events mandated by the interface
+        public event EventHandler OnDataLoaded;
+        public event EventHandler<bool> OnValidationStateChanged;
+        public event EventHandler OnRequestFormClose;
+
+        // ====================================================
+        // CONSTRUCTOR (Dependency Injection)
+        // ====================================================
+public ctrl<#= Table.ClassName #>AddEdit(I<#= Table.ClassName #>Service service)
+        {
+            InitializeComponent();
+            _service = service;
+             // Implementation: The user types an ID and hits Enter. Boom.
+        txtSearch.HandleEnterKey(() => btnSearch.PerformClick());
+
+           bool isHandled = false;
+
+            // 3. THE HOOK IS SAFE HERE!
+            OnConfigureHeader(this.pnlHeader, this.pbHeaderIcon, this.lblHeaderTitle, ref isHandled);
+        UpdateHeaderUI(bool isHandled = false;);
+            
+        }
+
+        // ====================================================
+        // 1. DYNAMIC HEADER LOGIC
+        // ====================================================
+        private void UpdateHeaderUI(bool isHandled)
+        {
+            If(isHandled) return;
+
+            if (_mode == Mode.AddNew)
+            {
+                lblHeaderTitle.Text = "Add New <#= Table.FriendlyName #>";
+                // Uses your helper to grab the "Add" version of this table's icon
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "add"); 
+            }
+            else
+            {
+                lblHeaderTitle.Text = "Update <#= Table.FriendlyName #>";
+                // Uses your helper to grab the "Edit" version of this table's icon
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "edit"); 
+            }
+        }
+
+        partial void OnConfigureHeader(TableLayoutPanel headerPanel, PictureBox icon, Label title, ref bool isHandled);
+
+       // ====================================================
+        // 1. LOAD DATA (Called by the Host Form)
+        // ====================================================
+        public async Task LoadDataAsync(<#= Table.PkType #> id)
+        {
+            _currentId = id;
+            _mode = enMode.Update; 
+           UpdateHeaderUI();
+            
+            // 1. Fetch the Data
+            var result = await _service.GetByIdAsync(id);
+            
+            if (result.IsSuccess && result.Data != null)
+            {
+            // 2. Fire the event! The Host Form will hear this and update the Window Title.
+        OnDataLoaded?.Invoke(this, EventArgs.EventArgs.Empty);
+
+                // 2. Delegate to the Mapping Method!
+                FillControls(result.Data);
+                
+<# if (Table.Columns.Any(c => c.IsSensitive)) { #>
+                // 3. Secure Sensitive Fields
+<# if( Table.HasPassword) { #>
+                txtPassword.Visible = false; 
+                lblPassword.Visible = false;
+<# } #>
+<# } #>
+            }
+            else
+            {
+                OnCancelRequested?.Invoke(this, EventArgs.Empty);
+            }
+                PopupMessage(result);
+        }
+
+        // ====================================================
+        // 3. EXECUTION (Called by Host Form's Save Button)
+        // ====================================================
+        public async Task<bool> SaveAsync()
+        {
+            if (_mode == enMode.AddNew)
+            {
+                // 1. Get the Data
+                var dto = GetCreateDto();
+
+                // 2. Send to Service
+                var result = await _service.AddAsync(dto);
+                
+                // 3. Handle Result
+                if (!result.IsSuccess) 
+                { 
+                    FormValidationHelper.ShowErrors(this, errorProvider1, result.ValidationErrors); 
+                    return false; 
+                }
+                
+                _currentId = result.Data;
+                OnSaveComplete?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+            else // UPDATE MODE
+            {
+                // 1. Get the Data
+                var dto = GetUpdateDto();
+
+                // 2. Send to Service
+                var result = await _service.UpdateAsync(dto);
+                
+                // 3. Handle Result
+                if (!result.IsSuccess) 
+                { 
+                    FormValidationHelper.ShowErrors(this, errorProvider1, result.ValidationErrors); 
+                    return false; 
+                }
+                
+                OnSaveComplete?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+        }
+    }
+
+
+    // ====================================================
+        // 4. UI TO DTO MAPPING (Extracted for Clean Code)
+        // ====================================================
+        
+        private <#= Table.ClassName #>CreateDto GetCreateDto()
+        {
+            return new <#= Table.ClassName #>CreateDto 
+            {
+<# foreach(var col in Table.Columns.Where(c => c.IncludeInInsert)) { 
+    if (col.WinControl == "CheckBox") { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Checked,
+<#  } else if (col.WinControl == "DateTimePicker") { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Value,
+<#  } else if (col.CSharpType != "string" && col.CSharpType != "bool" && col.CSharpType != "DateTime" && col.CSharpType != "byte[]") { #>
+                <#= col.Name #> = <#= col.CSharpType #>.TryParse(<#= col.ControlNameWithPrefix #>.Text, out var v<#= col.Name #>) ? v<#= col.Name #> : default,
+<#  } else { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Text,
+<#  }
+} #>
+            };
+        }
+
+        private <#= Table.ClassName #>UpdateDto GetUpdateDto()
+        {
+            return new <#= Table.ClassName #>UpdateDto 
+            {
+                <#= Table.PkName #> = _currentId,
+<# foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { 
+    if (col.WinControl == "CheckBox") { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Checked,
+<#  } else if (col.WinControl == "DateTimePicker") { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Value,
+<#  } else if (col.CSharpType != "string" && col.CSharpType != "bool" && col.CSharpType != "DateTime" && col.CSharpType != "byte[]") { #>
+                <#= col.Name #> = <#= col.CSharpType #>.TryParse(<#= col.ControlNameWithPrefix #>.Text, out var v<#= col.Name #>) ? v<#= col.Name #> : default,
+<#  } else { #>
+                <#= col.Name #> = <#= col.ControlNameWithPrefix #>.Text,
+<#  }
+} #>
+            };
+        }
+
+        // ====================================================
+        // 5. DTO TO UI MAPPING (Extracted for Clean Code)
+        // ====================================================
+        
+        private void FillControls(<#= Table.ClassName #>Dto dto)
+        {
+            if (dto == null) return;
+
+<# foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { 
+    if (col.WinControl == "CheckBox") { #>
+            <#= col.ControlNameWithPrefix #>.Checked = dto.<#= col.Name #>;
+<#  } else if (col.WinControl == "DateTimePicker") { #>
+            if (dto.<#= col.Name #>.HasValue) 
+            {
+                <#= col.ControlNameWithPrefix #>.Value = dto.<#= col.Name #>.Value;
+<#      if (col.IsNullable) { #>
+                <#= col.ControlNameWithPrefix #>.Checked = true; // Enable the checkbox if it has a value
+<#      } #>
+            }
+<#      if (col.IsNullable) { #>
+            else 
+            {
+                <#= col.ControlNameWithPrefix #>.Checked = false; // Uncheck if null
+            }
+<#      } #>
+<#  } else { #>
+            <#= col.ControlNameWithPrefix #>.Text = dto.<#= col.Name #>?.ToString();
+<#  }
+} #>
+        }
+
+
+
+
+}

@@ -1,0 +1,71 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+using <#= SolutionName #>.Core.DTOs.Base;
+
+namespace <#= SolutionName #>.Core.DTOs
+{
+    // 1. Inherits ID from Base (standard Dto)
+    public class <#= Table.ClassName #>DTO : BaseDtoWithId<<#= Table.PkType #>>
+    {
+<# 
+    foreach(var col in Table.StandrdDtoColumns) 
+    {
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+    }
+
+    // 2. Inherits ID from Base  (Update Dto)
+    public class <#= Table.ClassName #>DTO : BaseDtoWithId<<#= Table.PkType #>>
+    {
+<# 
+    foreach(var col in Table.UpdateDtoColumns) 
+    {
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+    }
+
+
+    //  (Create Dto)
+    public class <#= Table.ClassName #>DTO : IBaseDto
+    {
+<# 
+    foreach(var col in Table.CreateDtoColumns) 
+    {
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+
+    // 1. Inherits ID from Base (Detailed Dto)
+    public class <#= Table.ClassName #>DetailsDTO : BaseDtoWithId<<#= Table.PkType #>>
+    {
+<# 
+    foreach(var col in Table.DetailedColumns) 
+    {
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+    }
+
+
+        // 1. Inherits ID from Base (List Dto)
+    public class <#= Table.ClassName #>ListDto : BaseDtoWithId<<#= Table.PkType #>>
+    {
+<# 
+    foreach(var col in Table.GridColumns) 
+    {
+#>
+        public <#= col.CSharpType #> <#= col.Name #> { get; set; }
+<# 
+    } 
+#>
+    }
+}

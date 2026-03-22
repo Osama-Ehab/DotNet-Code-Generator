@@ -1,0 +1,41 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+
+// Import your generated layers
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.Application.Services;
+using <#= SolutionName #>.Core.Repositories;
+using <#= SolutionName #>.Infrastructure.Repositories;
+using <#= SolutionName #>.Application.Base; // Location of your BaseValidator
+
+namespace <#= SolutionName #>.UI
+{
+    public static class DependencyInjectionSetup
+    {
+        public static IServiceCollection AddGeneratedDependencies(this IServiceCollection services)
+        {
+       
+ 
+
+            // 1. AUTO-REGISTER ALL FLUENT VALIDATORS
+            // This magical line scans the assembly where BaseService lives, finds every single 
+            // generated validator (e.g., UserDtoValidator), and registers them automatically!
+            services.AddValidatorsFromAssemblyContaining<BaseService>();
+
+            // 2. REGISTER GENERATED REPOSITORIES & SERVICES
+<# foreach(var table in Tables) { #>
+            // --- <#= table.ClassName #> ---
+            // Business Layer: Interface -> Concrete (Perfect)
+            services.AddScoped<I<#= table.ClassName #>Repository, <#= table.ClassName #>Repository>();
+            services.AddScoped<I<#= table.ClassName #>Service, <#= table.ClassName #>Service>();
+            
+            // UI Layer: Concrete Only (Perfect)
+            services.AddTransient<ctrl<#= table.ClassName #>List>();    
+            services.AddTransient<ctrl<#= table.ClassName #>AddEdit>(); 
+            services.AddTransient<ctrl<#= table.ClassName #>ShowDetails>();    
+            services.AddTransient<ctrl<#= table.ClassName #>SelectorCard>();    
+<# } #>            return services;
+        }
+    }
+}

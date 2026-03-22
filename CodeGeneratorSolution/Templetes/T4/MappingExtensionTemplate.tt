@@ -1,0 +1,109 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Core.DTOs;
+
+namespace <#= SolutionName #>.Core.Mapping
+{
+    public static partial class <#= Table.ClassName #>MappingExtensions
+    {
+        // ==========================================
+        // 1. TO DTO (Entity -> DTO)
+        // ==========================================
+        public static <#= Table.ClassName #>DTO ToDto(this <#= Table.ClassName #> entity)
+        {
+            if (entity == null) return null;
+
+            var dto = new <#= Table.ClassName #>DTO();
+
+<# 
+    foreach(var col in Table.Columns) 
+    {
+        // 1. SKIP Sensitive Fields
+        if (col.IsSensitive) continue;
+
+        // 2. GENERATE Mapping
+#>
+            dto.<#= col.Name #> = entity.<#= col.Name #>;
+<# 
+    } 
+#>
+
+            // Hook: Custom logic (e.g. formatting dates, computing FullName)
+            OnToDto(entity, dto);
+
+            return dto;
+        }
+
+        // ==========================================
+        // 2. TO ENTITY (DTO -> Entity)
+        // ==========================================
+        public static <#= Table.ClassName #> ToEntity(this <#= Table.ClassName #>DTO dto)
+        {
+            if (dto == null) return null;
+
+            var entity = new <#= Table.ClassName #>();
+
+<# 
+    foreach(var col in Table.Columns) 
+    {
+         // 1. SKIP Sensitive Fields
+        if (col.IsSensitive) continue;
+
+        // 3. GENERATE Mapping
+#>
+            entity.<#= col.Name #> = dto.<#= col.Name #>;
+<# 
+    } 
+#>
+
+            // Hook: Custom logic (e.g. Hashing Password)
+            OnToEntity(dto, entity);
+
+            return entity;
+        }
+
+        // ==========================================
+        // CREATE: UI -> Entity
+        // ==========================================
+        public static <#= Table.ClassName #> ToEntity(this <#= Table.ClassName #>CreateDto dto)
+        {
+            if (dto == null) return null;
+            return new <#= Table.ClassName #>
+            {
+<# foreach(var col in Table.Columns.Where(c => c.IncludeInInsert)) { #>
+                <#= col.Name #> = dto.<#= col.Name #>,
+<# } #>
+            };
+        }
+
+        // ==========================================
+        // UPDATE: UI -> Existing Entity
+        // ==========================================
+        public static void ApplyToEntity(this <#= Table.ClassName #>UpdateDto dto, <#= Table.ClassName #> entity)
+        {
+            if (dto == null || entity == null) return;
+            
+<# foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { #>
+            entity.<#= col.Name #> = dto.<#= col.Name #>;
+<# } #>
+
+
+
+
+
+        // ==========================================
+        // 3. PARTIAL METHODS (The Hooks)
+        // ==========================================
+        // Implement these in a separate file (e.g. UserMappingExtensions.Custom.cs)
+        static partial void OnToDto(<#= Table.ClassName #> entity, <#= Table.ClassName #>DTO dto);
+        static partial void OnToEntity(<#= Table.ClassName #>DTO dto, <#= Table.ClassName #> entity);
+        static partial void OnToDto(<#= Table.ClassName #> entity, <#= Table.ClassName #>CreateDto dto);
+        static partial void OnToEntity(<#= Table.ClassName #>CreateDto dto, <#= Table.ClassName #> entity);
+        static partial void OnToDto(<#= Table.ClassName #> entity, <#= Table.ClassName #>UpdateDto dto);
+        static partial void OnToEntity(<#= Table.ClassName #>UpdateDto dto, <#= Table.ClassName #> entity);
+    }
+}

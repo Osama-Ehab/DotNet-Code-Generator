@@ -1,0 +1,276 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+namespace <#= SolutionName #>.UI.Controls
+{
+    partial class ctrl<#= Table.ClassName #>List
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            
+            this.cbDropdownFilter = new System.Windows.Forms.ComboBox();
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.pbHeaderIcon = new System.Windows.Forms.PictureBox();
+            this.btnAddNew = new System.Windows.Forms.Button();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.cbFilter = new System.Windows.Forms.ComboBox();
+            this.lblFilterBy = new System.Windows.Forms.Label();
+            this.lblSearchIcon = new System.Windows.Forms.Label();
+            this.dgvList = new System.Windows.Forms.DataGridView();
+            this.cmsList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiShowDetails = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlBottom = new System.Windows.Forms.Panel();
+            this.lblRecordCount = new System.Windows.Forms.RecordLabel();
+
+<# foreach(var col in Table.GridColumns) { 
+    string colType = col.CSharpType == "bool" ? "DataGridViewCheckBoxColumn" : "DataGridViewTextBoxColumn";
+#>
+            this.col<#= col.Name #> = new System.Windows.Forms.<#= colType #>();
+<# } #>
+
+            this.pnlTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeaderIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvList)).BeginInit();
+            this.cmsList.SuspendLayout();
+            this.pnlBottom.SuspendLayout();
+            this.SuspendLayout();
+
+               // ====================================================
+            // HEADER PANEL SETUP (Row 0: Icon, Row 1: Title)
+            // ====================================================
+            this.pnlHeader.ColumnCount = 1;
+            this.pnlHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlHeader.RowCount = 2;
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Height = 100;
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
+
+            // HEADER ICON
+            this.pbHeaderIcon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbHeaderIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            
+            // HEADER LABEL
+            this.lblHeaderTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblHeaderTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblHeaderTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblHeaderTitle.ForeColor = System.Drawing.Color.FromArgb(45, 45, 48);
+
+            this.pnlHeader.Controls.Add(this.pbHeaderIcon, 0, 0);
+            this.pnlHeader.Controls.Add(this.lblHeaderTitle, 0, 1);
+
+            // ====================================================
+            // CONTENT PANEL SETUP (Where the generated textboxes go)
+            // ====================================================
+            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContent.AutoScroll = true;
+
+            // ====================================================
+            // ADD CONTROLS TO MAIN USER CONTROL
+            // ====================================================
+            this.Controls.Add(this.pnlContent); // Fill goes first in Z-order
+            this.Controls.Add(this.pnlHeader);  // Top goes last so it stays at the top
+
+
+            // ===================================================
+            // Top Panel (Dashboard Header)
+            // ===================================================
+            this.pnlTop.Controls.Add(this.btnAddNew);
+            this.pnlTop.Controls.Add(this.txtSearch);
+            this.pnlTop.Controls.Add(this.cbFilter);
+            this.pnlTop.Controls.Add(this.lblFilterBy);
+            this.pnlTop.Controls.Add(this.lblSearchIcon);       
+            this.pnlTop.Controls.Add(this.cbDropdownFilter);
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Height = 160; // Expanded to fit the 128x128 icon beautifully
+            this.pnlTop.BackColor = System.Drawing.Color.White;
+
+
+
+            // Shifted the Search and Filter controls to the right (X = 170+)
+            this.lblSearchIcon.AutoSize = true;
+            this.lblSearchIcon.Font = new System.Drawing.Font("Segoe MDL2 Assets", 12F, System.Drawing.FontStyle.Bold);
+            this.lblSearchIcon.Location = new System.Drawing.Point(170, 70);
+            this.lblSearchIcon.Text = "\uE1A3";
+
+            this.lblFilterBy.AutoSize = true;
+            this.lblFilterBy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblFilterBy.Location = new System.Drawing.Point(195, 71);
+            this.lblFilterBy.Text = "Filter By:";
+
+            this.cbFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbFilter.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cbFilter.Location = new System.Drawing.Point(265, 68);
+            this.cbFilter.Size = new System.Drawing.Size(150, 28);
+            this.cbFilter.SelectedIndexChanged += new System.EventHandler(this.cbFilter_SelectedIndexChanged);
+
+            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSearch.Location = new System.Drawing.Point(430, 68);
+            this.txtSearch.Size = new System.Drawing.Size(250, 27);
+            this.txtSearch.Visible = false;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+
+            this.cbDropdownFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbDropdownFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbDropdownFilter.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cbDropdownFilter.Location = new System.Drawing.Point(430, 68); 
+            this.cbDropdownFilter.Size = new System.Drawing.Size(150, 27);
+            this.cbDropdownFilter.Visible = false;
+            this.cbDropdownFilter.SelectedIndexChanged += new System.EventHandler(this.cbDropdownFilter_SelectedIndexChanged);
+
+            this.btnAddNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddNew.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAddNew.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnAddNew.Location = new System.Drawing.Point(650, 64);
+            this.btnAddNew.Size = new System.Drawing.Size(130, 35);
+            this.btnAddNew.Text = "\uE710  Add New";
+            this.btnAddNew.Click += new System.EventHandler(this.btnAddNew_Click);
+
+
+
+            // ===================================================
+            // DataGridView Setup
+            // ===================================================
+            this.dgvList.AllowUserToAddRows = false;
+            this.dgvList.AllowUserToDeleteRows = false;
+            this.dgvList.AllowUserToOrderColumns = true;
+            this.dgvList.BackgroundColor = System.Drawing.Color.White;
+            this.dgvList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            
+            System.Windows.Forms.DataGridViewCellStyle headerStyle = new System.Windows.Forms.DataGridViewCellStyle();
+            headerStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            headerStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            headerStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            headerStyle.ForeColor = System.Drawing.Color.Black;
+            this.dgvList.ColumnHeadersDefaultCellStyle = headerStyle;
+            this.dgvList.EnableHeadersVisualStyles = false;
+
+            System.Windows.Forms.DataGridViewCellStyle rowStyle = new System.Windows.Forms.DataGridViewCellStyle();
+            rowStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            rowStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            rowStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.dgvList.DefaultCellStyle = rowStyle;
+            this.dgvList.RowHeadersVisible = false;
+            this.dgvList.RowTemplate.Height = 35;
+
+            this.dgvList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+<# for(int i=0; i<Table.GridColumns.Count; i++) { #>
+                this.col<#= Table.GridColumns[i].Name #><#= (i < Table.GridColumns.Count - 1) ? "," : "" #>
+<# } #>
+            });
+            this.dgvList.ContextMenuStrip = this.cmsList;
+            this.dgvList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvList.ReadOnly = true;
+            this.dgvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvList_CellDoubleClick);
+
+            // ===================================================
+            // Grid Columns Mapping
+            // ===================================================
+<# foreach(var col in Table.GridColumns) { #>
+            this.col<#= col.Name #>.DataPropertyName = "<#= col.Name #>";
+            this.col<#= col.Name #>.HeaderText = "<#= col.FriendlyName #>";
+            this.col<#= col.Name #>.Name = "col<#= col.Name #>";
+            this.col<#= col.Name #>.ReadOnly = true;
+<# if (col.Name.EndsWith("Id", StringComparison.OrdinalIgnoreCase)) { #>
+            this.col<#= col.Name #>.Width = 80;
+<# } else if (col.CSharpType == "string") { #>
+            this.col<#= col.Name #>.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+<# } else { #>
+            this.col<#= col.Name #>.Width = 140;
+<# } #>
+<# } #>
+
+            // ===================================================
+            // Context Menu Strip
+            // ===================================================
+            this.cmsList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { 
+                this.tsmiShowDetails, 
+                this.tsmiEdit, 
+                this.tsmiDelete 
+            });
+            
+            this.tsmiShowDetails.Text = "Show Details";
+            this.tsmiShowDetails.Click += new System.EventHandler(this.tsmiShowDetails_Click);
+
+            this.tsmiEdit.Text = "Edit Record";
+            this.tsmiEdit.Click += new System.EventHandler(this.tsmiEdit_Click);
+            
+            this.tsmiDelete.Text = "Delete Record";
+            this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
+
+            // ===================================================
+            // Bottom Panel
+            // ===================================================
+            this.pnlBottom.Controls.Add(this.lblRecordCount);
+            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlBottom.Height = 40;
+            this.pnlBottom.BackColor = System.Drawing.Color.White;
+
+            this.lblRecordCount.AutoSize = true;
+            this.lblRecordCount.Location = new System.Drawing.Point(15, 12);
+            this.lblRecordCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.lblRecordCount.Text = "Total Records: 0";
+
+            // ===================================================
+            // UserControl Assembly
+            // ===================================================
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.dgvList);
+            this.Controls.Add(this.pnlTop);
+            this.Controls.Add(this.pnlBottom);
+            this.Size = new System.Drawing.Size(800, 600);
+
+            this.pnlTop.ResumeLayout(false);
+            this.pnlTop.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbHeaderIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvList)).EndInit();
+            this.cmsList.ResumeLayout(false);
+            this.pnlBottom.ResumeLayout(false);
+            this.pnlBottom.PerformLayout();
+            this.ResumeLayout(false);
+        }
+
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.PictureBox pbHeaderIcon;
+        private System.Windows.Forms.Button btnAddNew;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.ComboBox cbFilter;
+        private System.Windows.Forms.Label lblFilterBy;
+        private System.Windows.Forms.Label lblSearchIcon;
+        private System.Windows.Forms.DataGridView dgvList;
+        private System.Windows.Forms.ContextMenuStrip cmsList;
+        private System.Windows.Forms.ToolStripMenuItem tsmiShowDetails;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEdit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
+        private System.Windows.Forms.Panel pnlBottom;
+        private System.Windows.Forms.Label lblRecordCount;
+
+<# foreach(var col in Table.GridColumns) { 
+    string colType = col.CSharpType == "bool" ? "DataGridViewCheckBoxColumn" : "DataGridViewTextBoxColumn";
+#>
+        private System.Windows.Forms.<#= colType #> col<#= col.Name #>;
+<# } #>
+    }
+}

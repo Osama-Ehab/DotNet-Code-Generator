@@ -1,0 +1,249 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+namespace <#= SolutionName #>.UI.Controls
+{
+    partial class ctrl<#= Table.ClassName #>AddEdit
+    {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Component Designer generated code
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            
+<# 
+            // 0. PREPARE THE LIST OF COLUMNS
+            var editColumns = Table.Columns.Where(c => !c.IsPrimaryKey).ToList();
+            int totalCols = editColumns.Count;
+            int halfPoint = (int)Math.Ceiling(totalCols / 2.0);
+
+            // 1. INSTANTIATE CONTROLS
+            foreach(var col in editColumns) 
+            { 
+#>
+            this.lblIcon<#= col.Name #> = new System.Windows.Forms.Label();
+            this.lbl<#= col.Name #> = new System.Windows.Forms.Label();
+<#              if (col.CSharpType == "bool") { #>
+            this.chk<#= col.Name #> = new System.Windows.Forms.CheckBox();
+<#              } else if (col.CSharpType == "DateTime") { #>
+            this.dtp<#= col.Name #> = new System.Windows.Forms.DateTimePicker();
+<#              } else { #>
+            this.txt<#= col.Name #> = new System.Windows.Forms.TextBox();
+<#              }
+            } 
+#>
+            
+            /// 1. DECLARE THE UI CONTROLS
+        private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.TableLayoutPanel pnlHeader;
+        private System.Windows.Forms.PictureBox pbHeaderIcon;
+        private System.Windows.Forms.Label lblHeaderTitle;
+        private System.Windows.Forms.Panel pnlContent; // Holds your textboxes
+
+
+        private void InitializeComponent()
+        {
+            this.pnlHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.pbHeaderIcon = new System.Windows.Forms.PictureBox();
+            this.lblHeaderTitle = new System.Windows.Forms.Label();
+            this.pnlContent = new System.Windows.Forms.Panel();
+
+            this.SuspendLayout();
+
+            // ====================================================
+            // HEADER PANEL SETUP (Row 0: Icon, Row 1: Title)
+            // ====================================================
+            this.pnlHeader.ColumnCount = 1;
+            this.pnlHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlHeader.RowCount = 2;
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Height = 100;
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
+
+            // HEADER ICON
+            this.pbHeaderIcon.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbHeaderIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            
+            // HEADER LABEL
+            this.lblHeaderTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblHeaderTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblHeaderTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblHeaderTitle.ForeColor = System.Drawing.Color.FromArgb(45, 45, 48);
+
+            this.pnlHeader.Controls.Add(this.pbHeaderIcon, 0, 0);
+            this.pnlHeader.Controls.Add(this.lblHeaderTitle, 0, 1);
+
+            // ====================================================
+            // CONTENT PANEL SETUP (Where the generated textboxes go)
+            // ====================================================
+            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContent.AutoScroll = true;
+
+            // ====================================================
+            // ADD CONTROLS TO MAIN USER CONTROL
+            // ====================================================
+            this.Controls.Add(this.pnlContent); // Fill goes first in Z-order
+            this.Controls.Add(this.pnlHeader);  // Top goes last so it stays at the top
+
+            this.Size = new System.Drawing.Size(600, 500);
+            this.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.BackColor = System.Drawing.Color.White;
+
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            this.SuspendLayout();
+
+            this.errorProvider1.ContainerControl = this;
+
+<# 
+            // 2. SET PROPERTIES AND 2-COLUMN AUTO-LAYOUT MATH
+            int startY = 100;
+            int yPos = startY; 
+            int iconX = 20;      // Start of the icon
+            int labelX = 45;     // Start of the text (IconX + 25)
+            int controlX = 180;  // Pushed slightly right to accommodate bold fonts
+            int verticalSpacing = 40;
+            int tabIndex = 0;
+
+            for (int i = 0; i < totalCols; i++) 
+            { 
+                var col = editColumns[i];
+
+                // COLUMN SPLIT LOGIC
+                if (i == halfPoint)
+                {
+                    yPos = startY;       
+                    iconX += 450;       // Shift right side by 450 pixels
+                    labelX += 450;       
+                    controlX += 450;     
+                }
+#>
+            // 
+            // lblIcon<#= col.Name #> (MDL2 Asset Icon)
+            // 
+            this.lblIcon<#= col.Name #>.AutoSize = true;
+            this.lblIcon<#= col.Name #>.Font = new System.Drawing.Font("Segoe MDL2 Assets", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblIcon<#= col.Name #>.Location = new System.Drawing.Point(<#= iconX #>, <#= yPos + 3 #>);
+            this.lblIcon<#= col.Name #>.Name = "lblIcon<#= col.Name #>";
+            this.lblIcon<#= col.Name #>.Text = "<#= col.IconCode #>";
+
+            // 
+            // lbl<#= col.Name #>
+            // 
+            this.lbl<#= col.Name #>.AutoSize = true;
+            this.lbl<#= col.Name #>.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lbl<#= col.Name #>.Location = new System.Drawing.Point(<#= labelX #>, <#= yPos + 3 #>);
+            this.lbl<#= col.Name #>.Name = "lbl<#= col.Name #>";
+            this.lbl<#= col.Name #>.Text = "<#= col.FriendlyName #>:";
+
+<#              if (col.CSharpType == "bool") { #>
+            // 
+            // chk<#= col.Name #>
+            // 
+            this.chk<#= col.Name #>.AutoSize = true;
+            this.chk<#= col.Name #>.FlatStyle = System.Windows.Forms.FlatStyle.Flat; // Flat UI Design
+            this.chk<#= col.Name #>.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.chk<#= col.Name #>.Location = new System.Drawing.Point(<#= controlX #>, <#= yPos #>);
+            this.chk<#= col.Name #>.Name = "chk<#= col.Name #>";
+            this.chk<#= col.Name #>.Size = new System.Drawing.Size(200, 23);
+            this.chk<#= col.Name #>.TabIndex = <#= tabIndex++ #>;
+            this.chk<#= col.Name #>.Text = "<#= col.FriendlyName #>";
+<#              } else if (col.CSharpType == "DateTime") { #>
+            // 
+            // dtp<#= col.Name #>
+            // 
+            this.dtp<#= col.Name #>.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp<#= col.Name #>.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.dtp<#= col.Name #>.Location = new System.Drawing.Point(<#= controlX #>, <#= yPos #>);
+            this.dtp<#= col.Name #>.Name = "dtp<#= col.Name #>";
+            this.dtp<#= col.Name #>.Size = new System.Drawing.Size(250, 23);
+            this.dtp<#= col.Name #>.TabIndex = <#= tabIndex++ #>;
+<#              } else { #>
+            // 
+            // txt<#= col.Name #>
+            // 
+            this.txt<#= col.Name #>.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle; // Flat UI Design
+            this.txt<#= col.Name #>.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.txt<#= col.Name #>.Location = new System.Drawing.Point(<#= controlX #>, <#= yPos #>);
+            this.txt<#= col.Name #>.Name = "txt<#= col.Name #>";
+            this.txt<#= col.Name #>.Size = new System.Drawing.Size(250, 23);
+            this.txt<#= col.Name #>.TabIndex = <#= tabIndex++ #>;
+<#                  if (col.Name.Contains("Password")) { #>
+            this.txt<#= col.Name #>.UseSystemPasswordChar = true;
+<#                  }
+                } #>
+
+<# 
+                yPos += verticalSpacing;
+            } 
+#>
+            // 
+            // ctrl<#= Table.ClassName #>AddEdit
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            
+<# 
+            // 3. ADD TO CONTROLS COLLECTION
+            foreach(var col in editColumns) 
+            { 
+#>
+            pnlContent(this.lblIcon<#= col.Name #>);
+            pnlContent(this.lbl<#= col.Name #>);
+<#              if (col.CSharpType == "bool") { #>
+            pnlContent(this.chk<#= col.Name #>);
+<#              } else if (col.CSharpType == "DateTime") { #>
+            pnlContent(this.dtp<#= col.Name #>);
+<#              } else { #>
+            pnlContent(this.txt<#= col.Name #>);
+<#              }
+            } 
+            
+            int formHeight = startY + (halfPoint * verticalSpacing) + 40;
+#>
+            this.Name = "ctrl<#= Table.ClassName #>AddEdit";
+            this.Size = new System.Drawing.Size(<#= iconX + 480 #>, <#= formHeight #>); 
+            
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        #endregion
+
+        private System.Windows.Forms.PictureBox pbEntityIcon;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
+<# 
+        // 4. DECLARE CLASS FIELDS
+        foreach(var col in editColumns) 
+        { 
+#>
+        private System.Windows.Forms.Label lblIcon<#= col.Name #>;
+        private System.Windows.Forms.Label lbl<#= col.Name #>;
+<#          if (col.CSharpType == "bool") { #>
+        private System.Windows.Forms.CheckBox chk<#= col.Name #>;
+<#          } else if (col.CSharpType == "DateTime") { #>
+        private System.Windows.Forms.DateTimePicker dtp<#= col.Name #>;
+<#          } else { #>
+        private System.Windows.Forms.TextBox txt<#= col.Name #>;
+<#          }
+        } 
+#>
+    }
+}

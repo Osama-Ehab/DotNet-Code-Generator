@@ -1,0 +1,149 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+using System;
+using System.Windows.Forms;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection; // Required for GetRequiredService
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.UI.Controls;
+using <#= SolutionName #>.UI.GenericForms;
+using <#= SolutionName #>.UI.Interfaces;
+using <#= SolutionName #>.UI.Helpers;
+
+namespace <#= SolutionName #>.UI
+{
+    public static class WindowsFormsNavigationService
+    {
+
+    private readonly IServiceProvider _serviceProvider;
+    
+    // 1. The O(1) Lookup Table
+    private readonly Dictionary<Type, Type> _addRouteMap;
+
+    public WindowsFormsNavigationService(IServiceProvider serviceProvider) 
+    {
+        _serviceProvider = serviceProvider;
+        
+        // 2. The T4 Template writes the Map!
+        _addRouteMap = new Dictionary<Type, Type>
+        {
+<# foreach(var table in Tables) { #>
+            { typeof(<#= table.ClassName #>ListDto), typeof(ctrl<#= table.ClassName #>AddEdit) },
+<# } #>
+        };
+    }
+        // ====================================================
+        // 1. DYNAMIC ROUTING FOR SHOW DETAILS (Read-Only)
+        // ====================================================
+        public static async Task ShowDetailsAsync(IBaseDto dto)
+        {
+            IPopupBase content = null;
+
+            // 1. Create a temporary scope (The Mini-Container)
+using (var scope = _serviceProvider.CreateScope())
+{
+    // Dynamically generated Routing Table
+            switch (dto)
+            {
+<# 
+    // Loop through every table in your database schema
+    foreach (var table in Tables) 
+    { 
+        string varName = table.CamelCaseName; 
+#>
+                case <#= table.ClassName #>DetailsDTO <#= varName #>:
+                    // Utilizing Dependency Injection instead of 'new' keyword!
+                    var ctrl<#= table.ClassName #> = scope.ServiceProvider.GetRequiredService<ctrl<#= table.ClassName #>Card>();
+                    await ctrl<#= table.ClassName #>.LoadDataAsync(<#= varName #>.Id);
+                    content = ctrl<#= table.ClassName #>;
+                    break;
+
+<# 
+    } 
+#>
+                default:
+                    MessageServiceHelper.ShowError($"No details view configured for {dto.GetType().Name}.", "Routing Error");
+                    return;
+            }
+
+            if (content != null)
+            {
+                using (var frm = new frmGenericPopup(content))
+                {
+                    frm.ShowDialog();
+                }
+            }
+}
+           
+        }
+
+        // ====================================================
+        // 2. DYNAMIC ROUTING FOR UPDATES (From DataGridView)
+        // ====================================================
+        public static void OpenAddEdit(IBaseDto gridDto = null)
+        {
+            UserControl content = null;
+
+            // Failsafe for nulls
+            if (gridDto == null) return; 
+
+                  // 1. Create a temporary scope (The Mini-Container)
+using (var scope = _serviceProvider.CreateScope())
+{
+// UPDATE MODE: Route based on the DTO type passed from the Grid
+            switch (gridDto)
+            {
+<# foreach(var table in Tables) {
+ string varName = table.CamelCaseName; 
+#>
+                case <#= table.ClassName #>ListDto <#= varName #>:
+                    var ctrl<#= table.ClassName #> = scope.ServiceProvider.GetRequiredService<ctrl<#= table.ClassName #>AddEdit>();
+                    
+                    // Pass the ID to the control so it can fetch fresh data from the DB
+                    ctrl<#= table.ClassName #>.LoadDataAsync(<#= varName #>.Id); 
+                    content = ctrl<#= table.ClassName #>;
+                    break;
+
+<# } #>
+            }
+
+            if (content != null)
+            {
+                // Drop the control into the generic wrapper and show it
+                using (var frm = new frmGenericAddEdit((ISaveableControl)content))
+                {
+                    frm.ShowDialog();
+                }
+            }
+
+   
+        }
+        
+        // ====================================================
+        // 3. GENERIC ADD NEW RECORD (No Code Duplication!)
+        // ====================================================
+
+        public void OpenAddNew(Type dtoType)
+{
+    // 1. O(1) Hash Lookup - Instantaneous!
+    if (_addRouteMap.TryGetValue(dtoType, out Type editorType))
+    {
+
+        using (var scope = _serviceProvider.CreateScope())
+        {
+        // 2. Pass the resolved Type to the DI Container!
+        var content = (ISaveableControl)scope.ServiceProvider.GetRequiredService(editorType);
+            
+            using (var frm = new frmGenericAddEdit(content)) 
+            { 
+                frm.ShowDialog(); 
+            }
+        }
+    }
+    else
+    {
+        MessageServiceHelper.ShowError($"Routing failed: No editor mapped for {dtoType.Name}");
+    }
+}
+    }
+}

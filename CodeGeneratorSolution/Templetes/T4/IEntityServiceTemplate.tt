@@ -1,0 +1,36 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Core.Entities.Base; 
+using CodeGeneratorSolution.Templetes.Infrastructure.Utilities; // For Result<T>
+
+namespace <#= SolutionName #>.Application.Interfaces
+{
+
+    // ====================================================
+    //  SERVICE INTERFACE
+    // ====================================================
+    public interface I<#= Table.ClassName #>Service : IService<<#= Table.ClassName #>, <#= Table.PkType #>>
+    {
+        Task<Result<IEnumerable<<#= Table.ClassName #>Dto>>> GetAllAsync();
+        Task<Result<<#= Table.ClassName #>Dto>> GetByIdAsync(<#= Table.PkType #> id);
+        Task<Result<<#= Table.PkType #>>> AddAsync(<#= Table.ClassName #>CreateDto dto);
+        Task<Result<bool>> UpdateAsync(<#= Table.ClassName #>UpdateDto dto);
+        Task<Result<bool>> DeleteAsync(<#= Table.PkType #> id);
+
+<# 
+        // Use .Any() so we only generate this method ONCE, 
+        // even if there are multiple sensitive columns.
+        if (Table.HasPassword) 
+        { 
+#>
+        Task<Result<bool>> ChangePasswordAsync(<#= Table.ClassName #>ChangePasswordDto dto);
+<# 
+        } 
+#>
+    }
+}
