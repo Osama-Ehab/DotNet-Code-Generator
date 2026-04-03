@@ -34,4 +34,4 @@ This tool goes beyond simple string manipulation; it interacts deeply with the d
 While learning 3-Tier Architecture, I realized that writing DAL and BLL classes manually for databases with dozens of tables is inefficient and prone to human error. I decided to build this tool to deeply understand database metadata, metaprogramming, and to drastically speed up the development of my future enterprise projects.
 
 ---
-*Created by [Osama Ehab] - Aspiring .NET Developer*
+*Created by Osama Ehab - Aspiring .NET Developer*
