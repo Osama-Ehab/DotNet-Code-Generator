@@ -6,7 +6,7 @@
 ![WinForms](https://img.shields.io/badge/WinForms-0078D4?style=for-the-badge&logo=windows&logoColor=white)
 
 ## 📌 Project Overview
-The **Custom Code Generator** is a robust developer tool I am currently architecting to automate the repetitive scaffolding of Data Access Layer (DAL) and Business Logic Layer (BLL) classes. By reading directly from a SQL Server database, this tool enforces a strict **3-Tier Architecture** and completely eliminates boilerplate code.
+The **Custom Code Generator** is a robust developer tool I am currently architecting to automate the repetitive scaffolding of Data Access Layer (DAL) and Business Logic Layer (BLL) classes. By reading directly from a SQL Server database, this tool enforces a strict **Clean Architecture** and completely eliminates boilerplate code.
 
 Beyond standard code generation, this tool is designed to scaffold **Dynamic UI Components** (WinForms) based on database metadata, enforcing the **DRY (Don't Repeat Yourself)** principle across enterprise-level applications like the DVLD (Driving & Vehicle License Department) system.
 
@@ -14,7 +14,7 @@ Beyond standard code generation, this tool is designed to scaffold **Dynamic UI 
 This tool goes beyond simple string manipulation; it interacts deeply with the database engine:
 * **Metadata Extraction:** Leverages SQL Server `INFORMATION_SCHEMA` to dynamically read tables, columns, data types, and constraints.
 * **Extended Properties Integration:** Utilizes SQL Server Extended Properties to map database fields to specific UI controls, and validation rules.
-* **Strict 3-Tier Output:** Automatically generates clean, separated `.cs` files for DAL and BLL that are ready to be plugged into any standard .NET project.
+* **Strict Clean Architecture Output:** Automatically generates clean, separated `.cs` files for DAL and BLL that are ready to be plugged into any standard .NET project.
 * **Adaptive Base Forms (In Progress):** Generates reusable generic forms (`frmGenericManage`, `frmGenericAddEdit`, `ctrlCardSelector`) based on the extracted schema.
 
 ## 🚀 Current Status: Active Development (WIP)
