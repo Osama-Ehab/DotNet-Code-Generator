@@ -1,7 +1,7 @@
 ﻿using CodeGeneratorSolution.Models;
-using CodeGeneratorSolution.Templetes.T4;
-using System.Text;
+using Microsoft.Extensions.Configuration;
 using System.CodeDom.Compiler;
+using System.Text;
 
 namespace CodeGeneratorSolution.Models
 {
@@ -10,9 +10,34 @@ namespace CodeGeneratorSolution.Models
     /// <summary>
     /// Base class for this transformation
     /// </summary>
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "18.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating.TextTransformation", "18.0.0.0")]
     public abstract class TemplateBase 
     {
+
+
+        // =========================================================
+        // 1. GLOBAL CONFIGURATION (Loaded once via Lazy Cache)
+        // =========================================================
+        private static readonly Lazy<GeneratorConfig> _configCache = new Lazy<GeneratorConfig>(LoadConfig);
+
+        protected GeneratorConfig Config => _configCache.Value;
+
+
+
+        // =========================================================
+        // 3. THE JSON LOADER
+        // =========================================================
+        private static GeneratorConfig LoadConfig()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            var configObject = new GeneratorConfig();
+            builder.Build().GetSection("GeneratorConfig").Bind(configObject);
+
+            return configObject;
+        }
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;
         private global::System.CodeDom.Compiler.CompilerErrorCollection errorsField;
@@ -23,15 +48,19 @@ namespace CodeGeneratorSolution.Models
         #endregion
         #region Properties
 
+
+
+
+       
         /// <summary>
         /// The string hold SolutionName
         /// </summary>
+        public string SolutionName => Config.SolutionName; // Convenience Property: This allows you to just type <#= SolutionName #> directly in your .tt files!
 
-        public required string SolutionName { get; set; }
         /// <summary>
         /// An instance of TableSchema class hold Table Schema information
         /// </summary>
-        public  TableSchema? Table { get; set; }
+        public TableSchema? Table { get; set; }
         public  List<TableSchema>? Tables { get; set; }
         /// <summary>
         /// The string builder that generation-time code is using to assemble generated output

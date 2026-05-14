@@ -1,0 +1,48 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#
+    // =====================================================================
+    // NOTE: This assumes you have your schema extraction logic here.
+    // For example, fetching a list of 'Table' objects from SQL Server.
+    // var Tables = GetDatabaseTables(); 
+    // =====================================================================
+#>
+// =========================================================================
+// AUTO-GENERATED FILE - DO NOT MODIFY MANUALLY
+// Any changes made here will be lost when the T4 template is regenerated.
+// =========================================================================
+namespace CodeGeneratorSolution.UI.Routing
+{
+    public partial class ViewRegistry
+    {
+        public ViewRegistry()
+        {
+            // 1. Load the auto-generated defaults
+            RegisterStandardRoutes();
+
+            // 2. Fire the custom hook (if the developer implemented it)
+            RegisterCustomRoutes(); 
+        }
+
+        private void RegisterStandardRoutes()
+        {
+<# 
+        // Loop through every table in your database model
+        foreach (var table in Tables)
+        { 
+#>
+            // --- <#= table.ClassName #> Routes ---
+            RegisterDetails<<#= table.ClassName #>ListDTO, ctrl<#= table.ClassName #>ShowDetails>();
+            RegisterEditor<<#= table.ClassName #>ListDTO, ctrl<#= table.ClassName #>AddEdit>();
+            
+<# 
+        } 
+#>
+        }
+
+        // The Extensibility Hook (Notice there is no body!)
+        partial void RegisterCustomRoutes();
+    }
+}

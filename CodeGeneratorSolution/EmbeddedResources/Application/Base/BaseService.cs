@@ -1,12 +1,12 @@
-﻿using CodeGeneratorSolution.Templetes.Infrastructure;
-using CodeGeneratorSolution.Templetes.Infrastructure.Utilities; // For Result<T>
+﻿using {{TARGET_NAMESPACE}}.Infrastructure;
+using {{TARGET_NAMESPACE}}.Infrastructure.Utilities; // For Result<T>
 using FluentValidation; // For IValidator<T>
 using Microsoft.Extensions.DependencyInjection; // For IServiceProvider
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Application.Base
+namespace {{TARGET_NAMESPACE}}.Application.Base
 {
     public abstract class BaseService
     {
@@ -44,7 +44,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.Application.Base
                         string errors = string.Join(Environment.NewLine, validationResult.Errors.Select(e => e.ErrorMessage));
 
                         // Return a clean Failure Result (No try/catch needed in the UI!)
-                        return Result<bool>.Failure(errors);
+                        return Result<bool>.Failure(errors,Core.Enums.ErrorType.Validation);
                     }
                 }
 

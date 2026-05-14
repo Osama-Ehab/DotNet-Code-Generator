@@ -1,27 +1,27 @@
 ﻿
-using CodeGeneratorSolution.EmbeddedResources.UI.Interfaces;
-using CodeGeneratorSolution.EmbeddedResources.UI.Helpers;
+using {{TARGET_NAMESPACE}}.UI.Interfaces;
+using {{TARGET_NAMESPACE}}.UI.Helpers;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
+namespace {{TARGET_NAMESPACE}}.UI.GenericForms
 {
     public partial class frmGenericAddEdit : Form
     {
-        private readonly ISaveableControl _saveableContent;
+        private readonly IEditorControl _EditorContent;
 
         // Hold a class-level reference to the Layout Engine
         private readonly TableLayoutPanel _mainLayout;
 
-        public frmGenericAddEdit(ISaveableControl saveable)
+        public frmGenericAddEdit(IEditorControl Editor)
         {
             InitializeComponent();
 
-            _saveableContent = saveable;
+            _EditorContent = Editor;
 
             // 2. Setup Form
-            this.Text = _saveableContent.WindowTitle; // Dynamic Title
+            this.Text = _EditorContent.Title; // Dynamic Title
             this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
@@ -48,21 +48,21 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
             this.Controls.Add(_mainLayout);
 
             // 4. Add Main Content (Hardcoded to Row 1)
-            var ctrl = saveable.AsUserControl();
+            var ctrl = Editor.AsUserControl();
             ctrl.Dock = DockStyle.Fill;
             ctrl.Margin = new Padding(0, 0, 0, 15);
             _mainLayout.Controls.Add(ctrl, 0, 1);
 
 
             // 2. THE MAGIC: Ask the control if it has a Header or Footer!
-            if (_saveableContent.HeaderControl != null)
+            if (_EditorContent.HeaderControl != null)
             {
-                AddHeaderControl(_saveableContent.HeaderControl);
+                AddHeaderControl(_EditorContent.HeaderControl);
             }
 
-            if (_saveableContent.BottomControl != null)
+            if (_EditorContent.BottomControl != null)
             {
-                AddBottomControl(_saveableContent.BottomControl);
+                AddBottomControl(_EditorContent.BottomControl);
             }
 
             // 5. Add Buttons (Hardcoded to Row 3)
@@ -77,22 +77,20 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
 
         private void SubscribeToSmartEvents()
         {
-            if (_saveableContent != null)
+            if (_EditorContent != null)
             {
-                _saveableContent.OnDataLoaded += HandleDataLoaded;
-                _saveableContent.OnValidationStateChanged += HandleValidationStateChanged;
-                _saveableContent.OnRequestFormClose += HandleRequestFormClose;
+                _EditorContent.OnDataLoaded += HandleDataLoaded;
+                _EditorContent.OnRequestFormClose += HandleRequestFormClose;
             }
         }
 
         private void FrmGenericAddEdit_FormClosed(object sender, FormClosedEventArgs e)
         {
             // MEMORY LEAK PREVENTION: Unsubscribe from all events!
-            if (_saveableContent != null)
+            if (_EditorContent != null)
             {
-                _saveableContent.OnDataLoaded -= HandleDataLoaded;
-                _saveableContent.OnValidationStateChanged -= HandleValidationStateChanged;
-                _saveableContent.OnRequestFormClose -= HandleRequestFormClose;
+                _EditorContent.OnDataLoaded -= HandleDataLoaded;
+                _EditorContent.OnRequestFormClose -= HandleRequestFormClose;
             }
         }
 
@@ -106,20 +104,11 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
             // e.g., Changes from "Loading..." to "Edit User: admin123"
             if (this.InvokeRequired)
             {
-                this.Invoke(new Action(() => this.Text = _saveableContent.WindowTitle));
+                this.Invoke(new Action(() => this.Text = _EditorContent.Title));
             }
             else
             {
-                this.Text = _saveableContent.WindowTitle;
-            }
-        }
-
-        private void HandleValidationStateChanged(object sender, bool isValid)
-        {
-            // Instantly disable/enable the Save button based on the UserControl's rules
-            if (_btnSave != null && !_btnSave.IsDisposed)
-            {
-                _btnSave.Enabled = isValid;
+                this.Text = _EditorContent.Title;
             }
         }
 
@@ -162,7 +151,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
 
 
             // Inside frmGenericAddEdit.CreateButtonPanel()
-            if (!_saveableContent.IsReadOnly)
+            if (!_EditorContent.IsReadOnly)
             {
 
                 // SAVE BUTTON
@@ -174,7 +163,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
                     Anchor = AnchorStyles.Top | AnchorStyles.Right // Pin to the right side
                 };
 
-                btnSave.Text = string.IsNullOrEmpty(_saveableContent.ActionButtonText) ? "Save" : _saveableContent.ActionButtonText;
+                btnSave.Text = string.IsNullOrEmpty(_EditorContent.ActionButtonText) ? "Save" : _EditorContent.ActionButtonText;
                 btnSave.Click += btnSave_Click;
                 pnl.Controls.Add(btnSave);
                 // Allow "Enter" key to trigger Save
@@ -208,7 +197,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
 
             try
             {
-                bool success = await _saveableContent.SaveDataAsync();
+                bool success = await _EditorContent.SaveDataAsync();
 
                 if (success)
                 {

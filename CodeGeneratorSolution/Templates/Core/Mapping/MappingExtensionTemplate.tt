@@ -1,0 +1,107 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Core.DTOs;
+
+namespace <#= SolutionName #>.Core.Mapping
+{
+    public static partial class <#= Table.ClassName #>MappingExtensions
+    {
+        // ==========================================
+        // 1. TO DTO (Entity -> DTO)
+        // ==========================================
+        public static <#= Table.ClassName #>DTO ToDto(this <#= Table.ClassName #> entity)
+        {
+            if (entity == null) return null;
+
+            var dto = new <#= Table.ClassName #>DTO(){ Id = entity.Id};
+
+<# 
+    foreach(var col in Table.StandrdDtoColumns) 
+    {
+       // 2. GENERATE Mapping
+#>
+            dto.<#= col.Name #> = entity.<#= col.Name #>;
+<# 
+    } 
+#>
+
+            // Hook: Custom logic (e.g. formatting dates, computing FullName)
+            OnToDto(entity, dto);
+
+            return dto;
+        }
+
+        // ==========================================
+        // 2. TO ENTITY (DTO -> Entity)
+        // ==========================================
+        public static <#= Table.ClassName #> ToEntity(this <#= Table.ClassName #>DTO dto)
+        {
+            if (dto == null) return null;
+
+            var entity = new <#= Table.ClassName #>();
+
+               entity.Id = dto.Id;
+
+<# 
+    foreach(var col in Table.StandrdDtoColumns) 
+    {
+      
+#>
+            entity.<#= col.Name #> = dto.<#= col.Name #>;
+<# 
+    } 
+#>
+
+            // Hook: Custom logic (e.g. Hashing Password)
+            OnToEntity(dto, entity);
+
+            return entity;
+        }
+
+        // ==========================================
+        // CREATE: UI -> Entity
+        // ==========================================
+        public static <#= Table.ClassName #> ToEntity(this Create<#= Table.ClassName #>DTO dto)
+        {
+            if (dto == null) return null;
+            return new <#= Table.ClassName #>
+            {
+<# foreach(var col in Table.CreateDtoColumns) { #>
+                <#= col.Name #> = dto.<#= col.Name #>,
+<# } #>
+            };
+        }
+
+        // ==========================================
+        // UPDATE: UI -> Existing Entity
+        // ==========================================
+        public static void ApplyToEntity(this Update<#= Table.ClassName #>DTO dto, <#= Table.ClassName #> entity)
+        {
+            if (dto == null || entity == null) return;
+
+            entity.Id = dto.Id;
+            
+<# foreach(var col in Table.UpdateDtoColumns) { #>
+            entity.<#= col.Name #> = dto.<#= col.Name #>;
+<# } #>
+
+
+        }
+
+
+        // ==========================================
+        // 3. PARTIAL METHODS (The Hooks)
+        // ==========================================
+        // Implement these in a separate file (e.g. UserMappingExtensions.Custom.cs)
+        static partial void OnToDto(<#= Table.ClassName #> entity, <#= Table.ClassName #>DTO dto);
+        static partial void OnToEntity(<#= Table.ClassName #>DTO dto, <#= Table.ClassName #> entity);
+        static partial void OnToDto(<#= Table.ClassName #> entity, Create<#= Table.ClassName #>DTO dto);
+        static partial void OnToEntity(Create<#= Table.ClassName #>DTO dto, <#= Table.ClassName #> entity);
+        static partial void OnToDto(<#= Table.ClassName #> entity, Update<#= Table.ClassName #>DTO dto);
+        static partial void OnToEntity(Update<#= Table.ClassName #>DTO dto, <#= Table.ClassName #> entity);
+    }
+}

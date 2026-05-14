@@ -3,7 +3,7 @@ using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CodeGeneratorSolution.Templetes.Infrastructure.Extensions
+namespace {{TARGET_NAMESPACE}}.Infrastructure.Extensions
 {
     public static class DataReaderExtensions
     {

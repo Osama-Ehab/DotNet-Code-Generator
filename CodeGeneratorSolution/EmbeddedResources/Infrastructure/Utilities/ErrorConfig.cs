@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.Templetes.Infrastructure.Utilities
+namespace {{TARGET_NAMESPACE}}.Infrastructure.Utilities
 {
     public class ErrorConfig
-    {
+{
         public string? Type { get; set; }
         public string? DefaultMessage { get; set; }
         public List<ErrorContext> Contexts { get; set; } = new List<ErrorContext>();

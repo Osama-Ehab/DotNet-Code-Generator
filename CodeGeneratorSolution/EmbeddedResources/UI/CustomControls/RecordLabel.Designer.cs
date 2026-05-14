@@ -1,4 +1,4 @@
-﻿namespace CodeGeneratorSolution.UI.CustomControls
+﻿namespace {{TARGET_NAMESPACE}}.UI.CustomControls
 {
     partial class RecordLabel:Label
     {

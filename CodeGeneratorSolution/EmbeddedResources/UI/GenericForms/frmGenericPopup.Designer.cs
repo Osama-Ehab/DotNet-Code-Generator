@@ -1,4 +1,4 @@
-﻿namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
+﻿namespace {{TARGET_NAMESPACE}}.UI.GenericForms
 {
     partial class frmGenericPopup : Form
     {

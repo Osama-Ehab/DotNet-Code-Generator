@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-
+﻿
 namespace CodeGeneratorSolution.Utlis
 {
     public static class FileWriter
@@ -68,7 +65,7 @@ namespace CodeGeneratorSolution.Utlis
 
             // 2. Create Core (Domain) Folders
             // Note: We separate 'Generated' code from 'Custom' code
-            Directory.CreateDirectory(Path.Combine(corePath, "Entities", "Generated"));
+            Directory.CreateDirectory(Path.Combine(corePath, "Entities"));
             Directory.CreateDirectory(Path.Combine(corePath, "DTOs"));
             Directory.CreateDirectory(Path.Combine(corePath, "Interfaces"));
 
@@ -76,11 +73,11 @@ namespace CodeGeneratorSolution.Utlis
             Directory.CreateDirectory(Path.Combine(infraPath, "Base"));
             Directory.CreateDirectory(Path.Combine(infraPath, "Data")); // For GenericDataHelper
             Directory.CreateDirectory(Path.Combine(infraPath, "Security")); // For SecurityHelper
-            Directory.CreateDirectory(Path.Combine(infraPath, "Repositories", "Generated"));
+            Directory.CreateDirectory(Path.Combine(infraPath, "Repositories"));
 
             // 4. Create Application (Business Logic) Folders
             Directory.CreateDirectory(Path.Combine(appPath, "Base"));
-            Directory.CreateDirectory(Path.Combine(appPath, "Services", "Generated"));
+            Directory.CreateDirectory(Path.Combine(appPath, "Services"));
             Directory.CreateDirectory(Path.Combine(appPath, "Validators"));
             Directory.CreateDirectory(Path.Combine(appPath, "Mappers"));
             Directory.CreateDirectory(Path.Combine(appPath, "Exceptions"));

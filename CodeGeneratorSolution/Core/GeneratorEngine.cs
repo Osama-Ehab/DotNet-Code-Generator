@@ -1,36 +1,47 @@
-﻿using CodeGeneratorSolution;
+﻿
+using CodeGeneratorSolution;
 using CodeGeneratorSolution.Core;
+using CodeGeneratorSolution.Infrastructure.Interfaces;
 using CodeGeneratorSolution.Models;
-using CodeGeneratorSolution.Templetes.T4;
+using CodeGeneratorSolution.Templates;
+using CodeGeneratorSolution.Templates.Application.Interfaces;
+using CodeGeneratorSolution.Templates.Application.Services;
+using CodeGeneratorSolution.Templates.Application.Validators;
+using CodeGeneratorSolution.Templates.Core.DTOs;
+using CodeGeneratorSolution.Templates.Core.Entities;
+using CodeGeneratorSolution.Templates.Core.Mapping;
+using CodeGeneratorSolution.Templates.Infrastructure.Mapping;
+using CodeGeneratorSolution.Templates.Infrastructure.Repositories;
+using CodeGeneratorSolution.Templates.UI;
+using CodeGeneratorSolution.Templates.UI.Controls;
+using CodeGeneratorSolution.Templates.UI.DependencyInjection;
 using CodeGeneratorSolution.Utils;
 using CodeGeneratorSolution.Utlis;
 using System.Reflection;
-using System.Windows.Forms.Design;
 
 
 public partial class GeneratorEngine
 {
-    private string _rootPath;
-    private string _outputDir;
+    private string _outputRootDir;
     private string _solutionName;
     private string _connStr;
     private MetadataFetcher _fetcher;
-    public GeneratorEngine(string ConnStr, string outputDir, string solutionName)
+    private EmbeddedResourceManager _embeddedResourceManager;
+    private Dictionary<string, string> projectFileMap;
+    public GeneratorEngine(string ConnStr, string outputRootDirectory, string solutionName)
     {
         _connStr = ConnStr;
         _fetcher = new MetadataFetcher(_connStr);
-        _outputDir = outputDir;
+        _outputRootDir = outputRootDirectory;
         _solutionName = solutionName;
+        _embeddedResourceManager = new EmbeddedResourceManager(solutionName);
     }
 
  
 
     public async Task GenerateSolutionAsync()
     {
-        GenerateEmbeddedCoreLayer();
-        GenerateEmbeddedInfrastructureLayer();
-        GenerateEmbeddedApplicationLayer();
-        GenerateEmbeddedUiLayer();
+        GenerateStaticFiles();
         await GenerateAllDynamicFilesAsync();
     }
 
@@ -38,7 +49,7 @@ public partial class GeneratorEngine
     
     public async Task GenerateAllDynamicFilesAsync()
     {
-        FileWriter.InitializeOutputDirectories(_outputDir, _solutionName);
+        FileWriter.InitializeOutputDirectories(_outputRootDir, _solutionName);
         List<TableSchema> tables = await _fetcher.GetTablesAsync();
         // High Performance: Generate all files in parallel
         foreach (var table in tables)
@@ -46,97 +57,95 @@ public partial class GeneratorEngine
             var Columns = table.Columns; // Fetch Metadata
             string ClassName = table.ClassName;
             // 0. Generate SQL Stored Procedures Script
-            FileWriter.WriteFile(_outputDir, "SqlScripts", $"{ClassName}StoredProsedures.sql",
-            new SqlStoreProcedureTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.SqlScripts, $"{ClassName}StoredProsedures.sql",
+             new SqlStoreProcedureTemplate {Table = table }.TransformText());
 
             // 1. Model & DTOs
-            FileWriter.WriteFile(_outputDir, "Core/Entities", $"{ClassName}Entity.Generated.cs",
-                new EntityTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Entities.Root, $"{ClassName}Entity.g.cs",
+                new EntityTemplate {  Table = table }.TransformText());
      
-            FileWriter.WriteFile(_outputDir, "Core/DTOs", $"{ClassName}DTOs.Generated.cs",
-              new IEntityServiceTemplate { SolutionName = _solutionName, Table = table }.TransformText());
   
-            FileWriter.WriteFile(_outputDir, "Core/Mapping", $"{ClassName}MappingExtensions.Generated.cs",
-                new MappingExtensionTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.DTOs, $"{ClassName}DTOs.g.cs",
+              new DTOsTemplate {  Table = table }.TransformText());
+  
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Mapping, $"{ClassName}MappingExtensions.g.cs",
+                new MappingExtensionTemplate {  Table = table }.TransformText());
 
             // 2. Repository (Async + SP)
-            FileWriter.WriteFile(_outputDir, "Infrastructure/Generated", $"{ClassName}Repository.Generated.cs",
-                new RepositoryTemplate { SolutionName = _solutionName, Table = table }.TransformText());
-            FileWriter.WriteFile(_outputDir, "Infrastructure/Generated", $"I{ClassName}Repository.Generated.cs",
-                new RepositoryInterfaceTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Root, $"{ClassName}Repository.g.cs",
+                new RepositoryTemplate {  Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Interfaces, $"I{ClassName}Repository.g.cs",
+                new IEntityRepositoryTemplate {  Table = table }.TransformText());
 
             // 3. Service (Logic)
-            FileWriter.WriteFile(_outputDir, "Application/Validators", $"{ClassName}DTOValidators.Generated.cs",
-                new DtoValidatorTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Validators, $"{ClassName}DTOValidators.g.cs",
+                new DtoValidatorTemplate {  Table = table }.TransformText());
       
-            FileWriter.WriteFile(_outputDir, "Application", $"{table}Service.Generated.cs",
-                new ServiceTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Services, $"{ClassName}Service.g.cs",
+                new EntityServiceTemplate {  Table = table }.TransformText());
+            
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Interfaces, $"I{ClassName}Service.g.cs",
+                new IEntityServiceTemplate {  Table = table }.TransformText());
 
-            FileWriter.WriteFile(_outputDir, "Application", $"{table}DataMapper.Generated.cs",
-                new DataMapperTemplate { SolutionName = _solutionName, Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Root, $"{ClassName}DataMapper.g.cs",
+                new DataMapperTemplate {  Table = table }.TransformText());
 
 
-            // UI (control)          
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Generated.cs",
-                new ctrlAddEdit { SolutionName = _solutionName, Table = table }.TransformText());
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Designer.Generated.cs",
-                new ctrlAddEditDesigner { SolutionName = _solutionName, Table = table }.TransformText());
+            //// UI (control)          
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.cs",
+            //    new ctrlAddEdit {  Table = table }.TransformText());                          
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.Designer.cs",
+            //    new ctrlAddEditDesigner {  Table = table }.TransformText());
 
-            // 4. UI (Forms)      
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Generated.cs",
-                new ctrlList { SolutionName = _solutionName, Table = table }.TransformText());
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Designer.Generated.cs",
-                new ctrlListDesigner { SolutionName = _solutionName, Table = table }.TransformText());
+            //// UI (control)          
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.cs",
+            //    new ctrlAddEdit {  Table = table }.TransformText());                          
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.Designer.cs",
+            //    new ctrlAddEditDesigner {  Table = table }.TransformText());
 
-            // 4. UI (control)      
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Generated.cs",
-                new ctrlAddEdit { SolutionName = _solutionName, Table = table }.TransformText());
-            FileWriter.WriteFile(_outputDir, "UI/Controls/Generated", $"ctrl{ClassName}.Designer.Generated.cs",
-                new ctrlAddEditDesigner { SolutionName = _solutionName, Table = table }.TransformText());
+            //// UI (control)          
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}ShowDetails.g.cs",
+            //    new ctrlShowDetails {  Table = table }.TransformText());                              
+            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}ShowDetails.g.Designer.cs",
+            //    new ctrlShowDetailsDesigner {  Table = table }.TransformText());
+
+            //if(table.GenerateSelectorControl) 
+            //{
+                
+            //    FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}SelectorCard.g.cs",
+            //        new ctrlSelectorCard { Table = table }.TransformText());
+            //    FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}SelectorCard.g.Designer.cs",
+            //        new ctrlSelectorCardDesigner { Table = table }.TransformText());
+
+            //}
+           
+           
 
 
         }
 
 
-        FileWriter.WriteFile(_outputDir, "UI", $"WindowsFormsNavigationService.Generated.cs",
-            new WindowsFormsNavigationServiceTemplate { SolutionName = _solutionName, Tables = tables }.TransformText());
+
+        //FileWriter.WriteFile(_outputRootDir, "UI", $"ViewRegistry.g.cs",
+        //    new ViewRegistryTemplate { Tables = tables }.TransformText());
         
-        FileWriter.WriteFile(_outputDir, "UI", $"DependencyInjection.Generated.cs",
-            new DependencyInjectionTemplate { SolutionName = _solutionName, Tables = tables }.TransformText());
+        //FileWriter.WriteFile(_outputRootDir, "UI", $"DependencyInjection.g.cs",
+        //    new DependencyInjectionTemplate {  Tables = tables }.TransformText());
 
 
-        await ScriptExecutor.RunAllScriptsInFolder(Path.Combine(_outputDir, "SqlScripts"), _connStr);
+        await ScriptExecutor.RunAllScriptsInFolder(Path.Combine(_outputRootDir, "SqlScripts"), _connStr);
 
     }
 
 
 
-    public void GenerateEntryPoint(string mainFormName)
+    public void GenerateStaticFiles()
     {
-        string folder = "ProjectFiles";
-
-        string safeConnString = _connStr.Replace("\\", "\\\\");
-        // 1. Define the Context (Your "Switch Case" Parameters)
-        var context = new Dictionary<string, string>
-    {
-        { "{{SolutionName}}", _solutionName },
-        { "{{Namespace}}", $"{_solutionName}.ProjectFiles" },
-        { "{{MainForm}}",mainFormName },
-        { "{{ConnectionString}}",safeConnString }
-    };
-
-        // 2. Extract Entire Infrastructure Folder
-        // Source: MyEnterpriseGenerator/Templates/Infrastructure
-        // Target: C:/Output/MyDVLD.Infrastructure
-
-        EmbeddedResourceManager.ExtractAll(
-            resourcePrefix: "CodeGeneratorSolution.Templetes.ProjectFiles",
-            outputRoot: Path.Combine(_outputDir, folder),
-            replacements: context
-        );
-        Console.WriteLine("✅ Generated Program.cs (from Template)");
+        _embeddedResourceManager.Extract(targetOutputRoot: _outputRootDir);
+        Console.WriteLine("✅ Generated All Static Files");
     }
-    private string GetEmbeddedContent(string fileName)
+    private string GetContent(string fileName)
     {
         var assembly = Assembly.GetExecutingAssembly();
 
@@ -159,94 +168,4 @@ public partial class GeneratorEngine
             }
         }
     }
-
-    public void GenerateEmbeddedInfrastructureLayer()
-    {
-        // 1. Define the Context (Your "Switch Case" Parameters)
-        var context = new Dictionary<string, string>
-    {
-        { "{{SolutionName}}", _solutionName },
-        { "{{Namespace}}", $"{_solutionName}.Infrastructure" },
-        { "{{ConnectionString}}",_connStr }
-    };
-
-        // 2. Extract Entire Infrastructure Folder
-        // Source: MyEnterpriseGenerator/Templates/Infrastructure
-        // Target: C:/Output/MyDVLD.Infrastructure
-
-        EmbeddedResourceManager.ExtractAll(
-            resourcePrefix: "CodeGeneratorSolution.EmbeddedResources.Infrastructure",
-            outputRoot: Path.Combine(_outputDir, $"Infrastructure"),
-            replacements: context
-        );
-
-        Console.WriteLine("✅ Infrastructure Layer Generated.");
-    }
-    public void GenerateEmbeddedCoreLayer()
-    {
-        // 1. Define the Context (Your "Switch Case" Parameters)
-        var context = new Dictionary<string, string>
-    {
-        { "{{SolutionName}}", _solutionName },
-        { "{{Namespace}}", $"{_solutionName}.Core" },
-        { "{{ConnectionString}}",_connStr }
-    };
-
-        // 2. Extract Entire Infrastructure Folder
-        // Source: MyEnterpriseGenerator/Templates/Infrastructure
-        // Target: C:/Output/MyDVLD.Infrastructure
-
-        EmbeddedResourceManager.ExtractAll(
-            resourcePrefix: "CodeGeneratorSolution.EmbeddedResources.Core",
-            outputRoot: Path.Combine(_outputDir, $"Core"),
-            replacements: context
-        );
-
-        Console.WriteLine("✅ Core Layer Generated.");
-    }
-    public void GenerateEmbeddedApplicationLayer()
-    {
-        // 1. Define the Context (Your "Switch Case" Parameters)
-        var context = new Dictionary<string, string>
-    {
-        { "{{SolutionName}}", _solutionName },
-        { "{{Namespace}}", $"{_solutionName}.Application" },
-        { "{{ConnectionString}}",_connStr }
-    };
-
-        // 2. Extract Entire Infrastructure Folder
-        // Source: MyEnterpriseGenerator/Templates/Infrastructure
-        // Target: C:/Output/MyDVLD.Infrastructure
-
-        EmbeddedResourceManager.ExtractAll(
-            resourcePrefix: "CodeGeneratorSolution.EmbeddedResources.Application",
-            outputRoot: Path.Combine(_outputDir, $"Application"),
-            replacements: context
-        );
-
-        Console.WriteLine("✅ Application Layer Generated.");
-    }
-    public void GenerateEmbeddedUiLayer()
-    {
-        // 1. Define the Context (Your "Switch Case" Parameters)
-        var context = new Dictionary<string, string>
-    {
-        { "{{SolutionName}}", _solutionName },
-        { "{{Namespace}}", $"{_solutionName}.UI" },
-        { "{{ConnectionString}}",_connStr }
-    };
-
-        // 2. Extract Entire Infrastructure Folder
-        // Source: MyEnterpriseGenerator/Templates/Infrastructure
-        // Target: C:/Output/MyDVLD.Infrastructure
-
-        EmbeddedResourceManager.ExtractAll(
-            resourcePrefix: "CodeGeneratorSolution.EmbeddedResources.UI",
-            outputRoot: Path.Combine(_outputDir, $"UI"),
-            replacements: context
-        );
-
-        Console.WriteLine("✅ UI Layer Generated.");
-    }
-    // ... Implement GetTables() and GetTable.Columns() using ADO.NET here ...
 }

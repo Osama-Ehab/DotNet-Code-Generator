@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation; // Nuget: FluentValidation
-namespace CodeGeneratorSolution.EmbeddedResources.Application.Base
+namespace {{TARGET_NAMESPACE}}.Application.Base
 {
     public abstract class BaseValidator<T> : AbstractValidator<T> 
     {

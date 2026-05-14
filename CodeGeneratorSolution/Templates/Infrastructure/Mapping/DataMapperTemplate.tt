@@ -1,0 +1,65 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using System.Data;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Infrastructure.Extensions; // <--- Make sure this namespace exists!
+
+namespace <#= SolutionName #>.Infrastructure.Mapping
+{
+    public static class <#= Table.ClassName #>DataMapper
+    {
+        public static <#= Table.ClassName #> ToEntity(this IDataReader reader)
+        {
+            return new <#= Table.ClassName #>
+            {
+<# 
+    foreach(var col in Table.Columns) 
+    { 
+#>
+                // Usage: GetSafe<Type>("Name")
+                <#= col.Name #> = reader.GetSafe<<#= col.CSharpType #>>("<#= col.Name #>"),
+<# 
+    } 
+#>
+            };
+        }
+
+
+        public static <#= Table.ClassName #>ListDTO ToListDTO(this IDataReader reader)
+        {
+            return new <#= Table.ClassName #>ListDTO
+            {
+<# 
+    foreach(var col in Table.GridColumns) 
+    { 
+#>
+                // Usage: GetSafe<Type>("Name")
+                <#= col.Name #> = reader.GetSafe<<#= col.CSharpType #>>("<#= col.Name #>"),
+<# 
+    } 
+#>
+            };
+        }
+
+
+        public static <#= Table.ClassName #>DetailsDTO ToDetailsDTO(this IDataReader reader)
+        {
+            return new <#= Table.ClassName #>DetailsDTO
+            {
+<# 
+    foreach(var col in Table.DetailedColumns) 
+    { 
+#>
+                // Usage: GetSafe<Type>("Name")
+                <#= col.Name #> = reader.GetSafe<<#= col.CSharpType #>>("<#= col.Name #>"),
+<# 
+    } 
+#>
+            };
+        }
+
+    }
+}

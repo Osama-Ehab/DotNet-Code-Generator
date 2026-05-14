@@ -5,15 +5,20 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using CodeGeneratorSolution.EmbeddedResources.Infrastructure.Interfaces;
+using {{TARGET_NAMESPACE}}.Infrastructure.Interfaces;
 
 
 
-namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
+
+namespace {{TARGET_NAMESPACE}}.Infrastructure
 {
     // Note: We do NOT implement IBaseRepository here. 
     // We just provide the protected tools.
-    public abstract class BaseRepository<T, TKey>  
+  
+    // 1. We remove all the DTO generics from the class level!
+    // We can keep TEntity and TKey if you want to use them for standard CRUD,
+    // but for the ADO.NET tools, we don't even need them.
+    public abstract class BaseRepository : IRepository
     {
         private readonly string _connectionString;
 
@@ -23,7 +28,8 @@ namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
         }
 
         // --- 1. TOOL: GENERIC ADD ---
-        protected async Task<TKey> AddAsync(string spName, SqlParameter[] parameters, string outParamName = "@NewId")
+        // Notice we added <TKey> to the method!
+        protected async Task<TKey> AddAsync<TKey>(string spName, SqlParameter[] parameters, string outParamName = "@NewId")
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(spName, conn))
@@ -31,7 +37,6 @@ namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
 
-                // Configure Output
                 var outParam = new SqlParameter(outParamName, SqlDbType.Int) { Direction = ParameterDirection.Output };
                 cmd.Parameters.Add(outParam);
 
@@ -42,23 +47,9 @@ namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
             }
         }
 
-        // --- 2. TOOL: GENERIC UPDATE/DELETE ---
-        protected async Task<bool> ExecuteNonQueryAsync(string spName, SqlParameter[] parameters)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            using (var cmd = new SqlCommand(spName, conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                if (parameters != null) cmd.Parameters.AddRange(parameters);
-
-                await conn.OpenAsync();
-                int rows = await cmd.ExecuteNonQueryAsync();
-                return rows > 0;
-            }
-        }
-
-        // --- 3. TOOL: GENERIC GET LIST ---
-        protected async Task<List<T>> GetListAsync(string spName, Func<IDataReader, T> mapper, SqlParameter[] parameters = null)
+        // --- 2. TOOL: GENERIC GET LIST ---
+        // Notice we added <T> to the method! It can return ANY DTO.
+        protected async Task<IReadOnlyList<T>> GetListAsync<T>(string spName, Func<IDataReader, T> mapper, SqlParameter[] parameters = null)
         {
             var list = new List<T>();
             using (var conn = new SqlConnection(_connectionString))
@@ -66,7 +57,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 if (parameters != null) cmd.Parameters.AddRange(parameters);
-   
+
                 await conn.OpenAsync();
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -79,26 +70,42 @@ namespace CodeGeneratorSolution.EmbeddedResources.Templates.Infrastructure
             return list;
         }
 
-        // --- 4. TOOL: GENERIC GET SINGLE ---
-        protected async Task<T> GetSingleAsync(string spName, SqlParameter parameter, Func<IDataReader, T> mapper)
+    // --- 3. TOOL: GENERIC GET SINGLE ---
+    // Notice we added <T> to the method! 
+    protected async Task<T> GetSingleAsync<T>(string spName, SqlParameter parameter, Func<IDataReader, T> mapper)
+    {
+        using (var conn = new SqlConnection(_connectionString))
+        using (var cmd = new SqlCommand(spName, conn))
+        {
+            cmd.CommandType = CommandType.StoredProcedure;
+            if (parameter != null) cmd.Parameters.Add(parameter);
+
+            await conn.OpenAsync();
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    return mapper(reader); // Maps the exact DTO you requested
+                }
+            }
+        }
+        // Return null if not found (using default constraint)
+        return default(T);
+    }
+
+    // --- 4. TOOL: GENERIC UPDATE/DELETE ---
+    protected async Task<bool> ExecuteNonQueryAsync(string spName, SqlParameter[] parameters)
         {
             using (var conn = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand(spName, conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(parameter);
-                // Configure Output
+                if (parameters != null) cmd.Parameters.AddRange(parameters);
 
                 await conn.OpenAsync();
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    if (await reader.ReadAsync())
-                    {
-                        return mapper(reader);
-                    }
-                }
+                int rows = await cmd.ExecuteNonQueryAsync();
+                return rows > 0;
             }
-            return default(T);
         }
 
         // --- 5. TOOL: CHECK EXISTENCE (Scalar is cleaner) ---

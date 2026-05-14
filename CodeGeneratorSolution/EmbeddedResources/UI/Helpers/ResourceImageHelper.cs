@@ -1,10 +1,10 @@
-﻿using CodeGeneratorSolution.Properties;
+﻿using {{TARGET_NAMESPACE}}.Properties;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
+namespace {{TARGET_NAMESPACE}}.UI.Helpers
 {
     public static class ResourceImageHelper
     {

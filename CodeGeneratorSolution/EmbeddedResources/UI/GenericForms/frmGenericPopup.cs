@@ -10,14 +10,14 @@ using System.Windows.Forms;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using CodeGeneratorSolution.EmbeddedResources.UI.Interfaces;
+using {{TARGET_NAMESPACE}}.UI.Interfaces;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
+namespace {{TARGET_NAMESPACE}}.UI.GenericForms
 {
     public partial class frmGenericPopup : Form
     {
         // Constructor now takes the Interface, not raw UserControls
-        public frmGenericPopup(List<IPopupBase> contentItems)
+        public frmGenericPopup(List<IPopupControl> contentItems)
         {
             InitializeComponent();
 
@@ -30,7 +30,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
             // 2. DYNAMIC TITLE
             // We pick the title from the first control, or join them if there are multiple
             this.Text = contentItems.Any()
-                ? contentItems.First().WindowTitle
+                ? contentItems.First().Title
                 : "Details";
 
             // 3. LAYOUT ENGINE
@@ -45,7 +45,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
             // 4. ADD CONTENT
             // We calculate max width based on the Interface property
             int maxWidth = contentItems.Any()
-                ? contentItems.Max(c => c.PreferredWidth)
+                ? contentItems.Max(c => c.Width)
                 : 300;
 
             foreach (var item in contentItems)
@@ -54,7 +54,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
                 ctrl.Margin = new Padding(0, 0, 0, 10);
 
                 // Safety: Ensure it doesn't shrink smaller than its preferred width
-                ctrl.MinimumSize = new Size(item.PreferredWidth, 0);
+                ctrl.MinimumSize = new Size(item.Width, 0);
 
                 mainLayout.Controls.Add(ctrl);
             }
@@ -72,7 +72,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
             buttonPanel.Controls.Add(btnClose);
             mainLayout.Controls.Add(buttonPanel);
         }
-        public frmGenericPopup(IPopupBase contentItem)
+        public frmGenericPopup(IPopupControl contentItem)
         {
             InitializeComponent();
 
@@ -84,7 +84,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
 
             // 2. DYNAMIC TITLE
             // We pick the title from the first control, or join them if there are multiple
-            this.Text = contentItem.WindowTitle ?? "Details";
+            this.Text = contentItem.Title ?? "Details";
 
             // 3. LAYOUT ENGINE
             FlowLayoutPanel mainLayout = new FlowLayoutPanel();
@@ -97,14 +97,14 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.GenericForms
 
             // 4. ADD CONTENT
             // We calculate max width based on the Interface property
-            int maxWidth = contentItem?.PreferredWidth ?? 300;
+            int maxWidth = contentItem?.Width ?? 300;
 
 
             var ctrl = contentItem.AsUserControl(); // Get the actual UI component
             ctrl.Margin = new Padding(0, 0, 0, 10);
 
             // Safety: Ensure it doesn't shrink smaller than its preferred width
-            ctrl.MinimumSize = new Size(contentItem.PreferredWidth, 0);
+            ctrl.MinimumSize = new Size(contentItem.Width, 0);
             mainLayout.Controls.Add(ctrl);
             
 

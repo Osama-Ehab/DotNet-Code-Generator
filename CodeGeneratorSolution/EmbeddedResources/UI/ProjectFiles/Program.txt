@@ -1,0 +1,68 @@
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using System.Configuration;
+using {{TARGET_NAMESPACE}}.UI.GenericForms;
+using Microsoft.Extensions.Configuration;
+using {{TARGET_NAMESPACE}}.UI.Interfaces;
+using {{TARGET_NAMESPACE}}.UI.Services;
+using {{TARGET_NAMESPACE}}.UI.Routing;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace {{TARGET_NAMESPACE}}
+{
+
+  public static class Program
+    {
+        public static IServiceProvider ServiceProvider { get; private set; }
+        public static IConfiguration Configuration { get; private set; }
+
+        [STAThread]
+        static void Main()
+        {
+            // FIX 1: This MUST be uncommented to initialize the WinForms engine
+            ApplicationConfiguration.Initialize();
+
+            try
+            {
+                // FIX 2: Use AppContext.BaseDirectory, NOT Directory.GetCurrentDirectory()
+                Configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppContext.BaseDirectory)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .Build();
+
+
+
+                var services = new ServiceCollection();  
+                
+                var registry = new ViewRegistry();
+ 
+                services.AddSingleton(registry);
+                services.AddSingleton<IConfiguration>(Configuration);
+                services.AddSingleton<INavigationService, WindowsFormsNavigationService>();
+
+                // Load generated dependencies
+                services.AddGeneratedDependencies();
+
+                // Register main form
+                services.AddTransient<frmLogin>();
+
+                ServiceProvider = services.BuildServiceProvider();
+
+                using (var scope = ServiceProvider.CreateScope())
+                {
+                    var loginForm = scope.ServiceProvider.GetRequiredService<frmLogin>();
+                     System.Windows.Forms.Application.Run(loginForm);
+                }
+            }
+            catch (Exception ex)
+            {
+                // FIX 3: Catch the invisible startup errors so you know WHY it failed!
+                MessageBox.Show($"The application failed to start.\n\nError: {ex.Message}",
+                                "Fatal Startup Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+        }
+    }
+}

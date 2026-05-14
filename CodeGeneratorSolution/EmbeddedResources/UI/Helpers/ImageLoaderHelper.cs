@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
+namespace {{TARGET_NAMESPACE}}.UI.Helpers
 {
     public static class ImageLoaderHelper
     {

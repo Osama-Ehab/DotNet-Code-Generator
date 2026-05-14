@@ -1,14 +1,14 @@
 ﻿
-using CodeGeneratorSolution.EmbeddedResources.Core.DTOs.Interfaces;
+using {{TARGET_NAMESPACE}}.Core.DTOs.Interfaces;
 using System;
 
-namespace CodeGeneratorSolution.UI.Events
+namespace {{TARGET_NAMESPACE}}.UI.Events
 {
     public class DtoEventArgs : EventArgs
     {
-        public IBaseDto SelectedDto { get; }
+        public IIdentifiableDto SelectedDto { get; }
 
-        public DtoEventArgs(IBaseDto selectedDto)
+        public DtoEventArgs(IIdentifiableDto selectedDto)
         {
             SelectedDto = selectedDto;
         }

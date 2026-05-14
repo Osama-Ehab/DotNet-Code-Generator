@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using System.Web;
 
 namespace CodeGeneratorSolution.Models
 {
@@ -374,8 +375,12 @@ namespace CodeGeneratorSolution.Models
             }
         }
 
+
+
         // 1. Map SQL -> C# Type
-        public string CSharpType
+
+
+        public string PrimitiveCSharpType
         {
             get
             {
@@ -398,12 +403,19 @@ namespace CodeGeneratorSolution.Models
                     "varbinary" => "byte[]",
                     _ => "string"
                 };
-
-                // Add nullable modifier if required and valid for the type
-                if (IsNullable && cSharp != "string" && cSharp != "byte[]" && cSharp != "object")
-                    return cSharp + "?";
-
                 return cSharp;
+            }
+        }
+        public string CSharpType
+        {
+            get
+            {
+                string primitiveCSharp = PrimitiveCSharpType;
+                // Add nullable modifier if required and valid for the type
+                if (IsNullable && primitiveCSharp != "string" && primitiveCSharp != "byte[]" && primitiveCSharp != "object")
+                    return primitiveCSharp + "?";
+
+                return primitiveCSharp;
             }
         }
 
@@ -414,12 +426,12 @@ namespace CodeGeneratorSolution.Models
         // 1. Map SQL -> Windows Forms Control
         public string WinControl
         {
-            get
+            get 
             {
                 // OVERRIDE: Did the DB Architect force a specific control?
                 if (ExtendedProperties.TryGetValue("ControlType", out string ctrlType))
                     return ctrlType;
-
+     
                 // FALLBACK: Guess based on SQL Type
                 string t = SqlType.ToLower();
                 if (t == "bit") return "CheckBox";

@@ -49,7 +49,7 @@ namespace CodeGeneratorSolution.Models
         // ========================================================================
         public IEnumerable<ColumnDefinition> CreateDtoColumns => Columns.Where(c => c.IncludeInInsert);
         public IEnumerable<ColumnDefinition> UpdateDtoColumns => Columns.Where(c => c.IncludeInUpdate);
-        public IEnumerable<ColumnDefinition> StandrdDtoColumns => Columns.Where(c => !c.IsSensitive);
+        public IEnumerable<ColumnDefinition> StandrdDtoColumns => Columns.Where(c => !c.IsSensitive && !c.IsPrimaryKey);
 
         // ========================================================================
         // 6. UI GRID & SEARCH HELPERS (Optimized & Custom-Value Aware)

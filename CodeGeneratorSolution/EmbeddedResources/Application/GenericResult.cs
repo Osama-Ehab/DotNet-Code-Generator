@@ -1,7 +1,7 @@
 ﻿
-using CodeGeneratorSolution.Templetes.Infrastructure.Enums;
+using {{TARGET_NAMESPACE}}.Core.Enums;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Application
+namespace {{TARGET_NAMESPACE}}.Application
 {
     // DVLD.Common/ResultT.cs
     public class Result<T> : Result
@@ -9,8 +9,8 @@ namespace CodeGeneratorSolution.EmbeddedResources.Application
         public T Value { get; }
 
         // Private constructor
-        private Result(T value, bool isSuccess, string error, ErrorType errorType)
-            : base(isSuccess, error, errorType)
+        private Result(T value, bool isSuccess, string errorMessage, ErrorType errorType)
+            : base(isSuccess, errorMessage, errorType)
         {
             Value = value;
         }
@@ -21,7 +21,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.Application
             => new Result<T>(value, true, string.Empty, ErrorType.None);
 
         // Hides the base Failure to return Result<T> instead of Result
-        public new static Result<T> Failure(string error, ErrorType type = ErrorType.Unexpected)
-            => new Result<T>(default, false, error, type);
+        public new static Result<T> Failure(string errorMessage, ErrorType type = ErrorType.Unexpected)
+            => new Result<T>(default, false, errorMessage, type);
     }
 }

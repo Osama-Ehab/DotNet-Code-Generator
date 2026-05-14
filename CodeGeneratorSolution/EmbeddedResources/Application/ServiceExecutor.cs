@@ -1,12 +1,8 @@
-﻿// DVLD.Common/ServiceExecutor.cs
-using CodeGeneratorSolution.Templetes.Infrastructure.Enums;
-using CodeGeneratorSolution.Templetes.Infrastructure.Utilities;
-using FluentValidation;
+﻿using {{TARGET_NAMESPACE}}.Core.Enums;
+using {{TARGET_NAMESPACE}}.Infrastructure.Utilities;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Application
+namespace {{TARGET_NAMESPACE}}.Application
 {
 
     public static class ServiceExecutor

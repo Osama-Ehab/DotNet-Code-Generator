@@ -1,10 +1,10 @@
-﻿using CodeGeneratorSolution.EmbeddedResources.Application;
-using CodeGeneratorSolution.Templetes.Infrastructure.Enums;
+﻿using {{TARGET_NAMESPACE}}.Application;
+using {{TARGET_NAMESPACE}}.Core.Enums;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
+namespace {{TARGET_NAMESPACE}}.UI.Helpers
 {
     public static class MessageServiceHelper
     {
@@ -28,38 +28,38 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
             {
                 case ErrorType.Validation:
                     // Missing fields, bad formatting
-                    ShowValidationError(result.Error);
+                    ShowValidationError(result.ErrorMessage);
                     break;
 
                 case ErrorType.NotFound:
                     // Searched for a Driver ID that doesn't exist
-                    ShowWarning(result.Error, "Record Not Found");
+                    ShowWarning(result.ErrorMessage, "Record Not Found");
                     break;
 
                 case ErrorType.Conflict:
                     // Tried to add a NationalNo that already exists
-                    ShowWarning(result.Error, "Data Conflict Detected");
+                    ShowWarning(result.ErrorMessage, "Data Conflict Detected");
                     break;
 
                 case ErrorType.ConstraintViolation:
                     // Tried to delete a User who has active licenses attached
-                    ShowWarning(result.Error, "Action Denied");
+                    ShowWarning(result.ErrorMessage, "Action Denied");
                     break;
 
                 case ErrorType.Unauthorized:
                     // Tried to open a screen without permissions
-                    ShowError(result.Error, "Unauthorized Access");
+                    ShowError(result.ErrorMessage, "Unauthorized Access");
                     break;
 
                 case ErrorType.Database:
                     // SQL Server went offline or timed out
-                    ShowError(result.Error, "Database Connection Error");
+                    ShowError(result.ErrorMessage, "Database Connection Error");
                     break;
 
                 case ErrorType.Unexpected:
                 default:
                     // Null reference exceptions, massive system crashes
-                    ShowError(result.Error, "System Error");
+                    ShowError(result.ErrorMessage, "System Error");
                     break;
             }
         }
@@ -68,7 +68,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
         public static void ShowError(string message, string title = "Error") =>
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-        public static bool ShowErrorReturnBoolean(string message, string title = "Error",bool returnValue = false)
+        public static bool ShowErrorReturnBoolean(string message, string title = "Error", bool returnValue = false)
         {
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return returnValue;

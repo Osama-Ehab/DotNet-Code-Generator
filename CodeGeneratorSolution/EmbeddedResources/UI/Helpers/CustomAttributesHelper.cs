@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.EmbeddedResources.UI.Helpers
+namespace {{TARGET_NAMESPACE}}.UI.Helpers
 {
     public static class CustomAttributesHelper
     {

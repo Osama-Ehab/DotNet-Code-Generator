@@ -1,0 +1,23 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Infrastructure.Interfaces; 
+
+namespace <#= SolutionName #>.Infrastructure.Repositories
+{
+
+    // INHERITANCE: Automatically gets Add, Update, Delete, GetById
+    public partial interface I<#= Table.ClassName #>Repository :
+        ICrudExtendedRepository<<#= Table.ClassName #>,<#= Table.ClassName #>DetailsDTO, <#= Table.ClassName #>ListDTO,<#= Table.PkType #>> 
+    {
+        // This file is now CLEAN! 
+        // You only add specific methods here later if needed.
+        // Example: Task<User> GetByEmailAsync(string email);
+        
+    }
+}

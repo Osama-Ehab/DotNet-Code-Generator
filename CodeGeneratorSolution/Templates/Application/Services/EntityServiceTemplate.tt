@@ -1,0 +1,148 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
+using <#= SolutionName #>.Core.DTOs;
+using <#= SolutionName #>.Core.Mapping;
+using <#= SolutionName #>.Core.Enums;
+using <#= SolutionName #>.Core.Entities;
+using <#= SolutionName #>.Application.Interfaces;
+using <#= SolutionName #>.Infrastructure.Interfaces;
+using <#= SolutionName #>.Infrastructure; // For ServiceExecutor
+using <#= SolutionName #>.Infrastructure.Utilities; // For Result<T>
+using <#= SolutionName #>.Infrastructure.Repositories;
+using <#= SolutionName #>.Application.Base;
+
+
+namespace <#= SolutionName #>.Application.Services
+{
+
+   public class <#= Table.ClassName #>Service : BaseService
+    ,I<#= Table.ClassName #>Service
+    {
+        private readonly I<#= Table.ClassName #>Repository _repository;
+
+        // Dependency Injection now demands the Repo and the global Waiter (ServiceProvider)
+        public <#= Table.ClassName #>Service(I<#= Table.ClassName #>Repository repository,IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+            _repository = repository;
+        }
+
+        public async Task<Result<IEnumerable<<#= Table.ClassName #>DTO>>> GetAllAsync()
+        {
+            return await ServiceExecutor.RunAsync(async () =>
+            {
+                var data = await _repository.GetAllAsync();
+                return Result<IEnumerable<<#= Table.ClassName #>DTO>>.Success((IEnumerable<<#= Table.ClassName #>DTO>)data);
+            });
+        }
+
+        public async Task<Result<IReadOnlyList<<#= Table.ClassName #>ListDTO>>> GetListAsync()
+        {
+            return await ServiceExecutor.RunAsync<IReadOnlyList<<#= Table.ClassName #>ListDTO>>(async () =>
+            {
+                var data = await _repository.GetListAsync();
+                return Result<IReadOnlyList<<#= Table.ClassName #>ListDTO>>.Success(data);
+            });
+        }
+
+        public async Task<Result<<#= Table.ClassName #>DTO>> GetByIdAsync( <#= Table.PkType #> id)
+        {
+            return await ServiceExecutor.RunAsync<<#= Table.ClassName #>DTO>(async () =>
+            {
+                var data = await _repository.GetByIdAsync(id);
+                
+                if (data == null)
+                    return Result<<#= Table.ClassName #>DTO>.Failure("<#= Table.ClassName #> not found.", ErrorType.NotFound);
+
+                return Result<<#= Table.ClassName #>DTO>.Success(data.ToDto());
+            });
+        }
+
+        public async Task<Result<<#= Table.ClassName #>DetailsDTO>> GetDetailsAsync(<#= Table.PkType #> id)
+        {
+            return await ServiceExecutor.RunAsync<<#= Table.ClassName #>DetailsDTO>(async () =>
+            {
+                // 1. Call the pure Read-Only Repository method. 
+                // This returns a <#= Table.ClassName #>DetailsDTO directly, NOT a Student Entity.
+                var data = await _repository.GetDetailsAsync(id);
+
+                if (data == null)
+                    return Result<<#= Table.ClassName #>DetailsDTO>.Failure("Student not found.", ErrorType.NotFound);
+
+                // 2. Since 'data' is ALREADY a <#= Table.ClassName #>DetailsDTO, we just pass it! No .ToDto() needed!
+                return Result<<#= Table.ClassName #>DetailsDTO>.Success(data);
+            });
+        }
+        public async Task<Result<<#= Table.PkType #>>> AddAsync(Create<#= Table.ClassName #>DTO dto)
+        {
+            return await ServiceExecutor.RunAsync<<#= Table.PkType #>>(async () =>
+            {
+                // --- 1. FluentValidation Execution using the BaseService Helper ---
+                var validationResult = await ValidateDtoAsync(dto);
+                
+                if (!validationResult.IsSuccess)
+                {
+                    // Fails gracefully returning the FluentValidation error string
+                    return Result<<#= Table.PkType #>>.Failure(validationResult.ErrorMessage,ErrorType.Validation);
+                }
+
+                // --- 2. Database Operation ---
+                 <#= Table.PkType #> NewId;
+
+                NewId = await _repository.AddAsync(dto.ToEntity()); // Ensure your AddAsync returns <#= Table.PkType #>/TKey
+
+                return Result<<#= Table.PkType #>>.Success(NewId);
+            });
+        }
+
+        public async Task<Result<bool>> UpdateAsync(Update<#= Table.ClassName #>DTO dto)
+        {
+            return await ServiceExecutor.RunAsync<bool>(async () =>
+            {
+                // --- 1. FluentValidation Execution using the BaseService Helper ---
+                var validationResult = await ValidateDtoAsync(dto);
+                
+                if (!validationResult.IsSuccess)
+                {
+                    // Fails gracefully returning the FluentValidation error string
+                    return Result<bool>.Failure(validationResult.ErrorMessage, ErrorType.Validation);
+                }
+
+                // --- 2. Database Operation ---
+                bool success;
+                var entity = new <#= Table.ClassName #>();
+                dto.ApplyToEntity(entity);
+
+                success = await _repository.UpdateAsync(entity);
+
+                return Result<bool>.Success(success);
+            });
+        }
+
+        public async Task<Result<bool>> DeleteAsync(<#= Table.PkType #> id)
+        {
+            return await ServiceExecutor.RunActionAsync(async () =>
+            {
+                await _repository.DeleteAsync(id);
+            });
+        }
+
+         public async Task<Result<bool>> ExistsAsync(<#= Table.PkType #> id)
+        {
+            return await ServiceExecutor.RunAsync<bool>(async () =>
+            {
+                var data = await _repository.ExistsAsync(id);
+                
+                if (data == null)
+                    return Result<bool>.Failure("Student not found.",ErrorType.NotFound);
+
+                return Result<bool>.Success(data);
+            });
+        }
+    }
+}

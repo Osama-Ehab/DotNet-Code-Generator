@@ -1,12 +1,13 @@
-﻿using System;
+﻿using {{TARGET_NAMESPACE}}.Core.Entities.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Core.Entities.Base
+namespace {{TARGET_NAMESPACE}}.Core.Entities.Base
 {
-    public abstract class BaseEntity<TKey>
+    public abstract class Entity<TKey> : IEntity<TKey>
     {
         public TKey Id { get; set; }
 
@@ -27,8 +28,8 @@ namespace CodeGeneratorSolution.EmbeddedResources.Core.Entities.Base
                 return false;
 
             // 4. Safe Cast & ID Comparison
-            // We know types match, so it's safe to cast to BaseEntity<TKey> just to access the Id.
-            var other = (BaseEntity<TKey>)obj;
+            // We know types match, so it's safe to cast to Entity<TKey> just to access the Id.
+            var other = (Entity<TKey>)obj;
 
             // 5. Handle "Transient" Entities (New objects not saved to DB yet)
             // If ID is default (0), they are treated as different unless they are the same reference.
@@ -48,14 +49,14 @@ namespace CodeGeneratorSolution.EmbeddedResources.Core.Entities.Base
             return HashCode.Combine(Id, this.GetType());
         }
 
-        public static bool operator ==(BaseEntity<TKey> a, BaseEntity<TKey> b)
+        public static bool operator ==(Entity<TKey> a, Entity<TKey> b)
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
             if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
             return a.Equals(b);
         }
 
-        public static bool operator !=(BaseEntity<TKey> a, BaseEntity<TKey> b)
+        public static bool operator !=(Entity<TKey> a, Entity<TKey> b)
         {
             return !(a == b);
         }

@@ -1,5 +1,5 @@
 ﻿
-namespace CodeGeneratorSolution.Templetes.Infrastructure.Enums
+namespace {{TARGET_NAMESPACE}}.Core.Enums
 {
     public enum ErrorType
     {

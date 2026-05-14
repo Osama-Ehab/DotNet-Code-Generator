@@ -1,4 +1,5 @@
 ﻿
+using CodeGeneratorSolution.Core;
 using Humanizer;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -26,14 +27,9 @@ namespace CodeGeneratorSolution
 
             stopWatch.Start();
             // 1. Build Configuration
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var configObject = ConfigurationLoader.LoadConfig();
 
-            Configuration = builder.Build();
-
-            GeneratorEngine generatorEngine = new GeneratorEngine(Configuration.GetConnectionString("DefaultConnection"), "C:\\DVLDSolution\\DVLD", "DVLD");
-            generatorEngine.GenerateEntryPoint("FrmMain");
+            GeneratorEngine generatorEngine = new GeneratorEngine(configObject.ConnectionString, configObject.OutputRootDirectory, configObject.SolutionName);
             await generatorEngine.GenerateSolutionAsync();
             stopWatch.Stop();
 

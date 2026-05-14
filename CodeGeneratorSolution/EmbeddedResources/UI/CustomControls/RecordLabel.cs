@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeGeneratorSolution.UI.CustomControls
+namespace {{TARGET_NAMESPACE}}.UI.CustomControls
 {
     public partial class RecordLabel : Label
     {

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Application.Security
+namespace {{TARGET_NAMESPACE}}.Application.Security
 {
     public static class SecurityHelper
     {

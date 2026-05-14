@@ -19,38 +19,88 @@
     <Compile Remove="EmbeddedResources\Application\Base\BaseService.cs" />
     <Compile Remove="EmbeddedResources\Application\Base\BaseValidator.cs" />
     <Compile Remove="EmbeddedResources\Application\GenericResult.cs" />
-    <Compile Remove="EmbeddedResources\Application\Interfaces\IService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\Base\IEntityService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\Base\IService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\ICreateService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\ICrudExtendedService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\ICrudService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\IDeleteService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\IUpdateService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\Read\ILookupService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadAllService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadByIdService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadDetailsService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadListService.cs" />
+    <Compile Remove="EmbeddedResources\Application\Interfaces\IExistsService.cs" />
     <Compile Remove="EmbeddedResources\Application\Result.cs" />
     <Compile Remove="EmbeddedResources\Application\Security\SecurityHelper.cs" />
     <Compile Remove="EmbeddedResources\Application\ServiceExecutor.cs" />
-    <Compile Remove="EmbeddedResources\Core\DTOs\BaseDtoWithId.cs" />
-    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IBaseDto.cs" />
-    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IBaseDtoWithId.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\BaseIdentifiableDTO.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IDto.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
+    <Compile Remove="EmbeddedResources\Core\Entities\Interfaces\IAuditableEntity.cs" />
+    <Compile Remove="EmbeddedResources\Core\Entities\Interfaces\IEntity.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\BaseRepository.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
-    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\IRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\Base\IEntityRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\Base\IRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICreateRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICrudExtendedRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICrudRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\IDeleteRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\IUpdateRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\ILookupRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadAllRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadByIdRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadDetailsRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadListRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\IExistsRepository.cs" />
+    <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\IGetParameters.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
+    <Compile Remove="EmbeddedResources\Properties\Resources.Designer.cs" />
+    <Compile Remove="EmbeddedResources\UI\Controls\BaseControl.cs" />
     <Compile Remove="EmbeddedResources\UI\CustomControls\RecordLabel.cs" />
+    <Compile Remove="EmbeddedResources\UI\CustomControls\RecordLabel.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\Events\DtoEventArgs.cs" />
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericManage.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericManage.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs" />
+    <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericPopup.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\IContentList.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\INavigationService.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\IPopupBase.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\IPopupContent.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\ISaveableContent.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\ISaveableControl.cs" />
-    <Compile Remove="EmbeddedResources\UI\Interfaces\ISelectorControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IDetailsControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IEditorControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IIdentifiableControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IListControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IPopupControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\ISelectorControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IUserControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\Methods\IFillControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\Methods\ILoadData.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\Properties\ITitle.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\Properties\IWidth.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotify.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotifyAddNew.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotifyDataLoaded.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotifyEdit.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotifyItemSelected.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Events\INotifyShowDetails.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\IEntityDtoType.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\IPopup.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Navigation\INavigationService.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Navigation\IOpenAddEdit.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Navigation\IOpenAddNew.cs" />
+    <Compile Remove="EmbeddedResources\UI\Interfaces\Navigation\IShowDetails.cs" />
+    <Compile Remove="EmbeddedResources\UI\Routing\ViewRegistry.cs" />
+    <Compile Remove="EmbeddedResources\UI\WindowsFormsNavigationService.cs" />
 
   </ItemGroup>
 
@@ -58,134 +108,191 @@
     <EmbeddedResource Include="EmbeddedResources\Application\Base\BaseService.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\Base\BaseValidator.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\GenericResult.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\IService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\Base\IEntityService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\Base\IService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\ICreateService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\ICrudExtendedService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\ICrudService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\IDeleteService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\IUpdateService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\Read\ILookupService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadAllService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadByIdService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadDetailsService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\CRUD\Read\IReadListService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Application\Interfaces\IExistsService.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\Result.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\Security\SecurityHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\ServiceExecutor.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\BaseDtoWithId.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IBaseDto.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IBaseDtoWithId.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\BaseIdentifiableDTO.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IDto.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Entities\Interfaces\IAuditableEntity.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Entities\Interfaces\IEntity.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\BaseRepository.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\IRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\Base\IEntityRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\Base\IRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICreateRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICrudExtendedRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\ICrudRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\IDeleteRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\IUpdateRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadAllRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadByIdRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadDetailsRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\IReadListRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\IExistsRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\IGetParameters.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\CustomControls\RecordLabel.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Properties\Resources.Designer.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Controls\BaseControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\CustomControls\RecordLabel.cs">
+      <SubType>Component</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\UI\CustomControls\RecordLabel.Designer.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Events\DtoEventArgs.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericManage.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericAddEdit.Designer.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericManage.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericManage.Designer.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericPopup.Designer.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IContentList.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\INavigationService.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IPopupBase.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IPopupContent.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISaveableContent.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISaveableControl.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\ISelectorControl.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\appsettings.json.template" />
-    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\csproj.template" />
-    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\errors.json.template" />
-    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\Program.template" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IDetailsControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IEditorControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IIdentifiableControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IListControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IPopupControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\ISelectorControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IUserControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\Methods\IFillControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\Methods\ILoadData.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\Properties\ITitle.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\Properties\IWidth.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotify.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotifyAddNew.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotifyDataLoaded.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotifyEdit.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotifyItemSelected.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Events\INotifyShowDetails.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IEntityDtoType.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\IPopup.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Navigation\INavigationService.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Navigation\IOpenAddEdit.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Navigation\IOpenAddNew.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Navigation\IShowDetails.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\appsettings.json" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\errors.json" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Routing\ViewRegistry.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\WindowsFormsNavigationService.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Humanizer.Core" Version="3.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
     <PackageReference Include="System.CodeDom" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Templetes\T4\ctrlAddEdit.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlAddEdit.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlAddEditDesigner.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlAddEditDesigner.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlListDesigner.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlListDesigner.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlList.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlList.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlSelectorCard.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlSelectorCard.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlSelectorCardDesigner.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlSelectorCardDesigner.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlShowDetailsDesigner.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlShowDetailsDesigner.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\ctrlShowDetails.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ctrlShowDetails.cs</LastGenOutput>
-    </None>
-    <None Update="Templetes\T4\DependencyInjectionTemplate.tt">
-      <LastGenOutput>DependencyInjectionTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\IEntityServiceTemplate.tt">
+    <None Update="Templates\Application\Interfaces\IEntityServiceTemplate.tt">
       <LastGenOutput>IEntityServiceTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templetes\T4\DTOsTemplate.tt">
-      <LastGenOutput>DTOsTemplate.cs</LastGenOutput>
+    <None Update="Templates\Application\Services\EntityServiceTemplate.tt">
+      <LastGenOutput>EntityServiceTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templetes\T4\DataMapperTemplate.tt">
-      <LastGenOutput>DataMapperTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\MappingExtensionTemplate.tt">
-      <LastGenOutput>MappingExtensionTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\RepositoryInterfaceTemplate.tt">
-      <LastGenOutput>RepositoryInterfaceTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\SqlStoreProcedureTemplate.tt">
-      <LastGenOutput>SqlStoreProcedureTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\ServiceTemplate.tt">
-      <LastGenOutput>ServiceTemplate.cs</LastGenOutput>
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-    </None>
-    <None Update="Templetes\T4\DtoValidatorTemplate.tt">
+    <None Update="Templates\Application\Validators\DtoValidatorTemplate.tt">
       <LastGenOutput>DtoValidatorTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templetes\T4\RepositoryTemplate.tt">
+    <None Update="Templates\Core\DTOs\DTOsTemplate.tt">
+      <LastGenOutput>DTOsTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\Core\Entities\EntityTemplate.tt">
+      <LastGenOutput>EntityTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\Core\Mapping\MappingExtensionTemplate.tt">
+      <LastGenOutput>MappingExtensionTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\Infrastructure\Mapping\DataMapperTemplate.tt">
+      <LastGenOutput>DataMapperTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.tt">
+      <LastGenOutput>IEntityRepositoryTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\Infrastructure\Repositories\RepositoryTemplate.tt">
       <LastGenOutput>RepositoryTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templetes\T4\EntityTemplate.tt">
+    <None Update="Templates\SqlStoreProcedureTemplate.tt">
+      <LastGenOutput>SqlStoreProcedureTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>EntityTemplate.cs</LastGenOutput>
     </None>
-    <None Update="Templetes\T4\WindowsFormsNavigationServiceTemplate.tt">
+    <None Update="Templates\UI\Controls\ctrlAddEdit.tt">
+      <LastGenOutput>ctrlAddEdit.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>WindowsFormsNavigationServiceTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlAddEditDesigner.tt">
+      <LastGenOutput>ctrlAddEditDesigner.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlList.tt">
+      <LastGenOutput>ctrlList.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlListDesigner.tt">
+      <LastGenOutput>ctrlListDesigner.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlSelectorCard.tt">
+      <LastGenOutput>ctrlSelectorCard.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlSelectorCardDesigner.tt">
+      <LastGenOutput>ctrlSelectorCardDesigner.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlShowDetails.tt">
+      <LastGenOutput>ctrlShowDetails.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\Controls\ctrlShowDetailsDesigner.tt">
+      <LastGenOutput>ctrlShowDetailsDesigner.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\DependencyInjection\DependencyInjectionTemplate.tt">
+      <LastGenOutput>DependencyInjectionTemplate.cs</LastGenOutput>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+    </None>
+    <None Update="Templates\UI\DependencyInjection\ViewRegistryTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ViewRegistryTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -194,115 +301,136 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CSharp_Compiler\UI\CustomControls\RecordLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="CSharp_Compiler\UI\GenericForms\frmGenericAddEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="CSharp_Compiler\UI\GenericForms\frmGenericManage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="CSharp_Compiler\UI\GenericForms\frmGenericPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Templetes\T4\ctrlAddEdit.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlAddEdit.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlAddEditDesigner.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlAddEditDesigner.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlList.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlList.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlListDesigner.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlListDesigner.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlSelectorCard.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlSelectorCard.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlSelectorCardDesigner.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlSelectorCardDesigner.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlShowDetails.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlShowDetails.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\ctrlShowDetailsDesigner.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ctrlShowDetailsDesigner.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Templetes\T4\DependencyInjectionTemplate.cs">
-      <DependentUpon>DependencyInjectionTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\IEntityServiceTemplate.cs">
+    <Compile Update="Templates\Application\Interfaces\IEntityServiceTemplate.cs">
       <DependentUpon>IEntityServiceTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templetes\T4\DTOsTemplate.cs">
-      <DependentUpon>DTOsTemplate.tt</DependentUpon>
+    <Compile Update="Templates\Application\Services\EntityServiceTemplate.cs">
+      <DependentUpon>EntityServiceTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templetes\T4\DataMapperTemplate.cs">
-      <DependentUpon>DataMapperTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\MappingExtensionTemplate.cs">
-      <DependentUpon>MappingExtensionTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\RepositoryInterfaceTemplate.cs">
-      <DependentUpon>RepositoryInterfaceTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\SqlStoreProcedureTemplate.cs">
-      <DependentUpon>SqlStoreProcedureTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\ServiceTemplate.cs">
-      <DependentUpon>ServiceTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Templetes\T4\DtoValidatorTemplate.cs">
+    <Compile Update="Templates\Application\Validators\DtoValidatorTemplate.cs">
       <DependentUpon>DtoValidatorTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templetes\T4\RepositoryTemplate.cs">
+    <Compile Update="Templates\Core\DTOs\DTOsTemplate.cs">
+      <DependentUpon>DTOsTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\Core\Entities\EntityTemplate.cs">
+      <DependentUpon>EntityTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\Core\Mapping\MappingExtensionTemplate.cs">
+      <DependentUpon>MappingExtensionTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\Infrastructure\Mapping\DataMapperTemplate.cs">
+      <DependentUpon>DataMapperTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.cs">
+      <DependentUpon>IEntityRepositoryTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\Infrastructure\Repositories\RepositoryTemplate.cs">
       <DependentUpon>RepositoryTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templetes\T4\EntityTemplate.cs">
+    <Compile Update="Templates\SqlStoreProcedureTemplate.cs">
+      <DependentUpon>SqlStoreProcedureTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>EntityTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="Templetes\T4\WindowsFormsNavigationServiceTemplate.cs">
+    <Compile Update="Templates\UI\Controls\ctrlAddEdit.cs">
+      <DependentUpon>ctrlAddEdit.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>WindowsFormsNavigationServiceTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlAddEditDesigner.cs">
+      <DependentUpon>ctrlAddEditDesigner.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlList.cs">
+      <DependentUpon>ctrlList.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlListDesigner.cs">
+      <DependentUpon>ctrlListDesigner.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlSelectorCard.cs">
+      <DependentUpon>ctrlSelectorCard.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlSelectorCardDesigner.cs">
+      <DependentUpon>ctrlSelectorCardDesigner.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlShowDetails.cs">
+      <DependentUpon>ctrlShowDetails.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\Controls\ctrlShowDetailsDesigner.cs">
+      <DependentUpon>ctrlShowDetailsDesigner.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\DependencyInjection\DependencyInjectionTemplate.cs">
+      <DependentUpon>DependencyInjectionTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Templates\UI\DependencyInjection\ViewRegistryTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ViewRegistryTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EmbeddedResources\UI\Interfaces\Forms\" />
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\Program.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\UI\ProjectFiles\.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="CSharp_Compiler\Infrastructure\Interfaces\CRUD\Read\ILookupRepository.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\ILookupRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>

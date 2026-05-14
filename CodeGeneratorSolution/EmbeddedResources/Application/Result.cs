@@ -1,28 +1,28 @@
 ﻿
-using CodeGeneratorSolution.Templetes.Infrastructure.Enums;
+using {{TARGET_NAMESPACE}}.Core.Enums;
 
-namespace CodeGeneratorSolution.EmbeddedResources.Application
+namespace {{TARGET_NAMESPACE}}.Application
 {
     // DVLD.Common/Result.cs
     public class Result
     {
         public bool IsSuccess { get; }
         public bool IsFailure => !IsSuccess;
-        public string Error { get; }
+        public string ErrorMessage { get; }
         public ErrorType ErrorType { get; }
 
         // Protected constructor: Forces usage of static Factory methods
-        protected Result(bool isSuccess, string error, ErrorType errorType)
+        protected Result(bool isSuccess, string errorMessage, ErrorType errorType)
         {
             // Guard Clause: Impossible state check
-            if (isSuccess && error != string.Empty)
+            if (isSuccess && errorMessage != string.Empty)
                 throw new InvalidOperationException("A successful result cannot have an error message.");
 
-            if (!isSuccess && error == string.Empty)
+            if (!isSuccess && errorMessage == string.Empty)
                 throw new InvalidOperationException("A failure result must have an error message.");
 
             IsSuccess = isSuccess;
-            Error = error;
+            ErrorMessage = errorMessage;
             ErrorType = errorType;
         }
 
@@ -32,7 +32,7 @@ namespace CodeGeneratorSolution.EmbeddedResources.Application
         public static Result Success() => new Result(true, string.Empty, ErrorType.None);
 
         // 2. Failure (With categorization)
-        public static Result Failure(string error, ErrorType type = ErrorType.Unexpected)
-            => new Result(false, error, type);
+        public static Result Failure(string errorMessage, ErrorType type = ErrorType.Unexpected)
+            => new Result(false, errorMessage, type);
     }
 }

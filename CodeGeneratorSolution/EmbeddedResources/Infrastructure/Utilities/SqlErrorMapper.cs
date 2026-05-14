@@ -1,4 +1,4 @@
-﻿using CodeGeneratorSolution.Templetes.Infrastructure.Enums;
+﻿using {{TARGET_NAMESPACE}}.Core.Enums;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace CodeGeneratorSolution.Templetes.Infrastructure.Utilities
+namespace {{TARGET_NAMESPACE}}.Infrastructure.Utilities
 {
 
     public static class SqlErrorMapper
