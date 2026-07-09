@@ -1,37 +1,69 @@
-# ⚙️ Custom C# Code Generator & Dynamic UI Scaffolder
+⚙️ System Factory: Custom C# Code Scaffolding Engine & Modern UI Framework
 
-![.NET](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
-![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL%20Server-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
-![WinForms](https://img.shields.io/badge/WinForms-0078D4?style=for-the-badge&logo=windows&logoColor=white)
+A metadata-driven metaprogramming tool designed to completely eliminate repetitive boilerplate code, enforcing strict Clean/3-Tier Architecture and dynamic UI rendering.
 
-## 📌 Project Overview
-The **Custom Code Generator** is a robust developer tool I am currently architecting to automate the repetitive scaffolding of Data Access Layer (DAL) and Business Logic Layer (BLL) classes. By reading directly from a SQL Server database, this tool enforces a strict **Clean Architecture** and completely eliminates boilerplate code.
+📌 Project Overview
 
-Beyond standard code generation, this tool is designed to scaffold **Dynamic UI Components** (WinForms) based on database metadata, enforcing the **DRY (Don't Repeat Yourself)** principle across enterprise-level applications like the DVLD (Driving & Vehicle License Department) system.
+The System Factory is a robust, custom-built scaffolding engine and UI framework. Instead of writing standard CRUD operations and forms manually, this engine reads directly from SQL Server database metadata. It dynamically generates a highly optimized backend and auto-layouts responsive frontend forms without human intervention.
 
-## 🏗️ Core Architectural Features (The Engine)
-This tool goes beyond simple string manipulation; it interacts deeply with the database engine:
-* **Metadata Extraction:** Leverages SQL Server `INFORMATION_SCHEMA` to dynamically read tables, columns, data types, and constraints.
-* **Extended Properties Integration:** Utilizes SQL Server Extended Properties to map database fields to specific UI controls, and validation rules.
-* **Strict Clean Architecture Output:** Automatically generates clean, separated `.cs` files for DAL and BLL that are ready to be plugged into any standard .NET project.
-* **Adaptive Base Forms (In Progress):** Generates reusable generic forms (`frmGenericManage`, `frmGenericAddEdit`, `ctrlCardSelector`) based on the extracted schema.
+The solution is strictly decoupled into two projects:
 
-## 🚀 Current Status: Active Development (WIP)
-*This project is currently under active development. I am building this tool iteratively alongside my academic studies (Data Science).*
+🏭 The Generator Engine: The metaprogramming tool that reads schemas and outputs standard C# code using T4 Templates.
 
-**Current Version Capabilities:**
-- [x] Successful connection to SQL Server and metadata extraction.
-- [x] Generation of fully functional DAL and BLL C# classes.
-- [x] Mapping SQL data types to C# data types dynamically.
+🎨 ModernUI.Framework: A standalone, hardware-accelerated UI library built from scratch using GDI+ to power the generated frontend.
 
-**Roadmap & Future Enhancements:**
-- [ ] Complete the generation engine for WinForms UserControls (`ctrlList`, `ctrlAddEdit`).
-- [ ] Finalize the integration of the Generic UI Framework.
-- [ ] Deploy the generated code into the DVLD Management System as a real-world proof of concept.
+🏗️ Core Architectural Features
 
-## 🧠 Why I Built This?
-While learning 3-Tier Architecture, I realized that writing DAL and BLL classes manually for databases with dozens of tables is inefficient and prone to human error. I decided to build this tool to deeply understand database metadata, metaprogramming, and to drastically speed up the development of my future enterprise projects.
+⚡ High-Performance Data Access: Generates Data Access Layer (DAL) classes utilizing Dapper (Micro-ORM) for zero-overhead, lightning-fast database querying.
 
----
-*Created by Osama Ehab - Aspiring .NET Developer*
+🧩 Advanced Templating: Utilizes T4 Templates (.tt) to systematically output clean, separated .cs files (DTOs, Repositories, Services) that adhere to SOLID principles.
+
+🖌️ Hardware-Accelerated UI: Replaces traditional drag-and-drop with ModernUI.Framework. Calculates X/Y grid layouts and renders multilingual, responsive forms dynamically.
+
+🧠 Smart Dependency Injection: Auto-generates the DI container registrations for all repositories and services.
+
+🗄️ The UI_ColumnMetadata Hub
+
+Instead of hardcoding UI rules, the engine relies on a dedicated database table (UI_ColumnMetadata). This acts as the central configuration hub.
+
+| Column | MetaControlType | MetaIconCode | UIRow | UIColSpan | MetaIsSensitive |
+| FirstName | ModernInputGroup | &#xE136; | 0 | 1 | False |
+| IsActive | ModernToggle | NULL | 0 | 1 | False |
+| Password | ModernInputGroup | &#xE1F6; | 1 | 2 | True |
+
+💡 Result: Changing a control type from a TextBox to a Toggle Switch, or adjusting its grid layout, is as simple as updating a database record. The engine handles the rest.
+
+📂 Repository Structure & Engineering Decisions
+
+The solution is structured to maximize modularity, testability, and separation of concerns.
+
+Solution 'CodeGeneratorSolution'
+├── ⚙️ CodeGeneratorSolution (The Engine)
+│   ├── 📁 Core                  # GeneratorEngine.cs, MetadataFetcher.cs (SQL connection)
+│   ├── 📁 Models                # TableSchema.cs, ColumnDefinition.cs
+│   ├── 📁 Templates             # T4 Templates (.tt) grouped by Clean Architecture layers
+│   ├── 📁 CSharp_Compiler       # Static classes for IDE syntax checking/testing
+│   └── 📁 EmbeddedResources     # Static classes marked for Reflection injection
+│
+└── 🎨 ModernUI.Framework (Decoupled UI Library)
+    ├── 📁 Controls              # Custom GDI+ WinForms controls
+    ├── 📁 Icons                 # Font-based & SVG icon rendering logic
+    └── 📁 Util                  # UI Theme helpers and Language Managers
+
+
+
+Generating static base classes (like generic helpers or base repositories) as pure strings is error-prone. To solve this, I implemented a unique meta-pattern:
+
+Develop in CSharp_Compiler: I write the base classes here. This allows Visual Studio to provide full Intellisense, syntax checking, and compilation testing during development.
+
+Move to EmbeddedResources: Once the class is tested and bug-free, a copy is placed in this folder and its Build Action is set to Embedded Resource.
+
+Inject via Reflection: At generation time, the engine extracts these embedded files directly from the assembly via Reflection and injects them into the target project.
+
+This guarantees zero syntax errors in the generated base classes.
+
+By keeping ModernUI.Framework as a completely separate Class Library project, the generated ERP application only needs to reference a lightweight .dll. The Code Generator focuses only on writing the logic and layout coordinates, while the Framework handles all the heavy lifting of GDI+ graphics rendering, hover states, and animations.
+
+🎯 Why I Built This?
+
+In enterprise software, manual boilerplate is the enemy of scalability. I built this engine to shift my focus from writing code to architecting systems. It allows me to iterate faster, maintain a single source of truth (the database), and ensure architectural consistency across massive projects (like the Enterprise School ERP I am currently developing to test this engine).
