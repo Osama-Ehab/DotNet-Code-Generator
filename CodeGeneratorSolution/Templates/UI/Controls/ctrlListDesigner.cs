@@ -33,10 +33,10 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line default
             #line hidden
-            this.Write(".UI.Controls\r\n{\r\n    partial class ctrl");
+            this.Write(".UI.Controls\r\n{\r\n    partial class Basectrl");
             
             #line 5 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlListDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -261,7 +261,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write(".HeaderText = \"");
             
             #line 190 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlListDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden

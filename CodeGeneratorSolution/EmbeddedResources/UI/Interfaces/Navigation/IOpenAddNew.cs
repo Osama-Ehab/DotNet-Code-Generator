@@ -8,6 +8,6 @@ namespace {{TARGET_NAMESPACE}}.UI.Interfaces
 {
     public interface IOpenAddNew
     {
-        void OpenAddNew(Type entityDtoTyp);
+        Task OpenAddNew(Type entityDtoTyp);
     }
 }

@@ -91,9 +91,28 @@ namespace CodeGeneratorSolution.UI.Helpers
 
         #endregion
 
-        #region Toast Notifications
+        #region Toast Notifications (Modern, Lightweight & Stackable)
 
-        public static void ShowToast(string message, string title = "", int duration = 3000, Color? backColor = null, Color? foreColor = null)
+
+        // Thematic UI Wrappers
+        public static void ShowToastInfo(string message, string title = "Information", int duration = 3000) =>
+            ShowToast(message, title, duration, Color.FromArgb(41, 128, 185)); // Flat Peter River Blue
+
+        public static void ShowToastSuccess(string message, string title = "Success", int duration = 3000) =>
+            ShowToast(message, title, duration, Color.FromArgb(39, 174, 96)); // Flat Nephritis Green
+
+        public static void ShowToastWarning(string message, string title = "Warning", int duration = 3000) =>
+            ShowToast(message, title, duration, Color.FromArgb(230, 126, 34)); // Flat Carrot Orange
+
+        public static void ShowToastError(string message, string title = "Error", int duration = 4000) => // Errors stay slightly longer
+            ShowToast(message, title, duration, Color.FromArgb(192, 57, 43)); // Flat Pomegranate Red
+
+
+        // 1. القائمة التي ستراقب كل الإشعارات النشطة
+        private static readonly System.Collections.Generic.List<Form> _activeToasts = new System.Collections.Generic.List<Form>();
+        private static bool IsArabicLayout = true;
+
+        public static async void ShowToast(string message, string title = "", int duration = 3000, Color? backColor = null, Color? foreColor = null)
         {
             var toast = new Form
             {
@@ -101,63 +120,110 @@ namespace CodeGeneratorSolution.UI.Helpers
                 StartPosition = FormStartPosition.Manual,
                 ShowInTaskbar = false,
                 TopMost = true,
-                BackColor = backColor ?? Color.FromArgb(50, 50, 50),
-                Size = new Size(300, 80),
-                Opacity = 0.95,
+                BackColor = backColor ?? Color.FromArgb(45, 45, 48),
+                Size = new Size(320, 85),
+                Opacity = 0, // يبدأ مخفياً للأنيميشن
+                RightToLeft = IsArabicLayout ? RightToLeft.Yes : RightToLeft.No,
+                Padding = new Padding(10)
             };
+
+            Font titleFont = new Font("Segoe UI", 10, FontStyle.Bold);
+            Font messageFont = new Font("Segoe UI", 9);
 
             var lblTitle = new Label
             {
                 Text = title,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Font = titleFont,
                 ForeColor = foreColor ?? Color.White,
                 Dock = DockStyle.Top,
                 Height = 25,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = IsArabicLayout ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft
             };
 
             var lblMessage = new Label
             {
                 Text = message,
-                Font = new Font("Segoe UI", 9),
-                ForeColor = foreColor ?? Color.WhiteSmoke,
+                Font = messageFont,
+                ForeColor = foreColor ?? Color.FromArgb(220, 220, 220),
                 Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = IsArabicLayout ? ContentAlignment.TopRight : ContentAlignment.TopLeft,
+                Padding = new Padding(0, 5, 0, 0)
             };
 
             toast.Controls.Add(lblMessage);
             toast.Controls.Add(lblTitle);
 
-            // Position in bottom-right corner of primary screen
-            var screen = Screen.PrimaryScreen.WorkingArea;
-            toast.Location = new Point(screen.Right - toast.Width - 20, screen.Bottom - toast.Height - 20);
+            // 2. إضافة الإشعار الجديد للقائمة وإعادة ترتيب الشاشة
+            _activeToasts.Add(toast);
+            RepositionToasts();
 
-            toast.Shown += (s, e) =>
+            // 3. التنظيف الصارم عند الإغلاق
+            toast.FormClosed += (s, e) =>
             {
-                var timer = new System.Windows.Forms.Timer { Interval = duration };
-                timer.Tick += (sender, args) =>
-                {
-                    timer.Stop();
-                    toast.Close();
-                };
-                timer.Start();
+                _activeToasts.Remove(toast); // إزالته من القائمة
+                RepositionToasts();          // جعل الإشعارات المتبقية تنزلق للأسفل
+
+                titleFont.Dispose();
+                messageFont.Dispose();
+                toast.Dispose();
             };
 
             toast.Show();
+
+            try
+            {
+                // Fade In
+                for (double i = 0.0; i <= 0.95; i += 0.1)
+                {
+                    toast.Opacity = i;
+                    await Task.Delay(15);
+                }
+
+                await Task.Delay(duration);
+
+                // Fade Out
+                for (double i = 0.95; i >= 0.0; i -= 0.1)
+                {
+                    toast.Opacity = i;
+                    await Task.Delay(15);
+                }
+            }
+            finally
+            {
+                if (!toast.IsDisposed)
+                {
+                    toast.Close();
+                }
+            }
         }
 
-        public static void ShowToastInfo(string message, string title = "Information", int duration = 3000) =>
-            ShowToast(message, title, duration, Color.FromArgb(40, 110, 180));
+        // 4. المحرك الهندسي لحساب مواقع الإشعارات (The Stacker Logic)
+        private static void RepositionToasts()
+        {
+            var screen = Screen.PrimaryScreen.WorkingArea;
+            int marginX = 20;
+            int marginY = 20;
+            int spacing = 10; // المسافة بين كل إشعار والذي يليه
 
-        public static void ShowToastSuccess(string message, string title = "Success", int duration = 3000) =>
-            ShowToast(message, title, duration, Color.FromArgb(0, 128, 0));
+            // نبدأ الحساب من أسفل الشاشة
+            int currentY = screen.Bottom - marginY;
 
-        public static void ShowToastWarning(string message, string title = "Warning", int duration = 3000) =>
-            ShowToast(message, title, duration, Color.FromArgb(255, 165, 0));
+            // نمر على الإشعارات من الأحدث إلى الأقدم 
+            // لكي يظهر الإشعار الجديد في الأسفل، ويدفع القديم للأعلى
+            for (int i = _activeToasts.Count - 1; i >= 0; i--)
+            {
+                var t = _activeToasts[i];
 
-        public static void ShowToastError(string message, string title = "Error", int duration = 3000) =>
-            ShowToast(message, title, duration, Color.FromArgb(178, 34, 34));
+                // خصم ارتفاع الإشعار من الموقع الحالي
+                currentY -= t.Height;
 
+                // تحديث موقع الإشعار (سيتحرك فوراً للمكان الجديد)
+                t.Location = new Point(screen.Right - t.Width - marginX, currentY);
+
+                // خصم مسافة التباعد للإشعار التالي
+                currentY -= spacing;
+            }
+        }
         #endregion
     }
 }

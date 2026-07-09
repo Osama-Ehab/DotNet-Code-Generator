@@ -37,15 +37,12 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write(".UI.Controls\r\n{\r\n    partial class ctrl");
             
             #line 6 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write(@"AddEdit
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing)
@@ -64,803 +61,378 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.components = new System.ComponentModel.Container();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             
+            // الاعتماد على مكون الترويسة الموحد الجديد
+            this._mainHeader = new ModernUI.Framework.Controls.ModernControlHeader();
+            this.tlpForm = new System.Windows.Forms.TableLayoutPanel();
+
+            // ====================================================
+            // 1. DECLARE DYNAMIC CONTROLS
+            // ====================================================
 ");
             
-            #line 29 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
- 
-            // 0. PREPARE THE LIST OF COLUMNS
-            var editColumns = Table.Columns.Where(c => !c.IsPrimaryKey).ToList();
-            int totalCols = editColumns.Count;
-            int halfPoint = (int)Math.Ceiling(totalCols / 2.0);
-
-            // 1. INSTANTIATE CONTROLS
-            foreach(var col in editColumns) 
-            { 
-
+            #line 33 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ foreach(var col in Table.UpdateDtoColumns) { 
             
             #line default
             #line hidden
-            this.Write("            this.lblIcon");
+            
+            #line 34 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ if(col.WinControl.StartsWith("Modern")) { 
+            
+            #line default
+            #line hidden
+            this.Write("            this.");
+            
+            #line 35 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(" = new ModernUI.Framework.Controls.");
+            
+            #line 35 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.WinControl));
+            
+            #line default
+            #line hidden
+            this.Write("();\r\n");
+            
+            #line 36 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } else { 
+            
+            #line default
+            #line hidden
+            this.Write("            this.");
+            
+            #line 37 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(" = new System.Windows.Forms.");
+            
+            #line 37 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.WinControl));
+            
+            #line default
+            #line hidden
+            this.Write("();\r\n");
+            
+            #line 38 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } 
+            
+            #line default
+            #line hidden
             
             #line 39 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+ } 
             
             #line default
             #line hidden
-            this.Write(" = new System.Windows.Forms.Label();\r\n            this.lbl");
+            this.Write(@"
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            this.tlpForm.SuspendLayout();
+            this.SuspendLayout();
+
+            // ====================================================
+            // 2. HEADER SETUP (ModernControlHeader)
+            // ====================================================
+            this._mainHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this._mainHeader.Height = 80;
+            this._mainHeader.Title = ""إضافة/تعديل ");
             
-            #line 40 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = new System.Windows.Forms.Label();\r\n");
-            
-            #line 41 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              if (col.CSharpType == "bool") { 
-            
-            #line default
-            #line hidden
-            this.Write("            this.chk");
-            
-            #line 42 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 50 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.FriendlyNameAr));
             
             #line default
             #line hidden
-            this.Write(" = new System.Windows.Forms.CheckBox();\r\n");
+            this.Write("\";\r\n            this._mainHeader.IconText = \"");
             
-            #line 43 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else if (col.CSharpType == "DateTime") { 
-            
-            #line default
-            #line hidden
-            this.Write("            this.dtp");
-            
-            #line 44 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 51 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Columns.FirstOrDefault()?.IconOutline ?? "\\uE70F"));
             
             #line default
             #line hidden
-            this.Write(" = new System.Windows.Forms.DateTimePicker();\r\n");
+            this.Write(@"""; // أيقونة افتراضية للجدول
+            this._mainHeader.Name = ""_mainHeader"";
+
+            // ====================================================
+            // 3. AUTO-LAYOUT GRID SETUP (TableLayoutPanel)
+            // ====================================================
+            this.tlpForm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpForm.ColumnCount = 2; 
+            this.tlpForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpForm.AutoScroll = true; 
+            this.tlpForm.Padding = new System.Windows.Forms.Padding(15);
+
+");
             
-            #line 45 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else { 
-            
-            #line default
-            #line hidden
-            this.Write("            this.txt");
-            
-            #line 46 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = new System.Windows.Forms.TextBox();\r\n");
-            
-            #line 47 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              }
-            } 
+            #line 64 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+
+            int columnsCount = Table.UpdateDtoColumns.Count();
+            int rowsCount = (int)Math.Ceiling(columnsCount / 2.0);
 
             
             #line default
             #line hidden
-            this.Write("            \r\n            this.pnlHeader = new System.Windows.Forms.TableLayoutPa" +
-                    "nel();\r\n            this.pbHeaderIcon = new System.Windows.Forms.PictureBox();\r\n" +
-                    "            this.lblHeaderTitle = new System.Windows.Forms.Label();\r\n           " +
-                    " this.pnlContent = new System.Windows.Forms.Panel();\r\n\r\n            this.Suspend" +
-                    "Layout();\r\n\r\n            // ====================================================" +
-                    "\r\n            // HEADER PANEL SETUP (Row 0: Icon, Row 1: Title)\r\n            // " +
-                    "====================================================\r\n            this.pnlHeader" +
-                    ".ColumnCount = 1;\r\n            this.pnlHeader.ColumnStyles.Add(new System.Window" +
-                    "s.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));\r\n            " +
-                    "this.pnlHeader.RowCount = 2;\r\n            this.pnlHeader.RowStyles.Add(new Syste" +
-                    "m.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));\r\n       " +
-                    "     this.pnlHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windo" +
-                    "ws.Forms.SizeType.Absolute, 40F));\r\n            this.pnlHeader.Dock = System.Win" +
-                    "dows.Forms.DockStyle.Top;\r\n            this.pnlHeader.Height = 100;\r\n           " +
-                    " this.pnlHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);\r\n\r\n     " +
-                    "       // HEADER ICON\r\n            this.pbHeaderIcon.Dock = System.Windows.Forms" +
-                    ".DockStyle.Fill;\r\n            this.pbHeaderIcon.SizeMode = System.Windows.Forms." +
-                    "PictureBoxSizeMode.CenterImage;\r\n            \r\n            // HEADER LABEL\r\n    " +
-                    "        this.lblHeaderTitle.Dock = System.Windows.Forms.DockStyle.Fill;\r\n       " +
-                    "     this.lblHeaderTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCente" +
-                    "r;\r\n            this.lblHeaderTitle.Font = new System.Drawing.Font(\"Segoe UI\", 1" +
-                    "6F, System.Drawing.FontStyle.Bold);\r\n            this.lblHeaderTitle.ForeColor =" +
-                    " System.Drawing.Color.FromArgb(45, 45, 48);\r\n\r\n            this.pnlHeader.Contro" +
-                    "ls.Add(this.pbHeaderIcon, 0, 0);\r\n            this.pnlHeader.Controls.Add(this.l" +
-                    "blHeaderTitle, 0, 1);\r\n\r\n            // ========================================" +
-                    "============\r\n            // CONTENT PANEL SETUP (Where the generated textboxes " +
-                    "go)\r\n            // ====================================================\r\n      " +
-                    "      this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;\r\n            t" +
-                    "his.pnlContent.AutoScroll = true;\r\n\r\n            // ============================" +
-                    "========================\r\n            // ADD CONTROLS TO MAIN USER CONTROL\r\n    " +
-                    "        // ====================================================\r\n            thi" +
-                    "s.Controls.Add(this.pnlContent); // Fill goes first in Z-order\r\n            this" +
-                    ".Controls.Add(this.pnlHeader);  // Top goes last so it stays at the top\r\n\r\n     " +
-                    "       this.Size = new System.Drawing.Size(600, 500);\r\n            this.Font = n" +
-                    "ew System.Drawing.Font(\"Segoe UI\", 10F);\r\n            this.BackColor = System.Dr" +
-                    "awing.Color.White;\r\n\r\n            ((System.ComponentModel.ISupportInitialize)(th" +
-                    "is.errorProvider1)).BeginInit();\r\n            this.SuspendLayout();\r\n\r\n         " +
-                    "   this.errorProvider1.ContainerControl = this;\r\n\r\n");
+            this.Write("            this.tlpForm.RowCount = ");
             
-            #line 104 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
- 
-            // 2. SET PROPERTIES AND 2-COLUMN AUTO-LAYOUT MATH
-            int startY = 100;
-            int yPos = startY; 
-            int iconX = 20;      // Start of the icon
-            int labelX = 45;     // Start of the text (IconX + 25)
-            int controlX = 180;  // Pushed slightly right to accommodate bold fonts
-            int verticalSpacing = 40;
-            int tabIndex = 0;
-
-            for (int i = 0; i < totalCols; i++) 
-            { 
-                var col = editColumns[i];
-
-                // COLUMN SPLIT LOGIC
-                if (i == halfPoint)
-                {
-                    yPos = startY;       
-                    iconX += 450;       // Shift right side by 450 pixels
-                    labelX += 450;       
-                    controlX += 450;     
-                }
-
+            #line 68 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(rowsCount));
             
             #line default
             #line hidden
-            this.Write("            // \r\n            // lblIcon");
+            this.Write(";\r\n\r\n            // ====================================================\r\n       " +
+                    "     // 4. CONFIGURE & BIND CONTROLS\r\n            // ===========================" +
+                    "=========================\r\n");
             
-            #line 128 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            #line 73 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ foreach(var col in Table.UpdateDtoColumns) { 
+            
+            #line default
+            #line hidden
+            this.Write("            // --- ");
+            
+            #line 74 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
-            this.Write(" (MDL2 Asset Icon)\r\n            // \r\n            this.lblIcon");
+            this.Write(" ---\r\n            this.");
             
-            #line 130 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".AutoSize = true;\r\n            this.lblIcon");
-            
-            #line 131 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 75 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Font = new System.Drawing.Font(\"Segoe MDL2 Assets\", 10F, System.Drawing.FontStyl" +
-                    "e.Bold, System.Drawing.GraphicsUnit.Point);\r\n            this.lblIcon");
+            this.Write(".Name = \"");
             
-            #line 132 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Location = new System.Drawing.Point(");
-            
-            #line 132 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(iconX));
+            #line 75 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(", ");
+            this.Write("\";\r\n            this.");
             
-            #line 132 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(yPos + 3));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n            this.lblIcon");
-            
-            #line 133 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 76 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Name = \"lblIcon");
+            this.Write(".Dock = System.Windows.Forms.DockStyle.Fill;\r\n            this.");
             
-            #line 133 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n            this.lblIcon");
-            
-            #line 134 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 77 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Text = \"");
+            this.Write(".Margin = new System.Windows.Forms.Padding(10);\r\n            \r\n");
             
-            #line 134 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.IconCode));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n\r\n            // \r\n            // lbl");
-            
-            #line 137 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 79 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ if(col.WinControl == "ModernInputGroup") { 
             
             #line default
             #line hidden
-            this.Write("\r\n            // \r\n            this.lbl");
+            this.Write("            this.");
             
-            #line 139 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".AutoSize = true;\r\n            this.lbl");
-            
-            #line 140 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 80 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Font = new System.Drawing.Font(\"Segoe UI\", 9F, System.Drawing.FontStyle.Bold, Sy" +
-                    "stem.Drawing.GraphicsUnit.Point);\r\n            this.lbl");
+            this.Write(".LabelText = \"");
             
-            #line 141 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Location = new System.Drawing.Point(");
-            
-            #line 141 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(labelX));
+            #line 80 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden
-            this.Write(", ");
+            this.Write(" :\";\r\n            // قراءة الأيقونات مباشرة من الميتاداتا بدون دوال التخمين!\r\n   " +
+                    "         this.");
             
-            #line 141 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(yPos + 3));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n            this.lbl");
-            
-            #line 142 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 82 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Name = \"lbl");
+            this.Write(".IconText = \"");
             
-            #line 142 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n            this.lbl");
-            
-            #line 143 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 82 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.IconOutline.Replace("\"", "\\\"")));
             
             #line default
             #line hidden
-            this.Write(".Text = \"");
+            this.Write("\";\r\n            this.");
             
-            #line 143 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
-            
-            #line default
-            #line hidden
-            this.Write(":\";\r\n\r\n");
-            
-            #line 145 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              if (col.CSharpType == "bool") { 
+            #line 83 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write("            // \r\n            // chk");
+            this.Write(".IconFocusedText = \"");
             
-            #line 147 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\r\n            // \r\n            this.chk");
-            
-            #line 149 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".AutoSize = true;\r\n            this.chk");
-            
-            #line 150 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".FlatStyle = System.Windows.Forms.FlatStyle.Flat; // Flat UI Design\r\n            " +
-                    "this.chk");
-            
-            #line 151 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Font = new System.Drawing.Font(\"Segoe UI\", 9F, System.Drawing.FontStyle.Bold, Sy" +
-                    "stem.Drawing.GraphicsUnit.Point);\r\n            this.chk");
-            
-            #line 152 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Location = new System.Drawing.Point(");
-            
-            #line 152 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(controlX));
-            
-            #line default
-            #line hidden
-            this.Write(", ");
-            
-            #line 152 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(yPos));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n            this.chk");
-            
-            #line 153 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Name = \"chk");
-            
-            #line 153 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n            this.chk");
-            
-            #line 154 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Size = new System.Drawing.Size(200, 23);\r\n            this.chk");
-            
-            #line 155 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".TabIndex = ");
-            
-            #line 155 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(tabIndex++));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n            this.chk");
-            
-            #line 156 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Text = \"");
-            
-            #line 156 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
+            #line 83 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.IconSolid.Replace("\"", "\\\"")));
             
             #line default
             #line hidden
             this.Write("\";\r\n");
             
-            #line 157 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else if (col.CSharpType == "DateTime") { 
+            #line 84 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } else if(col.WinControl == "ModernToggle" || col.WinControl == "CheckBox") { 
             
             #line default
             #line hidden
-            this.Write("            // \r\n            // dtp");
+            this.Write("            this.");
             
-            #line 159 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\r\n            // \r\n            this.dtp");
-            
-            #line 161 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 85 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Format = System.Windows.Forms.DateTimePickerFormat.Short;\r\n            this.dtp");
+            this.Write(".Text = \"");
             
-            #line 162 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Font = new System.Drawing.Font(\"Segoe UI\", 9F, System.Drawing.FontStyle.Bold, Sy" +
-                    "stem.Drawing.GraphicsUnit.Point);\r\n            this.dtp");
-            
-            #line 163 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 85 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden
-            this.Write(".Location = new System.Drawing.Point(");
+            this.Write("\";\r\n");
             
-            #line 163 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(controlX));
+            #line 86 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 87 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } 
+            
+            #line default
+            #line hidden
+            this.Write("\r\n            // ====================================================\r\n          " +
+                    "  // 5. ADD CONTROLS TO GRID\r\n            // ===================================" +
+                    "=================\r\n");
+            
+            #line 92 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+
+            foreach(var col in Table.UpdateDtoColumns) { 
+
+            
+            #line default
+            #line hidden
+            this.Write("            this.tlpForm.Controls.Add(this.");
+            
+            #line 95 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 163 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(yPos));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n            this.dtp");
-            
-            #line 164 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Name = \"dtp");
-            
-            #line 164 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n            this.dtp");
-            
-            #line 165 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Size = new System.Drawing.Size(250, 23);\r\n            this.dtp");
-            
-            #line 166 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".TabIndex = ");
-            
-            #line 166 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(tabIndex++));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
-            
-            #line 167 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else { 
-            
-            #line default
-            #line hidden
-            this.Write("            // \r\n            // txt");
-            
-            #line 169 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\r\n            // \r\n            this.txt");
-            
-            #line 171 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle; // Flat UI Design\r\n " +
-                    "           this.txt");
-            
-            #line 172 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Font = new System.Drawing.Font(\"Segoe UI\", 9F, System.Drawing.FontStyle.Bold, Sy" +
-                    "stem.Drawing.GraphicsUnit.Point);\r\n            this.txt");
-            
-            #line 173 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Location = new System.Drawing.Point(");
-            
-            #line 173 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(controlX));
+            #line 95 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(curCol));
             
             #line default
             #line hidden
             this.Write(", ");
             
-            #line 173 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(yPos));
+            #line 95 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(curRow));
             
             #line default
             #line hidden
-            this.Write(");\r\n            this.txt");
+            this.Write(");\r\n");
             
-            #line 174 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Name = \"txt");
-            
-            #line 174 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("\";\r\n            this.txt");
-            
-            #line 175 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".Size = new System.Drawing.Size(250, 23);\r\n            this.txt");
-            
-            #line 176 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".TabIndex = ");
-            
-            #line 176 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(tabIndex++));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
-            
-            #line 177 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-                  if (col.Name.Contains("Password")) { 
-            
-            #line default
-            #line hidden
-            this.Write("            this.txt");
-            
-            #line 178 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".UseSystemPasswordChar = true;\r\n");
-            
-            #line 179 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-                  }
-                } 
-            
-            #line default
-            #line hidden
-            this.Write("\r\n");
-            
-            #line 182 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
- 
-                yPos += verticalSpacing;
-            } 
+            #line 96 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+
+            }
 
             
             #line default
             #line hidden
-            this.Write("            // \r\n            // ctrl");
+            this.Write(@"
+            // ====================================================
+            // 6. MAIN CONTROL SETUP
+            // ====================================================
+            this.Controls.Add(this.tlpForm);
+            this.Controls.Add(this._mainHeader); // وضع الهيدر في الأعلى
             
-            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("AddEdit\r\n            // \r\n            this.AutoScaleDimensions = new System.Drawi" +
-                    "ng.SizeF(7F, 15F);\r\n            this.AutoScaleMode = System.Windows.Forms.AutoSc" +
-                    "aleMode.Font;\r\n            \r\n");
-            
-            #line 192 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
- 
-            // 3. ADD TO CONTROLS COLLECTION
-            foreach(var col in editColumns) 
-            { 
+            this.Size = new System.Drawing.Size(700, 500);
+            this.Font = new System.Drawing.Font(""Segoe UI"", 10F);
+            this.BackColor = System.Drawing.Color.White;
 
-            
-            #line default
-            #line hidden
-            this.Write("            pnlContent.Controls.Add(this.lblIcon");
-            
-            #line 197 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n            pnlContent.Controls.Add(this.lbl");
-            
-            #line 198 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 199 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              if (col.CSharpType == "bool") { 
-            
-            #line default
-            #line hidden
-            this.Write("            pnlContent.Controls.Add(this.chk");
-            
-            #line 200 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 201 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else if (col.CSharpType == "DateTime") { 
-            
-            #line default
-            #line hidden
-            this.Write("            pnlContent.Controls.Add(this.dtp");
-            
-            #line 202 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 203 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              } else { 
-            
-            #line default
-            #line hidden
-            this.Write("            pnlContent.Controls.Add(this.txt");
-            
-            #line 204 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(");\r\n");
-            
-            #line 205 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-              }
-            } 
-            
-            int formHeight = startY + (halfPoint * verticalSpacing) + 40;
-
-            
-            #line default
-            #line hidden
-            this.Write("            this.Name = \"ctrl");
-            
-            #line 210 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("AddEdit\";\r\n            this.Size = new System.Drawing.Size(");
-            
-            #line 211 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(iconX + 480));
-            
-            #line default
-            #line hidden
-            this.Write(", ");
-            
-            #line 211 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(formHeight));
-            
-            #line default
-            #line hidden
-            this.Write(@"); 
-            
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            this.tlpForm.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
 
         #endregion
 
-        /// 1. DECLARE THE UI CONTROLS
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private System.Windows.Forms.TableLayoutPanel pnlHeader;
-        private System.Windows.Forms.PictureBox pbHeaderIcon;
-        private System.Windows.Forms.Label lblHeaderTitle;
-        private System.Windows.Forms.Panel pnlContent; // Holds your textboxes
-
-
+        private ModernUI.Framework.Controls.ModernControlHeader _mainHeader;
+        private System.Windows.Forms.TableLayoutPanel tlpForm;
+        
+        // Dynamic Controls
 ");
             
-            #line 228 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
- 
-        // 4. DECLARE CLASS FIELDS
-        foreach(var col in editColumns) 
-        { 
-
+            #line 122 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ foreach(var col in Table.UpdateDtoColumns) { 
             
             #line default
             #line hidden
-            this.Write("        private System.Windows.Forms.Label lblIcon");
             
-            #line 233 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n        private System.Windows.Forms.Label lbl");
-            
-            #line 234 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 123 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ if(col.WinControl.StartsWith("Modern")) { 
             
             #line default
             #line hidden
-            this.Write(";\r\n");
+            this.Write("        private ModernUI.Framework.Controls.");
             
-            #line 235 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-          if (col.CSharpType == "bool") { 
+            #line 124 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.WinControl));
             
             #line default
             #line hidden
-            this.Write("        private System.Windows.Forms.CheckBox chk");
+            this.Write(" ");
             
-            #line 236 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 124 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 237 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-          } else if (col.CSharpType == "DateTime") { 
+            #line 125 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } else { 
             
             #line default
             #line hidden
-            this.Write("        private System.Windows.Forms.DateTimePicker dtp");
+            this.Write("        private System.Windows.Forms.");
             
-            #line 238 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n");
-            
-            #line 239 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-          } else { 
+            #line 126 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.WinControl));
             
             #line default
             #line hidden
-            this.Write("        private System.Windows.Forms.TextBox txt");
+            this.Write(" ");
             
-            #line 240 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            #line 126 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 241 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
-          }
-        } 
-
+            #line 127 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } 
+            
+            #line default
+            #line hidden
+            
+            #line 128 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEditDesigner.tt"
+ } 
             
             #line default
             #line hidden

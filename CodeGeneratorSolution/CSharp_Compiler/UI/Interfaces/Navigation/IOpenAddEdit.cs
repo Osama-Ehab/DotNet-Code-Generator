@@ -9,6 +9,6 @@ namespace CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces
 {
     public interface IOpenAddEdit
     {
-        Task OpenAddEdit(IIdentifiableDto gridDto);
+        Task<bool> OpenAddEditAsync(IIdentifiableDto gridDto);
     }
 }

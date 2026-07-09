@@ -60,42 +60,42 @@ namespace CodeGeneratorSolution.Templates.Application.Interfaces
                     "================\r\n public partial interface I");
             
             #line 17 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("Service  :\r\n        ICrudExtendedService<Create");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO, ");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO,Update");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO,");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DetailsDTO, ");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -106,35 +106,7 @@ namespace CodeGeneratorSolution.Templates.Application.Interfaces
             
             #line default
             #line hidden
-            this.Write(">     {\r\n\r\n");
-            
-            #line 20 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
- 
-        // Use .Any() so we only generate this method ONCE, 
-        // even if there are multiple sensitive columns.
-        if (Table.HasPassword) 
-        { 
-
-            
-            #line default
-            #line hidden
-            this.Write("        Task<Result<bool>> ChangePasswordAsync(");
-            
-            #line 26 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("ChangePasswordDto dto);\r\n");
-            
-            #line 27 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Interfaces\IEntityServiceTemplate.tt"
- 
-        } 
-
-            
-            #line default
-            #line hidden
-            this.Write("    }\r\n}");
+            this.Write(">     {\r\n\r\n\r\n    }\r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }

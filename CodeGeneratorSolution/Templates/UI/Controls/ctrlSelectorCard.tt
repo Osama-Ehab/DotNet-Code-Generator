@@ -15,7 +15,7 @@ using <#= SolutionName #>.Application; // For Result<T>
 
 namespace <#= SolutionName #>.UI.Controls
 {
-    public partial class ctrl<#= Table.ClassName #>SelectorCard : UserControl, ISelectorControl<<#= Table.PkType #>>
+    public partial class Basectrl<#= Table.EntityName #>SelectorCard : UserControl, ISelectorControl<<#= Table.PkType #>>
     {
         // ====================================================
         // 1. DYNAMIC FILTERING & STRATEGY PATTERN
@@ -30,19 +30,19 @@ namespace <#= SolutionName #>.UI.Controls
         public readonly List<KeyValuePair<FindBy, string>> FilterDisplayNames = new List<KeyValuePair<FindBy, string>>
         {
 <# foreach(var col in uniqueSelectors) { #>
-            new KeyValuePair<FindBy, string>(FindBy.<#= col.Name #>, "<#= col.FriendlyName #>"),
+            new KeyValuePair<FindBy, string>(FindBy.<#= col.Name #>, "<#= col.FriendlyNameAr #>"),
 <# } #>
         };
 
-        private readonly Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDTO>>>> _searchStrategies;
+        private readonly Dictionary<FindBy, Func<string, Task<Result<<#= Table.EntityName #>DetailsDTO>>>> _searchStrategies;
 
-        private readonly I<#= Table.ClassName #>Service _service;
-        private readonly ctrl<#= Table.ClassName #>ShowDetails _detailsCtrl;
+        private readonly I<#= Table.EntityName #>Service _service;
+        private readonly ctrl<#= Table.EntityName #>ShowDetails _detailsCtrl;
         private  <#= Table.PkType #>  _currentId;
 
         public event EventHandler<IIdentifiableDto> OnItemSelected;
 
-        public ctrl<#= Table.ClassName #>SelectorCard(I<#= Table.ClassName #>Service service, ctrl<#= Table.ClassName #>ShowDetails detailsCtrl)
+        public ctrl<#= Table.EntityName #>SelectorCard(I<#= Table.EntityName #>Service service, ctrl<#= Table.EntityName #>ShowDetails detailsCtrl)
         {
             InitializeComponent();
             _service = service;
@@ -66,9 +66,9 @@ namespace <#= SolutionName #>.UI.Controls
         // ====================================================
         // 2. STRATEGY INITIALIZATION
         // ====================================================
-        private Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDTO>>>> InitializeSearchStrategies()
+        private Dictionary<FindBy, Func<string, Task<Result<<#= Table.EntityName #>DetailsDTO>>>> InitializeSearchStrategies()
         {
-            return new Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDTO>>>>
+            return new Dictionary<FindBy, Func<string, Task<Result<<#= Table.EntityName #>DetailsDTO>>>>
             {
 <# foreach(var col in uniqueSelectors) { 
     if (col.CSharpType == "string") { #>
@@ -76,8 +76,8 @@ namespace <#= SolutionName #>.UI.Controls
 <#  } else { #>
                 { FindBy.<#= col.Name #>, async (text) => 
                     {
-                        if (!<#= col.CSharpType #>.TryParse(text, out var parsedValue))
-                            return Result<<#= Table.ClassName #>DetailsDTO>.Failure("Invalid format for <#= col.FriendlyName #>.");
+                        if (!<#= col.PrimitiveCSharpType #>.TryParse(text, out var parsedValue))
+                            return Result<<#= Table.EntityName #>DetailsDTO>.Failure("Invalid format for <#= col.FriendlyNameAr #>.");
                             
                         return await _service.GetDetailsBy<#= col.Name #>Async(parsedValue);
                     } 
@@ -87,7 +87,7 @@ namespace <#= SolutionName #>.UI.Controls
             };
         }
 
-        partial void OnRegisterCustomSearchStrategies(Dictionary<FindBy, Func<string, Task<Result<<#= Table.ClassName #>DetailsDTO>>>> strategies);
+        partial void OnRegisterCustomSearchStrategies(Dictionary<FindBy, Func<string, Task<Result<<#= Table.EntityName #>DetailsDTO>>>> strategies);
 
         // ====================================================
         // 3. THE DECOUPLED SEARCH EXECUTION (Guard Clauses Applied)
@@ -101,7 +101,7 @@ namespace <#= SolutionName #>.UI.Controls
             if (cbFindBy.SelectedValue == null) return;
             if (!(cbFindBy.SelectedValue is FindBy selectedFilter)) return;
 
-            <#= Table.ClassName #>DetailsDTO resulTReadDTO = null;
+            <#= Table.EntityName #>DetailsDTO resulTReadDTO = null;
             bool isCustomSearchHandled = false;
 
             // HOOK: Allow complete bypass
@@ -117,7 +117,7 @@ namespace <#= SolutionName #>.UI.Controls
             ProcessSearchResult(resulTReadDTO);
         }
 
-        private async Task<<#= Table.ClassName #>DetailsDTO> ExecuteSearchAsync(FindBy filter, string text)
+        private async Task<<#= Table.EntityName #>DetailsDTO> ExecuteSearchAsync(FindBy filter, string text)
         {
             // Guard: Strategy missing
             if (!_searchStrategies.TryGetValue(filter, out var searchFunction)) return null; 
@@ -130,7 +130,7 @@ namespace <#= SolutionName #>.UI.Controls
                 if (result == null) return null; 
 
                 // Guard: Success Path
-                if (result.IsSuccess) return result.Data;
+                if (result.IsSuccess) return result.Value;
 
                 // Expected BLL Failures (Validation, NotFound) handled gracefully by your central UI helper!
                 MessageServiceHelper.PopupMessage(result);
@@ -144,7 +144,7 @@ namespace <#= SolutionName #>.UI.Controls
             }
         }
 
-        private void ProcessSearchResult(<#= Table.ClassName #>DetailsDTO resulTReadDTO)
+        private void ProcessSearchResult(<#= Table.EntityName #>DetailsDTO resulTReadDTO)
         {
             // Guard: Search failed, clear UI
             if (resulTReadDTO == null)
@@ -159,6 +159,6 @@ namespace <#= SolutionName #>.UI.Controls
             OnItemSelected?.Invoke(this, (IIdentifiableDto)resulTReadDTO);
         }
 
-        partial void OnCustomSearch(FindBy filterType, string searchText, ref <#= Table.ClassName #>DetailsDTO resulTReadDTO, ref bool isHandled);
+        partial void OnCustomSearch(FindBy filterType, string searchText, ref <#= Table.EntityName #>DetailsDTO resulTReadDTO, ref bool isHandled);
     }
 }

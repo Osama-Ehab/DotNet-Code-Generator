@@ -1,6 +1,7 @@
 ﻿
-using CodeGeneratorSolution.UI.Interfaces;
 using CodeGeneratorSolution.UI.Helpers;
+using CodeGeneratorSolution.UI.Interfaces;
+using ModernUI.Framework.Controls;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -17,64 +18,38 @@ namespace CodeGeneratorSolution.UI.GenericForms
         public frmGenericAddEdit(IEditorControl Editor)
         {
             InitializeComponent();
-
             _EditorContent = Editor;
 
-            // 2. Setup Form
-            this.Text = _EditorContent.Title; // Dynamic Title
+            this.Text = _EditorContent.Title;
             this.AutoSize = true;
-            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.ControlBox = false; // Hide X button to force use of Cancel
+            // ...
 
-            // 2. Initialize TableLayoutPanel Engine
+            // The Form layout becomes incredibly simple: Just Content and Buttons
             _mainLayout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 ColumnCount = 1,
-                RowCount = 4, // 0: Header, 1: Main, 2: Bottom, 3: Buttons
-                Padding = new Padding(10)
+                RowCount = 2, // 0: The ENTIRE Control, 1: Buttons
+                AutoSize = true
             };
 
-            // 3. Define Strict Row Constraints
-            _mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Row 0: Header
-            _mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Row 1: Main Content
-            _mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Row 2: Bottom Control
-            _mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F)); // Row 3: Buttons (Fixed Height)
+            _mainLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
 
             this.Controls.Add(_mainLayout);
 
-            // 4. Add Main Content (Hardcoded to Row 1)
+            // 1. Add the Unified Control
             var ctrl = Editor.AsUserControl();
             ctrl.Dock = DockStyle.Fill;
-            ctrl.Margin = new Padding(0, 0, 0, 15);
-            _mainLayout.Controls.Add(ctrl, 0, 1);
+            _mainLayout.Controls.Add(ctrl, 0, 0);
 
-
-            // 2. THE MAGIC: Ask the control if it has a Header or Footer!
-            if (_EditorContent.HeaderControl != null)
-            {
-                AddHeaderControl(_EditorContent.HeaderControl);
-            }
-
-            if (_EditorContent.BottomControl != null)
-            {
-                AddBottomControl(_EditorContent.BottomControl);
-            }
-
-            // 5. Add Buttons (Hardcoded to Row 3)
+            // 2. Add Buttons
             var btnPanel = CreateButtonPanel(ctrl.Width);
-            _mainLayout.Controls.Add(btnPanel, 0, 3);
-            // 2. SUBSCRIBE TO SMART EVENTS
-            SubscribeToSmartEvents();
+            _mainLayout.Controls.Add(btnPanel, 0, 1);
 
-            // 3. Ensure we unsubscribe when the form closes to prevent memory leaks!
+            SubscribeToSmartEvents();
             this.FormClosed += FrmGenericAddEdit_FormClosed;
         }
-
         private void SubscribeToSmartEvents()
         {
             if (_EditorContent != null)
@@ -119,17 +94,6 @@ namespace CodeGeneratorSolution.UI.GenericForms
             this.Close();
         }
 
-        // ... (Keep your existing BtnSave_Click logic) ...
-
-        public void AddHeaderControl(UserControl headerCtrl)
-        {
-            headerCtrl.Dock = DockStyle.Fill;
-            headerCtrl.Margin = new Padding(0, 0, 0, 10);
-
-            // Drop it exactly into Column 0, Row 0. Zero Z-index issues.
-            _mainLayout.Controls.Add(headerCtrl, 0, 0);
-        }
-
         public void AddBottomControl(UserControl bottomCtrl)
         {
             bottomCtrl.Dock = DockStyle.Fill;
@@ -139,54 +103,65 @@ namespace CodeGeneratorSolution.UI.GenericForms
             _mainLayout.Controls.Add(bottomCtrl, 0, 2);
         }
 
-        private Panel CreateButtonPanel(int width)
+        private Panel CreateButtonPanel(int formWidth)
         {
-            Panel pnl = new Panel
+            // 1. الحاوية الرئيسية السفلية (Panel العادي)
+            Panel pnlBottom = new Panel
             {
-                Width = width,
-                Height = 40,
-                Dock = DockStyle.Fill, // Fill the Absolute 50F Row height
+                Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
 
-
-            // Inside frmGenericAddEdit.CreateButtonPanel()
-            if (!_EditorContent.IsReadOnly)
+            // 2. حاوية التدفق (FlowLayoutPanel) لرص الأزرار بمرونة
+            FlowLayoutPanel flowLayout = new FlowLayoutPanel
             {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.RightToLeft, // يبدأ الرص من اليمين لليسار
+                WrapContents = false,
+                Location = new Point(formWidth - 10, 5), // إزاحة مبدئية
+                Anchor = AnchorStyles.Top | AnchorStyles.Right, // السحر هنا: يلتصق باليمين دائماً
+                Padding = new Padding(0)
+            };
 
-                // SAVE BUTTON
-                Button btnSave = new Button
-                {
-                    Text = "Save",
-                    DialogResult = DialogResult.None,
-                    Location = new Point(width - 80, 0),
-                    Anchor = AnchorStyles.Top | AnchorStyles.Right // Pin to the right side
-                };
-
-                btnSave.Text = string.IsNullOrEmpty(_EditorContent.ActionButtonText) ? "Save" : _EditorContent.ActionButtonText;
-                btnSave.Click += btnSave_Click;
-                pnl.Controls.Add(btnSave);
-                // Allow "Enter" key to trigger Save
-                this.AcceptButton = btnSave;
-            }
-
-            // CANCEL BUTTON
-            Button btnCancel = new Button
+            // 3. إضافة زر الإلغاء (Danger Button)
+            // بافتراض أنك ستقوم ببرمجة ModernButton لاحقاً
+            DangerButton btnCancel = new DangerButton
             {
-                Text = "Cancel",
+                Text = "إلغاء",
                 DialogResult = DialogResult.Cancel,
-                Location = new Point(width - 170, 0),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
+                Margin = new Padding(5, 0, 0, 0) // مسافة بين الأزرار
             };
             btnCancel.Click += (s, e) => this.Close();
-
-            pnl.Controls.Add(btnCancel);
-
             this.CancelButton = btnCancel;
 
-            return pnl;
-        }
+            // 4. إضافة زر الحفظ (Success Button)
+            if (!_EditorContent.IsReadOnly)
+            {
+                SuccessButton btnSave = new SuccessButton
+                {
+                    Text = string.IsNullOrEmpty(_EditorContent.ActionButtonText) ? "حفظ" : _EditorContent.ActionButtonText,
+                    DialogResult = DialogResult.None,
+                    Margin = new Padding(5, 0, 0, 0)
+                };
+                btnSave.Click += btnSave_Click;
+                this.AcceptButton = btnSave;
 
+                // إضافته أولاً ليكون في أقصى اليمين (بسبب RightToLeft)
+                flowLayout.Controls.Add(btnSave);
+            }
+
+            // إضافة زر الإلغاء ثانياً
+            flowLayout.Controls.Add(btnCancel);
+
+            // ربط الحاويات
+            pnlBottom.Controls.Add(flowLayout);
+
+            // تعديل موقع الـ FlowLayout بناءً على عرضه النهائي بعد رص الأزرار
+            flowLayout.Left = formWidth - flowLayout.Width - 15;
+
+            return pnlBottom;
+        }
         private async void btnSave_Click(object sender, EventArgs e)
         {
             if (!this.ValidateChildren())

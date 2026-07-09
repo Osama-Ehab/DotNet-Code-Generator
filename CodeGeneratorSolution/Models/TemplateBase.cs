@@ -1,5 +1,6 @@
 ﻿using CodeGeneratorSolution.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System.CodeDom.Compiler;
 using System.Text;
 
@@ -50,8 +51,10 @@ namespace CodeGeneratorSolution.Models
 
 
 
+        // 2. بناء المسار للوصول إلى ملف Resources.resx
+        // نفترض أن ملف T4 موجود في مجلد "Helpers" وأن مجلد "Properties" موجود بجانبه في نفس المشروع
+        public string ResxPath => Config.ResourcesPath;
 
-       
         /// <summary>
         /// The string hold SolutionName
         /// </summary>

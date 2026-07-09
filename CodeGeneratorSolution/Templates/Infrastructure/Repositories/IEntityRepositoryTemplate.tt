@@ -12,8 +12,8 @@ namespace <#= SolutionName #>.Infrastructure.Repositories
 {
 
     // INHERITANCE: Automatically gets Add, Update, Delete, GetById
-    public partial interface I<#= Table.ClassName #>Repository :
-        ICrudExtendedRepository<<#= Table.ClassName #>,<#= Table.ClassName #>DetailsDTO, <#= Table.ClassName #>ListDTO,<#= Table.PkType #>> 
+    public partial interface I<#= Table.EntityName #>Repository :
+        ICrudExtendedRepository<<#= Table.EntityName #>,<#= Table.EntityName #>DetailsDTO, <#= Table.EntityName #>ListDTO,<#= Table.PkType #>> 
     {
         // This file is now CLEAN! 
         // You only add specific methods here later if needed.

@@ -59,28 +59,28 @@ namespace CodeGeneratorSolution.Templates.Infrastructure.Repositories
                     "date, Delete, GetById\r\n    public partial interface I");
             
             #line 15 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("Repository :\r\n        ICrudExtendedRepository<");
             
             #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write(",");
             
             #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DetailsDTO, ");
             
             #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\IEntityRepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden

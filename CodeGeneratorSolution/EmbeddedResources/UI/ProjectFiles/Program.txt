@@ -23,6 +23,18 @@ namespace {{TARGET_NAMESPACE}}
             // FIX 1: This MUST be uncommented to initialize the WinForms engine
             ApplicationConfiguration.Initialize();
 
+          
+
+            // 1. قراءة التفضيلات المحفوظة من جهاز المستخدم
+            // إذا كانت هذه أول مرة يفتح فيها البرنامج، سيأخذ القيم الافتراضية
+            string savedLang = Properties.Settings.Default.Language; // مثلاً "ar-EG"
+            bool savedTheme = Properties.Settings.Default.IsDarkMode;
+
+            // 2. تعبئة السياق (Bootstrapping the Context)
+            // الآن كل البرنامج يعمل بهذه الإعدادات
+            AppLayoutContext.Initialize(savedLang, savedTheme);
+
+
             try
             {
                 // FIX 2: Use AppContext.BaseDirectory, NOT Directory.GetCurrentDirectory()
@@ -39,6 +51,8 @@ namespace {{TARGET_NAMESPACE}}
  
                 services.AddSingleton(registry);
                 services.AddSingleton<IConfiguration>(Configuration);
+                // تسجيل الجلسة كنسخة واحدة (Singleton) طوال تشغيل البرنامج
+                services.AddSingleton<IUserSession, ApplicationUserSession>();
                 services.AddSingleton<INavigationService, WindowsFormsNavigationService>();
 
                 // Load generated dependencies

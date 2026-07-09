@@ -62,10 +62,10 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line default
             #line hidden
-            this.Write(".UI.Controls\r\n{\r\n\r\n    public partial class ctrl");
+            this.Write(".UI.Controls\r\n{\r\n\r\n    public partial class Basectrl");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -108,14 +108,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "rivate List<");
             
             #line 38 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("ListDTO> _allRecords;\r\n        private readonly I");
             
             #line 39 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -142,7 +142,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write(", \"");
             
             #line 46 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden
@@ -156,7 +156,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write("        };\r\n\r\n        private static readonly Dictionary<FilterBy, Func<");
             
             #line 50 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -164,7 +164,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "Func<");
             
             #line 51 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -172,7 +172,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line 53 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
  foreach(var col in Table.SearchableColumns) { 
-    if (col.HasAllowedValues) { 
+    if (col.HasMetaAllowedValues) { 
             
             #line default
             #line hidden
@@ -246,7 +246,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "=====================\r\n        public Type EntityDtoType => typeof(");
             
             #line 68 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -261,14 +261,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         public ctrl");
             
             #line 76 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("List(I");
             
             #line 76 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -276,7 +276,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "vice = service;\r\n            _allRecords = new List<");
             
             #line 80 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -309,7 +309,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                 lblHeaderTitle.Text = ""Add New ");
             
             #line 106 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -317,7 +317,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     " icon\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
             
             #line 108 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -325,7 +325,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "eaderTitle.Text = \"Update ");
             
             #line 112 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -333,7 +333,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "s icon\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
             
             #line 114 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -348,11 +348,11 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             var result = await _service.GetListAsync();
             if (result.IsSuccess)
             {
-                _allRecords = result.Data.ToList();
+                _allRecords = result.Value.ToList();
                 RefreshDataWithFilter();
             }
 
-            PopupMessage(result);
+            MessageServiceHelper.PopupMessage(result);
         }
 
         private void SetRecordsCountLabel() => lblRecordCount.SetRecordsCount(dgvList.Rows.Count);
@@ -363,7 +363,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         private List<");
             
             #line 137 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -446,7 +446,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "ng, string>(\"All\", \"\"),\r\n");
             
             #line 203 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-      foreach(var val in col.AllowedFilterValues) { 
+      foreach(var val in col.MetaAllowedValues) { 
             
             #line default
             #line hidden
@@ -558,14 +558,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         private bool MatchString(");
             
             #line 268 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("ListDTO dto, string searchText, Func<");
             
             #line 268 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -574,14 +574,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "parison.OrdinalIgnoreCase);\r\n        }\r\n\r\n        private bool MatchExact(");
             
             #line 274 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("ListDTO dto, string searchText, Func<");
             
             #line 274 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -590,14 +590,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "  private bool MatchDropdwonValues(");
             
             #line 280 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("ListDTO dto, string searchText, Func<");
             
             #line 280 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlList.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden

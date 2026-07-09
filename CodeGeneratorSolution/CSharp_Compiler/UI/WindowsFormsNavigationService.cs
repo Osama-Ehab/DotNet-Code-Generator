@@ -1,18 +1,17 @@
-﻿
-using CodeGeneratorSolution.Application.Interfaces;
-using CodeGeneratorSolution.Core.DTOs.Interfaces;
+﻿using CodeGeneratorSolution.Core.DTOs.Interfaces;
 using CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces;
 using CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces.Controls;
-using CodeGeneratorSolution.UI.Events;
 using CodeGeneratorSolution.UI.GenericForms;
 using CodeGeneratorSolution.UI.Helpers;
 using CodeGeneratorSolution.UI.Interfaces;
 using CodeGeneratorSolution.UI.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CodeGeneratorSolution.UI.Services
 {
-
     public class WindowsFormsNavigationService : INavigationService
     {
         private readonly IServiceProvider _serviceProvider;
@@ -25,84 +24,122 @@ namespace CodeGeneratorSolution.UI.Services
         }
 
         // ====================================================
-        // 1. DYNAMIC ROUTING FOR SHOW DETAILS (O(1) Lookup)
+        // 1. SHOW DETAILS (لا يرجع بيانات لأنها للقراءة فقط)
         // ====================================================
         public async Task ShowDetailsAsync(IIdentifiableDto dto)
         {
             Type dtoType = dto.GetType();
 
-            // 1. Find the target UserControl type in the map
             if (!_registry.DetailsRoutes.TryGetValue(dtoType, out Type controlType))
             {
                 MessageServiceHelper.ShowError($"No details view configured for {dtoType.Name}.", "Routing Error");
                 return;
             }
 
-            // 2. Resolve and Show
-            using (var scope = _serviceProvider.CreateScope())
+            await OpenRoutedControlAsync<IPopupControl>(controlType, true, async (control) =>
             {
-                // Magic: GetRequiredService accepts a Type variable!
-                var control = (IDetailsControl)scope.ServiceProvider.GetRequiredService(controlType);
-
-                await control.LoadDataAsync(dto.Id);
-
-                using (var frm = new frmGenericPopup(control))
+                // بافتراض أن IDetailsControl يحتوي على LoadDataAsync
+                if (control is ILoadDataById loadableControl)
                 {
-                    frm.ShowDialog();
+                    await loadableControl.LoadDataAsync(dto.Id);
                 }
-            }
+            });
         }
 
         // ====================================================
-        // 2. DYNAMIC ROUTING FOR UPDATES (O(1) Lookup)
+        // 2. OPEN ADD/EDIT (يرجع True إذا تم الحفظ بنجاح)
         // ====================================================
-        public async Task OpenAddEdit(IIdentifiableDto gridDto)
+        public async Task<bool> OpenAddEditAsync(IIdentifiableDto gridDto)
         {
-            if (gridDto == null) return;
+            if (gridDto == null) return false;
             Type dtoType = gridDto.GetType();
 
-            if (!_registry.EditorRoutes.TryGetValue(dtoType, out Type controlType)) return;
-
-            using (var scope = _serviceProvider.CreateScope())
+            if (!_registry.EditorRoutes.TryGetValue(dtoType, out Type controlType))
             {
-                var control = (IEditorControl)scope.ServiceProvider.GetRequiredService(controlType);
-
-                // handle async properly depending on your UI flow
-                await control.LoadDataAsync(gridDto.Id);
-
-                using (var frm = new frmGenericAddEdit(control))
-                {
-                    frm.ShowDialog();
-                }
+                MessageServiceHelper.ShowError($"Routing failed: No editor mapped for {dtoType.Name}", "Routing Error");
+                return false;
             }
+
+            return await OpenRoutedControlAsync<IEditorControl>(controlType, false, async (control) =>
+            {
+                if (control is ILoadDataById loadableControl)
+                {
+                    await loadableControl.LoadDataAsync(gridDto.Id);
+                }
+            });
         }
 
-
         // ====================================================
-        // 3. GENERIC ADD NEW RECORD (No Code Duplication!)
+        // 3. OPEN ADD NEW (يرجع True إذا تم الحفظ بنجاح)
         // ====================================================
-
-        public void OpenAddNew(Type dtoType)
+        public async Task<bool> OpenAddNewAsync(Type dtoType)
         {
-            // 1. O(1) Hash Lookup - Instantaneous!
-            if (_registry.EditorRoutes.TryGetValue(dtoType, out Type editorType))
+            if (!_registry.EditorRoutes.TryGetValue(dtoType, out Type controlType))
             {
+                MessageServiceHelper.ShowError($"Routing failed: No editor mapped for {dtoType.Name}", "Routing Error");
+                return false;
+            }
 
+            return await OpenRoutedControlAsync<IEditorControl>(controlType, false, null);
+        }
+
+        // ====================================================
+        // 💎 THE CORE ENGINE (DRY Principle)
+        // ====================================================
+        /// <summary>
+        /// المحرك الأساسي لفتح الشاشات: يعالج الـ DI، الـ Scopes، مؤشر الانتظار، ويرجع حالة الحفظ.
+        /// </summary>
+        private async Task<bool> OpenRoutedControlAsync<TControlInterface>(Type controlType, bool isDetails, Func<TControlInterface, Task> loadDataAction)
+        {
+            // تغيير شكل الماوس لحالة الانتظار لكي لا يظن المستخدم أن النظام معطل
+            Cursor.Current = Cursors.WaitCursor;
+
+            try
+            {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    // 2. Pass the resolved Type to the DI Container!
-                    var control = (IEditorControl)scope.ServiceProvider.GetRequiredService(editorType);
+                    // 1. محاولة استخراج الشاشة من الـ DI
+                    var resolvedService = scope.ServiceProvider.GetService(controlType);
 
-                    using (var frm = new frmGenericAddEdit(control))
+                    if (resolvedService == null)
                     {
-                        frm.ShowDialog();
+                        Cursor.Current = Cursors.Default;
+                        MessageServiceHelper.ShowError($"The control '{controlType.Name}' is routed, but it is NOT registered in the Dependency Injection container (Program.cs).", "DI Registration Missing");
+                        return false;
+                    }
+
+                    var control = (TControlInterface)resolvedService;
+
+                    // 2. تحميل البيانات (إن وجدت) أثناء ظهور مؤشر الانتظار
+                    if (loadDataAction != null)
+                    {
+                        await loadDataAction(control);
+                    }
+
+                    // إعادة الماوس لطبيعته قبل فتح الشاشة
+                    Cursor.Current = Cursors.Default;
+
+                    // 3. تغليف الشاشة وعرضها
+                    Form frm = isDetails
+                        ? new frmGenericPopup((IPopupControl)control)
+                        : new frmGenericAddEdit((IEditorControl)control);
+
+                    using (frm)
+                    {
+                        // 4. التقاط النتيجة (DialogResult) لإخبار الـ Grid هل تم التحديث أم لا!
+                        DialogResult result = frm.ShowDialog();
+                        return result == DialogResult.OK;
                     }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageServiceHelper.ShowError($"Routing failed: No editor mapped for {dtoType.Name}");
+                Cursor.Current = Cursors.Default;
+                MessageServiceHelper.ShowError($"A critical error occurred while opening the screen:\n\n{ex.Message}", "System Error");
+                return false;
             }
         }
+
+   
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeGeneratorSolution.Core.DTOs.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces.Controls
 {
     public interface IFillControl
     {
-        void FillControl();
+        void FillControl(IDto dto);
     }
 }

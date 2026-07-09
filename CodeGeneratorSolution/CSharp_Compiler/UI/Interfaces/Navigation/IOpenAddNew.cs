@@ -8,6 +8,6 @@ namespace CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces
 {
     public interface IOpenAddNew
     {
-        void OpenAddNew(Type entityDtoTyp);
+        Task<bool> OpenAddNewAsync(Type entityDtoTyp);
     }
 }

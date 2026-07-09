@@ -77,10 +77,10 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line default
             #line hidden
-            this.Write(".UI.Controls\r\n{\r\n    public partial class ctrl");
+            this.Write(".UI.Controls\r\n{\r\n    public partial class Basectrl");
             
             #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -132,7 +132,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write(", \"");
             
             #line 33 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden
@@ -147,21 +147,21 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "t<");
             
             #line 37 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DetailsDTO>>>> _searchStrategies;\r\n\r\n        private readonly I");
             
             #line 39 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("Service _service;\r\n        private readonly ctrl");
             
             #line 40 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -172,25 +172,25 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line default
             #line hidden
-            this.Write("  _currentId;\r\n\r\n        public event EventHandler<IIdentifiableDto> OnItemSelected;\r\n\r\n " +
-                    "       public ctrl");
+            this.Write("  _currentId;\r\n\r\n        public event EventHandler<IIdentifiableDto> OnItemSelect" +
+                    "ed;\r\n\r\n        public ctrl");
             
             #line 45 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("SelectorCard(I");
             
             #line 45 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("Service service, ctrl");
             
             #line 45 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -221,7 +221,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         private Dictionary<FindBy, Func<string, Task<Result<");
             
             #line 69 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -229,7 +229,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "ctionary<FindBy, Func<string, Task<Result<");
             
             #line 71 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -272,7 +272,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             this.Write(", async (text) => \r\n                    {\r\n                        if (!");
             
             #line 79 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.PrimitiveCSharpType));
             
             #line default
             #line hidden
@@ -280,14 +280,14 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "");
             
             #line 80 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DetailsDTO>.Failure(\"Invalid format for ");
             
             #line 80 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.FriendlyNameAr));
             
             #line default
             #line hidden
@@ -311,7 +311,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                     "s(Dictionary<FindBy, Func<string, Task<Result<");
             
             #line 90 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -332,7 +332,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             ");
             
             #line 104 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -355,7 +355,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         private async Task<");
             
             #line 120 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -372,7 +372,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
                 if (result == null) return null; 
 
                 // Guard: Success Path
-                if (result.IsSuccess) return result.Data;
+                if (result.IsSuccess) return result.Value;
 
                 // Expected BLL Failures (Validation, NotFound) handled gracefully by your central UI helper!
                 MessageServiceHelper.PopupMessage(result);
@@ -389,7 +389,7 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
         private void ProcessSearchResult(");
             
             #line 147 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -403,19 +403,15 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             }
 
             // Success Path
-            _currentId = resulTReadDTO.");
-            
-            #line 157 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkName));
-            
-            #line default
-            #line hidden
-            this.Write(";\r\n            _detailsCtrl.LoadData(resulTReadDTO);\r\n            OnItemSelected?.Inv" +
-                    "oke(this, (IIdentifiableDto)resulTReadDTO);\r\n        }\r\n\r\n        partial void OnCustomSearc" +
-                    "h(FindBy filterType, string searchText, ref ");
+            _currentId = resulTReadDTO.Id;
+            _detailsCtrl.LoadData(resulTReadDTO);
+            OnItemSelected?.Invoke(this, (IIdentifiableDto)resulTReadDTO);
+        }
+
+        partial void OnCustomSearch(FindBy filterType, string searchText, ref ");
             
             #line 162 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCard.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden

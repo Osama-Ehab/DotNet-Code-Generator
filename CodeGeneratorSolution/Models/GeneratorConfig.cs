@@ -11,5 +11,6 @@ namespace CodeGeneratorSolution.Models
         public string SolutionName { get; set; } = string.Empty;
         public string OutputRootDirectory { get; set; } = string.Empty;
         public string ConnectionString { get; set; } = string.Empty;
+        public string ResourcesPath { get; set; } = string.Empty;
     }
 }

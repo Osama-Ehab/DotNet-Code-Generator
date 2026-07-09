@@ -1,4 +1,6 @@
 ﻿using CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces;
+using CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces.Controls.Methods;
+using CodeGeneratorSolution.CSharp_Compiler.UI.Interfaces.Events;
 using CodeGeneratorSolution.UI.Events;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,11 @@ namespace CodeGeneratorSolution.UI.Interfaces
     // The Navigation Service uses THIS one to load data.
     // TKey allows us to handle int, long, Guid, etc.
     // ---------------------------------------------------------
-    public interface IListControl : IPopupControl, IEntityDtoType,ILoadData
+    public interface IListControl : IPopupControl, IEntityDtoType,ILoadData,ICanDelete
     {
 
     }
-    public interface IListControlWithNotifies : IListControl, INotifyAddNew, INotifyEdit, INotifyShowDetails
+    public interface IListControlWithNotifies : IListControl, INotifyAddNew, INotifyEdit, INotifyShowDetails,INotifyDeleteRequest
     {
 
     }

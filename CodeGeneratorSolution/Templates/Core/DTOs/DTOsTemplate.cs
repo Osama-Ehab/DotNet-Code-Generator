@@ -42,7 +42,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             this.Write(".Core.DTOs\r\n{\r\n    // 1. Inherits ID from Base (standard Dto)\r\n    public class ");
             
             #line 7 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\DTOs\DTOsTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -89,7 +89,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             this.Write("    }\r\n\r\n    // 2. Inherits ID from Base  (Update Dto)\r\n    public class Update");
             
             #line 20 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\DTOs\DTOsTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -136,7 +136,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             this.Write("    }\r\n\r\n\r\n    //  (Create Dto)\r\n    public class Create");
             
             #line 34 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\DTOs\DTOsTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -176,7 +176,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             this.Write("    }\r\n\r\n    // 1. Inherits ID from Base (Detailed Dto)\r\n    public class ");
             
             #line 47 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\DTOs\DTOsTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -223,7 +223,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             this.Write("    }\r\n\r\n\r\n        // 1. Inherits ID from Base (List DTO)\r\n    public class ");
             
             #line 61 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\DTOs\DTOsTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -267,7 +267,7 @@ namespace CodeGeneratorSolution.Templates.Core.DTOs
             
             #line default
             #line hidden
-            this.Write("    }\r\n}");
+            this.Write("    }\r\n\r\n\r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -42,10 +42,10 @@ namespace ");
             
             #line default
             #line hidden
-            this.Write(".UI.Controls\r\n{\r\n    partial class ctrl");
+            this.Write(".UI.Controls\r\n{\r\n    partial class Basectrl");
             
             #line 14 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCardDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -144,7 +144,7 @@ namespace ");
                     "=======\r\n            // ctrl");
             
             #line 144 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCardDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -159,7 +159,7 @@ namespace ");
             this.Name = ""ctrl");
             
             #line 152 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlSelectorCardDesigner.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden

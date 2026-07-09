@@ -1,0 +1,77 @@
+﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ output extension=".cs" #>
+<#
+
+    // التحقق من وجود الملف لتجنب الانهيار
+    if (!File.Exists(ResxPath))
+    {
+        Warning("لم يتم العثور على ملف Resources.resx في المسار: " + ResxPath);
+    }
+    
+    // 3. تحميل ملف XML
+    XDocument doc = XDocument.Load(ResxPath);
+
+    // 4. استخراج أسماء الصور فقط
+    var imageNames = doc.Descendants("data")
+        .Where(d => d.Attribute("type") != null && 
+                   (d.Attribute("type").Value.Contains("System.Drawing.Bitmap") || 
+                    d.Attribute("type").Value.Contains("System.Drawing.Icon")))
+        .Select(d => d.Attribute("name").Value)
+        .ToList();
+#>
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+
+namespace SchoolERP.Helpers
+{
+    public static class AppIcons
+    {
+<#
+        // --- القسم الأول: توليد الخصائص (Lazy Properties) ---
+        foreach (string name in imageNames)
+        {
+            // تحويل أول حرف ليكون صغيراً للمتغير الداخلي
+            string fieldName = "_" + char.ToLower(name[0]) + name.Substring(1);
+#>
+        private static readonly Lazy<Image> <#= fieldName #> = new Lazy<Image>(() => Properties.Resources.<#= name #>);
+        public static Image <#= name #> => <#= fieldName #>.Value;
+
+<#
+        }
+#>
+        // --- القسم الثاني: توليد القاموس (Dictionary Registry) ---
+        private static readonly Dictionary<string, Lazy<Image>> _iconRegistry = new Dictionary<string, Lazy<Image>>(StringComparer.OrdinalIgnoreCase)
+        {
+<#
+        foreach (string name in imageNames)
+        {
+            string fieldName = "_" + char.ToLower(name[0]) + name.Substring(1);
+            string dictKey = name.ToLower();
+#>
+            { "<#= dictKey #>", <#= fieldName #> },
+<#
+        }
+#>
+        };
+
+        /// <summary>
+        /// دالة سريعة جداً لاستدعاء الصورة الأصلية بناءً على اسمها النصي
+        /// </summary>
+        public static Image GetBaseImage(string iconName)
+        {
+            if (_iconRegistry.TryGetValue(iconName, out Lazy<Image> lazyImage))
+            {
+                return lazyImage.Value;
+            }
+            return null; 
+        }
+    }
+}

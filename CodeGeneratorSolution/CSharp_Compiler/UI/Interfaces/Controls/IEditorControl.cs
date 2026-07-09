@@ -16,29 +16,13 @@ namespace CodeGeneratorSolution.UI.Interfaces
         // The Form calls this when "Save" is clicked.
         // Returns TRUE if saved successfully, FALSE if validation failed.
     }
-    public interface IEditorControl :IIdentifiableControl
+    public interface IEditorControl : IIdentifiableControl
     {
-        
         Task<bool> SaveDataAsync();
-        // Inside IEditorControl
-        string ActionButtonText { get; } // e.g., "Save", "Update", "Register"
-        bool IsReadOnly { get; }         // Tells the form to hide the Save button entirely
+        string ActionButtonText { get; }
+        bool IsReadOnly { get; }
 
-
-        // ADD THESE: Optional Header and Footer controls
-        UserControl HeaderControl { get; }
-        UserControl BottomControl { get; }
-
-        // ==========================================
-        // SMART FORM EVENTS
-        // ==========================================
-
-
-
-        // Fired when the control's internal validation passes or fails (Enables/Disables Save button)
-        //event EventHandler<bool> OnValidationStateChanged;
-
-        // Fired if the control needs to forcefully close the parent form
-        //event EventHandler OnRequestFormClose;
+        // REMOVED: HeaderControl and BottomControl
+        // We don't need them anymore! The control itself handles its UI.
     }
 }

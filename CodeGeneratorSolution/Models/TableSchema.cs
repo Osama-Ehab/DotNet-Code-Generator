@@ -1,132 +1,111 @@
-﻿using CodeGeneratorSolution.Utlis;
-using CodeGeneratorSolution.Core;
-using Humanizer;
+﻿using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CodeGeneratorSolution.Models
 {
     public class TableSchema
     {
-
-    // 1. ALLOCATE REGEX EXACTLY ONCE
-    private static readonly System.Text.RegularExpressions.Regex _camelCaseRegex =
-        new System.Text.RegularExpressions.Regex("([a-z])([A-Z])", System.Text.RegularExpressions.RegexOptions.Compiled);
+        // استخدام Regex مجمع وسريع لتقسيم الكلمات
+        private static readonly Regex _camelCaseRegex = new Regex("([a-z])([A-Z])", RegexOptions.Compiled);
 
         // ========================================================================
         // 1. RAW DATA (Injected by SchemaReader)
         // ========================================================================
-        public required string Name { get; set; } // e.g., "Users" or "tbl_People"
+        public string Name { get; set; }
         public List<ColumnDefinition> Columns { get; set; } = new List<ColumnDefinition>();
-        public List<ColumnDefinition> GridColumns { get; set; } = new List<ColumnDefinition>();
-        public List<ColumnDefinition> DetailedColumns { get; set; } = new List<ColumnDefinition>();
 
         // ========================================================================
         // 2. NAMING CONVENTIONS (Powered by Humanizer)
         // ========================================================================
-        // Class Name: "User"
-        public string ClassName => NameFormatter.ToPascalCase(NameFormatter.Singularize(Name));
-
-        // Variable Name (Camel Case): "user" (Perfect for: var user = new User();)
-        public string CamelCaseName => ClassName.Camelize();
-
-        // Plural Name: "Users" (Perfect for: IEnumerable<User> Users)
-        public string PluralName => ClassName.Pluralize();
+        // استغنينا عن NameFormatter واستخدمنا Humanizer مباشرة لتقليل التبعيات
+        public string EntityName => Name.Singularize().Pascalize();
+        public string CamelCaseName => EntityName.Camelize();
+        public string PluralName => EntityName.Pluralize();
 
         // ========================================================================
-        // 3. PRIMARY KEY HELPERS (No more null checks in T4!)
+        // 3. PRIMARY KEY HELPERS
         // ========================================================================
-        public ColumnDefinition? PrimaryKey => Columns.FirstOrDefault(c => c.IsPrimaryKey);
+        public ColumnDefinition PrimaryKey => Columns.FirstOrDefault(c => c.IsPrimaryKey);
 
         public string PkName => PrimaryKey?.Name ??
-            throw new InvalidOperationException($"Table '{Name}' does not have a single Primary Key defined. Cannot generate standard CRUD operations.");
+            throw new InvalidOperationException($"Table '{Name}' does not have a single Primary Key defined.");
 
         public string PkType => PrimaryKey?.CSharpType ?? "int";
 
         // ========================================================================
-        // 4. DTO & MAPPING HELPERS (Optimized)
+        // 4. DTO & MAPPING HELPERS
         // ========================================================================
         public IEnumerable<ColumnDefinition> CreateDtoColumns => Columns.Where(c => c.IncludeInInsert);
         public IEnumerable<ColumnDefinition> UpdateDtoColumns => Columns.Where(c => c.IncludeInUpdate);
-        public IEnumerable<ColumnDefinition> StandrdDtoColumns => Columns.Where(c => !c.IsSensitive && !c.IsPrimaryKey);
+
+        // تم الإصلاح: السماح للـ Primary Key بالتواجد في الـ DTO الأساسي!
+        public IEnumerable<ColumnDefinition> StandrdDtoColumns => Columns.Where(c => !(c.MetaIsSensitive ?? false));
 
         // ========================================================================
-        // 6. UI GRID & SEARCH HELPERS (Optimized & Custom-Value Aware)
+        // 5. THE MAGIC LINK FOR LOCALIZATION (للإجراءات المخزنة)
         // ========================================================================
+        public List<string> LocalizedColumnPrefixes
+        {
+            get
+            {
+                var arColumns = Columns.Where(c => c.Name.EndsWith("Ar")).Select(c => c.Name.Substring(0, c.Name.Length - 2));
+                var enColumns = Columns.Where(c => c.Name.EndsWith("En")).Select(c => c.Name.Substring(0, c.Name.Length - 2));
+                return arColumns.Intersect(enColumns).ToList();
+            }
+        }
 
-        public IEnumerable<ColumnDefinition> UniqueSelectorColumns => GridColumns.Where(c => c.IsUniqueSelector);
-        public IEnumerable<ColumnDefinition> SearchableColumns => GridColumns.Where(c => c.IsSearchable);
+        // ========================================================================
+        // 6. UI GRID & SEARCH HELPERS (Smart Properties)
+        // ========================================================================
+        // الفلترة الذكية: لا تظهر الباسورد، ولا الصور، ولا النصوص التي تتجاوز 250 حرف في الـ Grid
+        public IEnumerable<ColumnDefinition> GridColumns => Columns.Where(c =>
+            !(c.MetaIsSensitive ?? false) &&
+            c.CSharpType != "byte[]" &&
+            (c.MaxLength <= 250 || c.MaxLength == -1));
 
-        // Any column that has values for a combobox
-        public IEnumerable<ColumnDefinition> DropdownColumns => SearchableColumns.Where(c => c.HasAllowedValues);
+        public IEnumerable<ColumnDefinition> DetailedColumns => Columns.Where(c => !(c.MetaIsSensitive ?? false));
 
-        // ONLY standard booleans that still use exactly "True" and "False"
-        public IEnumerable<ColumnDefinition> DropdownStandardBooleanColumns =>
-            DropdownColumns.Where(c => c.CSharpType == "bool" && c.AllowedFilterValues.Contains("True"));
-
-        // ALL other dropdowns: String Enums (e.g., "Pending, Complete") AND Overridden Booleans (e.g., "Active, Inactive")
-        public IEnumerable<ColumnDefinition> DropdownCustomColumns =>
-            DropdownColumns.Except(DropdownStandardBooleanColumns);
+        public IEnumerable<ColumnDefinition> UniqueSelectorColumns => Columns.Where(c => c.IsUniqueSelector);
+        public IEnumerable<ColumnDefinition> SearchableColumns => Columns.Where(c => (c.MetaIsSearchable ?? false));
+        public IEnumerable<ColumnDefinition> DropdownColumns => SearchableColumns.Where(c => c.HasMetaAllowedValues);
 
         // ========================================================================
         // 7. FEATURE FLAGS
         // ========================================================================
         public bool IsAuditable => Columns.Any(c => c.IsAuditable);
-        public bool HasPassword => Columns.Any(c => c.IsHoldPassword); // Ensure IsSensitive catches passwords
+        public bool HasPassword => Columns.Any(c => c.MetaIsSensitive ?? false);
         public bool HasFileOrImage => Columns.Any(c => c.CSharpType == "byte[]");
+        public bool GenerateSelectorControl => Columns.Any(c => c.MetaIsUniqueSelector??false);
 
-        // ========================================================================
-        // 8. TABLE-LEVEL METADATA (Extended Properties)
-        // ========================================================================
         public Dictionary<string, string> ExtendedProperties { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        // The Magic Flag!
-        public bool GenerateSelectorControl
+        // ========================================================================
+        // 8. FRIENDLY NAMES
+        // ========================================================================
+        public string FriendlyNameEn
         {
             get
             {
-                if (ExtendedProperties.TryGetValue("GenerateSelectorControl", out string val))
-                {
-                    return val.ToLower() == "true" || val == "1";
-                }
-                return false; // Default to false if the DB Architect didn't add the property
-            }
-        }
-
-        public string FriendlyName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Name)) return string.Empty;
-
-                if (ExtendedProperties.TryGetValue("DisplayName", out string extDisplayName))
-                {
+                if (ExtendedProperties.TryGetValue("DisplayNameEn", out string extDisplayName))
                     return extDisplayName;
-                }
 
-                // 2. USE THE COMPILED REGEX (Blazing Fast)
                 string result = _camelCaseRegex.Replace(Name, "$1 $2");
-
-                // Split the spaced string into individual words
-                string[] words = result.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                // 4. The Initializer: If it's 3 or more words, shrink the first word to an initial!
-                if (words.Length >= 3)
-                {
-                    // "Customer Billing Address" -> "C. Billing Address"
-                    words[0] = words[0].Substring(0, 1) + ".";
-
-                    if (words.Length >= 5)
-                    {
-                        words[1] = words[1].Substring(0, 1) + ".";
-                    }
-                }
-
-                // Join them back together cleanly
-                return string.Join(" ", words).Trim();
+                return result.Singularize().Humanize(LetterCasing.Title);
             }
         }
 
+        public string FriendlyNameAr
+        {
+            get
+            {
+                if (ExtendedProperties.TryGetValue("DisplayNameAr", out string extDisplayName))
+                    return extDisplayName;
+
+                return TranslationHelper.TranslateEntityName(FriendlyNameEn); 
+            }
+        }
     }
 }

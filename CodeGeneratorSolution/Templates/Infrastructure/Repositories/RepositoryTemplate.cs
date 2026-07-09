@@ -26,61 +26,118 @@ namespace CodeGeneratorSolution.Templates.Infrastructure.Repositories
         /// </summary>
         public override string TransformText()
         {
-            this.Write("using System;\r\nusing System.Collections.Generic;\r\nusing System.Data;\r\nusing Micro" +
-                    "soft.Data.SqlClient;\r\nusing System.Threading.Tasks;\r\nusing Microsoft.Extensions." +
-                    "Configuration;\r\nusing ");
-            
-            #line 9 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
-            
-            #line default
-            #line hidden
-            this.Write(".Core.Entities;\r\nusing ");
-            
-            #line 10 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
-            
-            #line default
-            #line hidden
-            this.Write(".Core.DTOs;\r\nusing ");
+            this.Write("\r\nusing System;\r\nusing System.Collections.Generic;\r\nusing System.Data;\r\nusing Sys" +
+                    "tem.Threading.Tasks;\r\nusing Microsoft.Data.SqlClient;\r\nusing Microsoft.Extension" +
+                    "s.Configuration;\r\nusing Dapper; // <-- السحر يبدأ هنا\r\nusing ");
             
             #line 11 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
-            this.Write(".Infrastructure.Interfaces;\r\nusing ");
+            this.Write(".Core.Entities;\r\nusing ");
             
             #line 12 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
-            this.Write(".Infrastructure.Mapping; \r\n\r\nnamespace ");
+            this.Write(".Core.DTOs;\r\nusing ");
             
-            #line 14 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 13 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
-            this.Write(".Infrastructure.Repositories\r\n{\r\n    public partial class ");
+            this.Write(".Infrastructure.Interfaces;\r\n\r\nnamespace ");
             
-            #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 15 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
-            this.Write("Repository : BaseRepository\r\n            , I");
+            this.Write(".Infrastructure.Repositories.Generated\r\n{\r\n    public partial class ");
             
             #line 17 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("Repository\r\n    {\r\n        // 1. INJECTION\r\n        public ");
+            this.Write("Repository : BaseRepository, I");
             
-            #line 20 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 17 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
+            
+            #line default
+            #line hidden
+            this.Write(@"Repository
+    {
+        // =========================================================
+        // 1. USP NAMES (Safe Segregation Pattern)
+        // =========================================================
+        // جعلناها 'virtual' لكي تستطيع تغيير اسمها في الـ Custom Partial Class
+        protected virtual string GetByIdUspName => ""usp_Base_");
+            
+            #line 23 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_GetById\";\r\n        protected virtual string GetAllUspName => \"usp_Base_");
+            
+            #line 24 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_GetAll\";\r\n        protected virtual string InsertUspName => \"usp_Base_");
+            
+            #line 25 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_Insert\";\r\n        protected virtual string UpdateUspName => \"usp_Base_");
+            
+            #line 26 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_Update\";\r\n        protected virtual string DeleteUspName => \"usp_Base_");
+            
+            #line 27 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_Delete\";\r\n        protected virtual string GetListUspName => \"usp_Base_");
+            
+            #line 28 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_GetList\";\r\n        protected virtual string GetDetailsUspName => \"usp_Base_");
+            
+            #line 29 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_GetDetails\";\r\n        protected virtual string ExistsUspName => \"usp_Base_");
+            
+            #line 30 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            
+            #line default
+            #line hidden
+            this.Write("_Exists\";\r\n\r\n        // =========================================================" +
+                    "\r\n        // 2. INJECTION\r\n        // ==========================================" +
+                    "===============\r\n        public ");
+            
+            #line 35 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -89,279 +146,229 @@ namespace CodeGeneratorSolution.Templates.Infrastructure.Repositories
         }
 
         // =========================================================
-        // 2. STANDARD CRUD (Implementing IRepository<T, TKey>)
+        // 3. STANDARD CRUD (Dapper Powered)
         // =========================================================
 
         public async Task<");
             
-            #line 28 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 43 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("> GetByIdAsync( ");
+            this.Write("> GetByIdAsync(");
             
-            #line 28 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 43 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
-            this.Write(" id)\r\n        {\r\n            var param = new SqlParameter(\"@Id\", id);\r\n          " +
-                    "  \r\n            // Utilizing the BaseRepository Tool\r\n            return await G" +
-                    "etSingleAsync(\"usp_");
+            this.Write(" id)\r\n        {\r\n            using var connection = CreateConnection();\r\n        " +
+                    "    // Dapper يقوم بالـ Mapping وتمرير البارامتر آلياً باستخدام الكائنات المجهول" +
+                    "ة (Anonymous Objects)\r\n            return await connection.QueryFirstOrDefaultAs" +
+                    "ync<");
             
-            #line 33 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_GetById\", param, reader => reader.ToEntity()); \r\n        }\r\n\r\n        public asy" +
-                    "nc Task<IReadOnlyList<");
-            
-            #line 36 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 47 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write(">> GetAllAsync()\r\n        {\r\n            return await GetListAsync(\"usp_");
+            this.Write(">(\r\n                GetByIdUspName, \r\n                new { Id = id }, \r\n        " +
+                    "        commandType: CommandType.StoredProcedure);\r\n        }\r\n\r\n        public " +
+                    "async Task<IReadOnlyList<");
             
-            #line 38 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            #line 53 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("_GetAll\", reader => reader.ToEntity());\r\n        }\r\n\r\n        public async Task<");
+            this.Write(">> GetAllAsync()\r\n        {\r\n            using var connection = CreateConnection(" +
+                    ");\r\n            var result = await connection.QueryAsync<");
             
-            #line 41 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 56 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
+            
+            #line default
+            #line hidden
+            this.Write(">(\r\n                GetAllUspName, \r\n                commandType: CommandType.Sto" +
+                    "redProcedure);\r\n            return result.AsList();\r\n        }\r\n\r\n        public" +
+                    " async Task<");
+            
+            #line 62 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
             this.Write("> AddAsync(");
             
-            #line 41 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 62 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write(" entity)\r\n        {\r\n            var parameters = GetParameters(entity, isUpdate:" +
-                    " false);\r\n            return await AddAsync<");
+            this.Write(@" entity)
+        {
+            using var connection = CreateConnection();
+            // نمرر الـ entity بالكامل! Dapper سيفهم خصائصه ويصنع منها Parameters
+            // (يجب أن ينتهي استعلام Insert الخاص بك بـ SELECT SCOPE_IDENTITY();)
+            return await connection.ExecuteScalarAsync<");
             
-            #line 44 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 67 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
-            this.Write(">(\"usp_");
+            this.Write(">(\r\n                InsertUspName, \r\n                entity, \r\n                co" +
+                    "mmandType: CommandType.StoredProcedure);\r\n        }\r\n\r\n        public async Task" +
+                    "<bool> UpdateAsync(");
             
-            #line 44 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Insert\", parameters, \"@NewId\");\r\n        }\r\n\r\n        public async Task<bool> Up" +
-                    "dateAsync(");
-            
-            #line 47 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 73 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write(" entity)\r\n        {\r\n            var parameters = GetParameters(entity, isUpdate:" +
-                    " true);\r\n            return await ExecuteNonQueryAsync(\"usp_");
+            this.Write(@" entity)
+        {
+            using var connection = CreateConnection();
+            int rowsAffected = await connection.ExecuteAsync(
+                UpdateUspName, 
+                entity, 
+                commandType: CommandType.StoredProcedure);
+            return rowsAffected > 0;
+        }
+
+        public async Task<bool> DeleteAsync(");
             
-            #line 50 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Update\", parameters);\r\n        }\r\n\r\n        public async Task<bool> DeleteAsync(" +
-                    " ");
-            
-            #line 53 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 83 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
-            this.Write(" id)\r\n        {\r\n            var param = new SqlParameter[] { new SqlParameter(\"@" +
-                    "Id\", id) };\r\n            return await ExecuteNonQueryAsync(\"usp_");
-            
-            #line 56 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Delete\", param);\r\n        }\r\n\r\n      \r\n\r\n        public SqlParameter[] GetParame" +
-                    "ters(");
-            
-            #line 61 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write(" entity, bool isUpdate)\r\n        {\r\n            var parameters = new List<SqlPara" +
-                    "meter>();\r\n");
-            
-            #line 64 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
- foreach(var col in Table.Columns) { 
-    if (col.IsPrimaryKey) { 
-            
-            #line default
-            #line hidden
-            this.Write("            if (isUpdate) \r\n                parameters.Add(new SqlParameter(\"");
-            
-            #line 67 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.SqlParameterName));
-            
-            #line default
-            #line hidden
-            this.Write("\", entity.");
-            
-            #line 67 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write("));\r\n");
-            
-            #line 68 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-  } else { 
-            
-            #line default
-            #line hidden
-            this.Write("            parameters.Add(new SqlParameter(\"");
-            
-            #line 69 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.SqlParameterName));
-            
-            #line default
-            #line hidden
-            this.Write("\", (object)entity.");
-            
-            #line 69 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" ?? DBNull.Value));\r\n");
-            
-            #line 70 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-  } 
-} 
-            
-            #line default
-            #line hidden
-            this.Write(@"            return parameters.ToArray();
+            this.Write(@" id)
+        {
+            using var connection = CreateConnection();
+            int rowsAffected = await connection.ExecuteAsync(
+                DeleteUspName, 
+                new { Id = id }, 
+                commandType: CommandType.StoredProcedure);
+            return rowsAffected > 0;
         }
 
         // =========================================================
-        // 3. READ-MODEL DTOs & UNIQUE SELECTORS
+        // 4. READ-MODEL DTOs & PAGINATION
         // =========================================================
         
+        // تمت إضافة منطق اللغات والـ Pagination (رقم الصفحة وحجمها)
         public async Task<IReadOnlyList<");
             
-            #line 79 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 98 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("ListDTO>> GetListAsync()\r\n        {\r\n            // Utilizing the BaseRepository " +
-                    "Tool to map directly to a ListDTO!\r\n            return await GetListAsync(\"usp_");
+            this.Write(@"ListDTO>> GetListAsync(string langCode, int pageNumber = 1, int pageSize = 10)
+        {
+            using var connection = CreateConnection();
             
-            #line 82 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
+            // DynamicParameters تتيح لنا إضافة البارامترات بمرونة
+            var parameters = new DynamicParameters();
+            parameters.Add(""@LangCode"", langCode);
+            parameters.Add(""@PageNumber"", pageNumber);
+            parameters.Add(""@PageSize"", pageSize);
+
+            var result = await connection.QueryAsync<");
+            
+            #line 108 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("_GetList\", reader => reader.ToListDTO());\r\n        }\r\n\r\n");
+            this.Write("ListDTO>(\r\n                GetListUspName, \r\n                parameters, \r\n      " +
+                    "          commandType: CommandType.StoredProcedure);\r\n                \r\n        " +
+                    "    return result.AsList();\r\n        }\r\n\r\n");
             
-            #line 85 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 116 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
  foreach(var col in Table.Columns.Where(c => c.IsUniqueSelector)) { 
             
             #line default
             #line hidden
             this.Write("        public async Task<");
             
-            #line 86 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 117 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DetailsDTO> GetDetailsAsync(");
             
-            #line 86 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 117 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 86 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 117 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CamelCaseName));
             
             #line default
             #line hidden
-            this.Write(")\r\n        {\r\n            var param = new SqlParameter(\"");
+            this.Write(")\r\n        {\r\n            using var connection = CreateConnection();\r\n           " +
+                    " return await connection.QueryFirstOrDefaultAsync<");
             
-            #line 88 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.SqlParameterName));
+            #line 120 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("\", ");
+            this.Write("DetailsDTO>(\r\n                GetDetailsUspName, \r\n                new { ");
             
-            #line 88 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 122 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 122 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CamelCaseName));
             
             #line default
             #line hidden
-            this.Write(");\r\n            \r\n            // Utilizing the generic GetSingleAsync to return a" +
-                    " DetailsDTO instead of an Entity\r\n            return await GetSingleAsync(\"usp_");
+            this.Write(" }, \r\n                commandType: CommandType.StoredProcedure);\r\n        }\r\n\r\n  " +
+                    "      public async Task<bool> ExistsAsync(");
             
-            #line 91 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_GetDetails\", param, reader => reader.ToDetailsDTO()); \r\n        }\r\n\r\n        pub" +
-                    "lic async Task<bool> ExistsAsync(");
-            
-            #line 94 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 126 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 94 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 126 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CamelCaseName));
             
             #line default
             #line hidden
-            this.Write(")\r\n        {\r\n            var param =  new SqlParameter(\"");
+            this.Write(")\r\n        {\r\n            using var connection = CreateConnection();\r\n           " +
+                    " return await connection.ExecuteScalarAsync<bool>(\r\n                ExistsUspNam" +
+                    "e, \r\n                new { ");
             
-            #line 96 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.SqlParameterName));
+            #line 131 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
-            this.Write("\",");
+            this.Write(" = ");
             
-            #line 96 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 131 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CamelCaseName));
             
             #line default
             #line hidden
-            this.Write(");\r\n            return await ExistsAsync(\"usp_");
+            this.Write(" }, \r\n                commandType: CommandType.StoredProcedure);\r\n        }\r\n");
             
-            #line 97 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.Name));
-            
-            #line default
-            #line hidden
-            this.Write("_Exists\", param);\r\n        }\r\n");
-            
-            #line 99 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
+            #line 134 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Infrastructure\Repositories\RepositoryTemplate.tt"
  } 
             
             #line default

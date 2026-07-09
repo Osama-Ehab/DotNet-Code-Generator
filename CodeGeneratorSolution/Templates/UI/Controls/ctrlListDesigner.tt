@@ -2,7 +2,7 @@
 <#@ import namespace="System.Linq" #>
 namespace <#= SolutionName #>.UI.Controls
 {
-    partial class ctrl<#= Table.ClassName #>List
+    partial class Basectrl<#= Table.EntityName #>List
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -187,7 +187,7 @@ namespace <#= SolutionName #>.UI.Controls
             // ===================================================
 <# foreach(var col in Table.GridColumns) { #>
             this.col<#= col.Name #>.DataPropertyName = "<#= col.Name #>";
-            this.col<#= col.Name #>.HeaderText = "<#= col.FriendlyName #>";
+            this.col<#= col.Name #>.HeaderText = "<#= col.FriendlyNameAr #>";
             this.col<#= col.Name #>.Name = "col<#= col.Name #>";
             this.col<#= col.Name #>.ReadOnly = true;
 <# if (col.Name.EndsWith("Id", StringComparison.OrdinalIgnoreCase)) { #>

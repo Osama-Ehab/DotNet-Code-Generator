@@ -12,6 +12,7 @@ namespace CodeGeneratorSolution.CSharp_Compiler.Core.Entities.Interfaces
         public TUserKey CreatedBy { get; set; } // Flexible!
         public DateTime? ModifiedDate { get; set; }
         public TUserKey ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
     }
 
 

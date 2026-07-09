@@ -1,5 +1,4 @@
-﻿
-using CodeGeneratorSolution;
+﻿using CodeGeneratorSolution;
 using CodeGeneratorSolution.Core;
 using CodeGeneratorSolution.Infrastructure.Interfaces;
 using CodeGeneratorSolution.Models;
@@ -10,158 +9,165 @@ using CodeGeneratorSolution.Templates.Application.Validators;
 using CodeGeneratorSolution.Templates.Core.DTOs;
 using CodeGeneratorSolution.Templates.Core.Entities;
 using CodeGeneratorSolution.Templates.Core.Mapping;
-using CodeGeneratorSolution.Templates.Infrastructure.Mapping;
 using CodeGeneratorSolution.Templates.Infrastructure.Repositories;
 using CodeGeneratorSolution.Templates.UI;
 using CodeGeneratorSolution.Templates.UI.Controls;
 using CodeGeneratorSolution.Templates.UI.DependencyInjection;
+using CodeGeneratorSolution.Templates.UI.Helpers;
 using CodeGeneratorSolution.Utils;
 using CodeGeneratorSolution.Utlis;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-
+using System.Threading.Tasks;
 
 public partial class GeneratorEngine
 {
-    private string _outputRootDir;
-    private string _solutionName;
-    private string _connStr;
-    private MetadataFetcher _fetcher;
-    private EmbeddedResourceManager _embeddedResourceManager;
-    private Dictionary<string, string> projectFileMap;
-    public GeneratorEngine(string ConnStr, string outputRootDirectory, string solutionName)
+    private readonly string _outputRootDir;
+    private readonly string _solutionName;
+    private readonly string _connStr;
+    private readonly MetadataFetcher _fetcher;
+    private readonly EmbeddedResourceManager _embeddedResourceManager;
+
+    public GeneratorEngine(string connStr, string outputRootDirectory, string solutionName)
     {
-        _connStr = ConnStr;
-        _fetcher = new MetadataFetcher(_connStr);
+        _connStr = connStr;
         _outputRootDir = outputRootDirectory;
         _solutionName = solutionName;
+        _fetcher = new MetadataFetcher(_connStr);
         _embeddedResourceManager = new EmbeddedResourceManager(solutionName);
     }
 
- 
-
     public async Task GenerateSolutionAsync()
     {
+        Console.WriteLine("🚀 Starting Enterprise Code Generator...");
+
         GenerateStaticFiles();
         await GenerateAllDynamicFilesAsync();
+
+        Console.WriteLine("✅ Solution Generated Successfully!");
     }
 
- 
-    
     public async Task GenerateAllDynamicFilesAsync()
     {
-        FileWriter.InitializeOutputDirectories(_outputRootDir, _solutionName);
+        Console.WriteLine("📡 Fetching Metadata from SQL Server...");
         List<TableSchema> tables = await _fetcher.GetTablesAsync();
-        // High Performance: Generate all files in parallel
-        foreach (var table in tables)
+
+        // استبعاد جداول النظام الداخلية
+        tables = tables.Where(t => t.Name != "UI_ColumnMetadata" && t.Name != "sysdiagrams").ToList();
+
+        Console.WriteLine($"⚙️ Generating Code for {tables.Count} Tables (Parallel Execution)...");
+
+        // =====================================================================
+        // 1. التوليد المتوازي الحقيقي (True Parallel Generation)
+        // =====================================================================
+        var generationTasks = tables.Select(table => Task.Run(() =>
         {
-            var Columns = table.Columns; // Fetch Metadata
-            string ClassName = table.ClassName;
-            // 0. Generate SQL Stored Procedures Script
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.SqlScripts, $"{ClassName}StoredProsedures.sql",
-             new SqlStoreProcedureTemplate {Table = table }.TransformText());
+            string entityName = table.EntityName;
 
-            // 1. Model & DTOs
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Entities.Root, $"{ClassName}Entity.g.cs",
-                new EntityTemplate {  Table = table }.TransformText());
-     
-  
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.DTOs, $"{ClassName}DTOs.g.cs",
-              new DTOsTemplate {  Table = table }.TransformText());
-  
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Mapping, $"{ClassName}MappingExtensions.g.cs",
-                new MappingExtensionTemplate {  Table = table }.TransformText());
+            // --- Database ---
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Database.StoredProcedures.Generated, $"usp_Base_{entityName}.sql",
+                new SqlStoreProcedureTemplate { Table = table }.TransformText());
 
-            // 2. Repository (Async + SP)
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Root, $"{ClassName}Repository.g.cs",
-                new RepositoryTemplate {  Table = table }.TransformText());
+            // --- Core Layer (Entities, DTOs, Mappings) ---
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Entities.Generated, $"{entityName}.g.cs",
+                new EntityTemplate { Table = table }.TransformText());
 
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Interfaces, $"I{ClassName}Repository.g.cs",
-                new IEntityRepositoryTemplate {  Table = table }.TransformText());
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.DTOs.Generated, $"{entityName}DTOs.g.cs",
+                new DTOsTemplate { Table = table }.TransformText());
 
-            // 3. Service (Logic)
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Validators, $"{ClassName}DTOValidators.g.cs",
-                new DtoValidatorTemplate {  Table = table }.TransformText());
-      
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Services, $"{ClassName}Service.g.cs",
-                new EntityServiceTemplate {  Table = table }.TransformText());
-            
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Interfaces, $"I{ClassName}Service.g.cs",
-                new IEntityServiceTemplate {  Table = table }.TransformText());
+            // تم تصحيح المسار ليكون في طبقة Core بدلاً من Application
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Core.Mapping, $"{entityName}Mapper.g.cs",
+                new MappingExtensionTemplate { Table = table }.TransformText());
 
-            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Root, $"{ClassName}DataMapper.g.cs",
-                new DataMapperTemplate {  Table = table }.TransformText());
+            // --- Infrastructure Layer (Repositories) ---
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Interfaces.Generated, $"I{entityName}Repository.g.cs",
+                new IEntityRepositoryTemplate { Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Infrastructure.Repositories.Generated, $"{entityName}Repository.g.cs",
+                new RepositoryTemplate { Table = table }.TransformText());
+
+            // --- Application Layer (Services & Validators) ---
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Validators.Generated, $"{entityName}Validator.g.cs",
+                new DtoValidatorTemplate { Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Interfaces.Generated, $"I{entityName}Service.g.cs",
+                new IEntityServiceTemplate { Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.Application.Services.Generated, $"{entityName}Service.g.cs",
+                new EntityServiceTemplate { Table = table }.TransformText());
+
+            // --- UI Layer (Controls) ---
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls.Generated, $"ctrl{entityName}AddEdit.g.cs",
+                new ctrlAddEdit { Table = table }.TransformText());
+
+            // بناءً على ملاحظتك المعمارية: تم استعادة توليد ملف الـ Designer 
+            // لكي يحتوي على InitializeComponent وإدارة الذاكرة IContainer وتنسيق الـ Auto-Layout
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls.Generated, $"ctrl{entityName}AddEdit.g.Designer.cs",
+               new ctrlAddEditDesigner { Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls.Generated, $"ctrl{entityName}ShowDetails.g.cs",
+                new ctrlShowDetails { Table = table }.TransformText());
+
+            FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls.Generated, $"ctrl{entityName}ShowDetails.g.Designer.cs",
+                new ctrlShowDetailsControlDesigner { Table = table }.TransformText());
+        }));
+
+        // انتظار انتهاء جميع المهام (أداء صاروخي)
+        await Task.WhenAll(generationTasks);
+
+        Console.WriteLine("🧩 Generating Aggregate System Files...");
+
+        // =====================================================================
+        // 2. ملفات النظام التجميعية (Aggregate Files)
+        // =====================================================================
+        // UI Helpers (Icons)
+        FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Helpers, $"AppIcons.g.cs",
+            new AppIcons { Tables = tables }.TransformText());
+
+        // Routing & View Registry
+        FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Routing, $"ViewRegistry.g.cs",
+            new ViewRegistryTemplate { Tables = tables }.TransformText());
+
+        // Auto Dependency Injection
+        FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.DependencyInjection, $"DependencyInjectionSetup.g.cs",
+            new DependencyInjectionTemplate { Tables = tables }.TransformText());
 
 
-            //// UI (control)          
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.cs",
-            //    new ctrlAddEdit {  Table = table }.TransformText());                          
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.Designer.cs",
-            //    new ctrlAddEditDesigner {  Table = table }.TransformText());
+        // =====================================================================
+        // 3. التنفيذ الآلي في قاعدة البيانات (Executing SQL Scripts)
+        // =====================================================================
+        Console.WriteLine("💾 Deploying Generated Stored Procedures to Database...");
 
-            //// UI (control)          
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.cs",
-            //    new ctrlAddEdit {  Table = table }.TransformText());                          
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}AddEdit.g.Designer.cs",
-            //    new ctrlAddEditDesigner {  Table = table }.TransformText());
-
-            //// UI (control)          
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}ShowDetails.g.cs",
-            //    new ctrlShowDetails {  Table = table }.TransformText());                              
-            //FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}ShowDetails.g.Designer.cs",
-            //    new ctrlShowDetailsDesigner {  Table = table }.TransformText());
-
-            //if(table.GenerateSelectorControl) 
-            //{
-                
-            //    FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}SelectorCard.g.cs",
-            //        new ctrlSelectorCard { Table = table }.TransformText());
-            //    FileWriter.WriteFile(_outputRootDir, ProjectManifest.UI.Controls, $"ctrl{ClassName}SelectorCard.g.Designer.cs",
-            //        new ctrlSelectorCardDesigner { Table = table }.TransformText());
-
-            //}
-           
-           
-
-
+        // تم تصحيح المسار ليتوجه إلى مجلد الـ Generated الفعلي
+        string sqlGeneratedFolder = Path.Combine(_outputRootDir, ProjectManifest.Database.StoredProcedures.Generated);
+        if (Directory.Exists(sqlGeneratedFolder))
+        {
+            await ScriptExecutor.RunAllScriptsInFolder(sqlGeneratedFolder, _connStr);
         }
-
-
-
-        //FileWriter.WriteFile(_outputRootDir, "UI", $"ViewRegistry.g.cs",
-        //    new ViewRegistryTemplate { Tables = tables }.TransformText());
-        
-        //FileWriter.WriteFile(_outputRootDir, "UI", $"DependencyInjection.g.cs",
-        //    new DependencyInjectionTemplate {  Tables = tables }.TransformText());
-
-
-        await ScriptExecutor.RunAllScriptsInFolder(Path.Combine(_outputRootDir, "SqlScripts"), _connStr);
-
     }
-
-
 
     public void GenerateStaticFiles()
     {
+        Console.WriteLine("📦 Extracting Static Core Framework...");
         _embeddedResourceManager.Extract(targetOutputRoot: _outputRootDir);
-        Console.WriteLine("✅ Generated All Static Files");
     }
+
+    // (دالة GetContent تم تركها كما هي لاستخدامها داخلياً في بعض الـ Helpers إذا لزم الأمر)
     private string GetContent(string fileName)
     {
         var assembly = Assembly.GetExecutingAssembly();
-
-        // IMPORTANT: The resource name is "DefaultNamespace.Folder.Filename"
-        // Adjust "CodeGeneratorSolution" to match your Project's Default Namespace.
         string resourceName = $"CodeGeneratorSolution.Templates.{fileName}";
 
         using (Stream stream = assembly.GetManifestResourceStream(resourceName))
         {
             if (stream == null)
             {
-                // Debugging Aid: List all available resources if not found
                 var available = string.Join(", ", assembly.GetManifestResourceNames());
                 throw new FileNotFoundException($"Resource '{resourceName}' not found. \nAvailable: {available}");
             }
-
             using (StreamReader reader = new StreamReader(stream))
             {
                 return reader.ReadToEnd();

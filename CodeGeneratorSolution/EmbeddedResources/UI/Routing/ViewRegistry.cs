@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace {{TARGET_NAMESPACE}}.UI.Routing
 {
-    public class ViewRegistry
+    public partial class ViewRegistry
     {
         // Maps DTO Type -> Details Control Type
         public Dictionary<Type, Type> DetailsRoutes { get; } = new();
@@ -18,14 +18,14 @@ namespace {{TARGET_NAMESPACE}}.UI.Routing
         public Dictionary<Type, Type> EditorRoutes { get; } = new();
 
         // Helper method to register routes cleanly
-        public void RegisterDetails<TDto, TControl>() where TControl : IDetailsControl
+        public void RegisterDetails<TListDTO, TControl>() where TControl : IDetailsControl
         {
-            DetailsRoutes[typeof(TDto)] = typeof(TControl);
+            DetailsRoutes[typeof(TListDTO)] = typeof(TControl);
         }
 
-        public void RegisterEditor<TDto, TControl>() where TControl : IEditorControl
+        public void RegisterEditor<TListDTO, TControl>() where TControl : IEditorControl
         {
-            EditorRoutes[typeof(TDto)] = typeof(TControl);
+            EditorRoutes[typeof(TListDTO)] = typeof(TControl);
         }
     }
 }

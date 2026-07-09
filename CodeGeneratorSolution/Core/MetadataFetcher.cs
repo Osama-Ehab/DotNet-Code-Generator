@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace CodeGeneratorSolution.Core
@@ -20,13 +19,13 @@ namespace CodeGeneratorSolution.Core
         public async Task<List<TableSchema>> GetTablesAsync()
         {
             // 1. Ensure SPs exist (Optional, depending on your setup)
-            MetadataInstaller.EnsureStoredProceduresExist(_connectionString);
+            // MetadataInstaller.EnsureStoredProceduresExist(_connectionString);
 
             var tables = new List<TableSchema>();
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                await conn.OpenAsync();            
+                await conn.OpenAsync();
 
                 // ---------------------------------------------------------
                 // STEP 1: Get List of Tables
@@ -49,16 +48,17 @@ namespace CodeGeneratorSolution.Core
                 }
 
                 // ---------------------------------------------------------
-                // STEP 2: Loop tables and fetch columns
+                // STEP 2: Loop tables and fetch columns & metadata
                 // ---------------------------------------------------------
                 foreach (var table in tables)
                 {
                     table.Columns = await GetColumnsForTableAsync(conn, table.Name);
-                    table.GridColumns = await GetStoredProcedureColumnsAsync(conn, $"usp_{table.ClassName}_GetList");
-                    table.DetailedColumns = await GetStoredProcedureColumnsAsync(conn, $"usp_{table.ClassName}_GetDetails");
 
-                    LoadColumnsExtendedProperties(conn, table);
-                    LoadTableExtendedProperties(conn, table);
+                    // 💡 الأهم: قراءة الـ Metadata من الجدول الذكي
+                    await LoadUIColumnMetadataAsync(conn, table);
+
+                    // تحويل الدالة لتعمل بشكل غير متزامن (Async) لتوحيد الأداء
+                    await LoadTableExtendedPropertiesAsync(conn, table);
                 }
             }
 
@@ -78,17 +78,22 @@ namespace CodeGeneratorSolution.Core
                 {
                     while (await reader.ReadAsync())
                     {
+                        string columnName = reader["COLUMN_NAME"].ToString();
+
                         var col = new ColumnDefinition
                         {
-                            Name = reader["COLUMN_NAME"].ToString(),
+                            // تسوية اسم حقل الـ ID
+                            Name = (columnName == "ID") ? "Id" : columnName,
                             SqlType = reader["DATA_TYPE"].ToString(),
                             IsNullable = reader["IS_NULLABLE"].ToString() == "YES",
-                            MaxLength = Convert.ToInt32(reader["MaxLen"]),
-                            Precision = Convert.ToInt32(reader["Precision"]),
-                            Scale = Convert.ToInt32(reader["Scale"]),
-                            IsIdentity = Convert.ToBoolean(reader["IsIdentity"]),
-                            IsPrimaryKey = Convert.ToBoolean(reader["IsPrimaryKey"]),
-                            IsForeignKey = Convert.ToBoolean(reader["IsForeignKey"])
+
+                            // الحماية ضد الـ DBNull
+                            MaxLength = reader["MaxLen"] == DBNull.Value ? 0 : Convert.ToInt32(reader["MaxLen"]),
+                            Precision = reader["Precision"] == DBNull.Value ? 0 : Convert.ToInt32(reader["Precision"]),
+                            Scale = reader["Scale"] == DBNull.Value ? 0 : Convert.ToInt32(reader["Scale"]),
+                            IsIdentity = reader["IsIdentity"] != DBNull.Value && Convert.ToBoolean(reader["IsIdentity"]),
+                            IsPrimaryKey = reader["IsPrimaryKey"] != DBNull.Value && Convert.ToBoolean(reader["IsPrimaryKey"]),
+                            IsForeignKey = reader["IsForeignKey"] != DBNull.Value && Convert.ToBoolean(reader["IsForeignKey"])
                         };
 
                         columns.Add(col);
@@ -102,6 +107,14 @@ namespace CodeGeneratorSolution.Core
         private async Task<List<ColumnDefinition>> GetStoredProcedureColumnsAsync(SqlConnection conn, string spName)
         {
             var columns = new List<ColumnDefinition>();
+
+            // فحص سريع إذا كان الإجراء المخزن غير موجود لمنع الأخطاء
+            using (var checkCmd = new SqlCommand("SELECT OBJECT_ID(@SpName)", conn))
+            {
+                checkCmd.Parameters.AddWithValue("@SpName", spName);
+                if (await checkCmd.ExecuteScalarAsync() == DBNull.Value)
+                    return columns;
+            }
 
             using (var cmd = new SqlCommand("usp_Meta_GetStoredProcedureColumns", conn))
             {
@@ -127,45 +140,66 @@ namespace CodeGeneratorSolution.Core
             return columns;
         }
 
-      
-        private void LoadColumnsExtendedProperties(SqlConnection conn, TableSchema table)
+        // =========================================================================================
+        // 🚀 تحديث المعمارية: قراءة جدول UI_ColumnMetadata بطريقة نظيفة جداً
+        // =========================================================================================
+        private async Task LoadUIColumnMetadataAsync(SqlConnection conn, TableSchema table)
         {
-            using (var cmd = new SqlCommand("usp_Meta_GetColumnExtendedProperties", conn))
+            string query = "SELECT * FROM [dbo].[UI_ColumnMetadata] WHERE TableName = @TableName";
+
+            using (var cmd = new SqlCommand(query, conn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TableName", table.Name);
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-                        string columnName = reader["ColumnName"].ToString();
-                        string propName = reader["PropertyName"].ToString();
-                        string propValue = reader["PropertyValue"]?.ToString() ?? "";
+                        string dbColumnName = reader["ColumnName"].ToString();
+                        string normalizedColumnName = (dbColumnName == "ID") ? "Id" : dbColumnName;
 
-                        foreach (var colList in new[] { table.Columns, table.GridColumns, table.DetailedColumns })
+                        // لا حاجة لعمل Foreach على القوائم الأخرى! بمجرد تحديث Columns ستتحدث البقية آلياً.
+                        var col = table.Columns.Find(c => c.Name.Equals(normalizedColumnName, StringComparison.OrdinalIgnoreCase));
+
+                        if (col != null)
                         {
-                            var col = colList.Find(c => c.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
-                            if (col != null)
-                            {
-                                col.ExtendedProperties[propName] = propValue;
-                            }
+                            // 1. تعيين النصوص
+                            col.MetaDisplayNameAr = reader["MetaDisplayNameAr"] as string;
+                            col.MetaDisplayNameEn = reader["MetaDisplayNameEn"] as string;
+                            col.MetaControlType = reader["MetaControlType"] as string;
+                            col.MetaIconCode = reader["MetaIconCode"] as string;
+                            col.MetaAllowedValues = reader["MetaAllowedValues"] as string;
+
+                            // 2. تعيين المتغيرات المنطقية (Boolean) باستخدام الدوال المساعدة
+                            col.MetaIsSensitive = GetNullableBool(reader["MetaIsSensitive"]);
+                            col.MetaIsAuditable = GetNullableBool(reader["MetaIsAuditable"]);
+                            col.MetaIncludeInInsert = GetNullableBool(reader["MetaIncludeInInsert"]);
+                            col.MetaIncludeInUpdate = GetNullableBool(reader["MetaIncludeInUpdate"]);
+                            col.MetaIsPassword = GetNullableBool(reader["MetaIsPassword"]);
+                            col.MetaIsSearchable = GetNullableBool(reader["MetaIsSearchable"]);
+                            col.MetaIsUniqueSelector = GetNullableBool(reader["MetaIsUniqueSelector"]);
+                            col.MetaIsLookupColumn = GetNullableBool(reader["MetaIsLookupColumn"]);
+
+                            // 3. تعيين إعدادات التنسيق والهيكلة المرئية (Layout)
+                            col.UIRow = GetNullableInt(reader["UIRow"]);
+                            col.UIColumn = GetNullableInt(reader["UIColumn"]);
+                            col.UIColSpan = GetNullableInt(reader["UIColSpan"]);
                         }
                     }
                 }
             }
         }
 
-        private void LoadTableExtendedProperties(SqlConnection conn, TableSchema table)
+        private async Task LoadTableExtendedPropertiesAsync(SqlConnection conn, TableSchema table)
         {
             using (var cmd = new SqlCommand("usp_Meta_GetTableExtendedProperties", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@TableName", table.Name);
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         string propName = reader["PropertyName"].ToString();
                         string propValue = reader["PropertyValue"]?.ToString() ?? "";
@@ -174,6 +208,19 @@ namespace CodeGeneratorSolution.Core
                     }
                 }
             }
+        }
+
+        // =========================================================================================
+        // 🛠️ دوال مساعدة (Helper Methods) لتنظيف الكود من التكرار المزعج
+        // =========================================================================================
+        private bool? GetNullableBool(object dbValue)
+        {
+            return dbValue == DBNull.Value ? (bool?)null : Convert.ToBoolean(dbValue);
+        }
+
+        private int? GetNullableInt(object dbValue)
+        {
+            return dbValue == DBNull.Value ? (int?)null : Convert.ToInt32(dbValue);
         }
     }
 }

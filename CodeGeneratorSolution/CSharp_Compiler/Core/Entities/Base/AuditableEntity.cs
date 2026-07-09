@@ -11,12 +11,17 @@ namespace CodeGeneratorSolution.Core.Entities.Base
     // Now we take TWO types:
     // TKey     = The Entity's ID (e.g. OrderID)
     // TUserKey = The User's ID (e.g. CreatedBy which is an int)
-    public abstract class AuditableEntity<TKey, TUserKey> : IAuditableEntity<TKey, TUserKey>
+    public abstract class AuditableEntity<TKey, TUserKey> : Entity<TKey>, IAuditableEntity<TKey, TUserKey>
     {
-        public DateTime CreatedDate { get; set; }
-        public required TUserKey CreatedBy { get; set; } // Flexible!
+        // بيانات الإنشاء (إلزامية)
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public TUserKey CreatedBy { get; set; }
 
+        // بيانات التعديل (اختيارية - Nullable)
         public DateTime? ModifiedDate { get; set; }
-        public required TUserKey ModifiedBy { get; set; }
+        public TUserKey? ModifiedBy { get; set; }
+
+        // الحذف الناعم (مفعل افتراضياً)
+        public bool IsActive { get; set; } = true;
     }
 }

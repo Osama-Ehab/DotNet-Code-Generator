@@ -36,12 +36,12 @@ namespace CodeGeneratorSolution.Utils
                 var (folderPath, fileName) = _pathResolver.ResolvePath(relativeDottedPath);
 
                 
-                string finalDirectory = folderPath == null ? targetOutputRoot : Path.Combine(targetOutputRoot, folderPath);
+                string finalDirectory = folderPath == null ? targetOutputRoot : Path.Combine(targetOutputRoot, $"{ProjectManifest.SolutionName}.{folderPath}");
                 string finalFilePath = Path.Combine(finalDirectory, fileName);
 
 
                 // Skip project files if they already exist
-                if (folderPath == ProjectManifest.Root && File.Exists(finalFilePath))
+                if (folderPath == ProjectManifest.SolutionName && File.Exists(finalFilePath))
                 {
                     // UX: Yellow color indicates a safe "skip" to protect the developer's custom code
                     Console.ForegroundColor = ConsoleColor.DarkYellow;

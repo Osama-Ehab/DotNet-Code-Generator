@@ -11,7 +11,7 @@
 
 namespace <#= SolutionName #>.UI.Controls
 {
-    partial class ctrl<#= Table.ClassName #>SelectorCard
+    partial class Basectrl<#= Table.EntityName #>SelectorCard
     {
         /// <summary> 
         /// Required designer variable.
@@ -141,7 +141,7 @@ namespace <#= SolutionName #>.UI.Controls
             this.pnlDetailsContainer.TabIndex = 1;
 
             // ====================================================
-            // ctrl<#= Table.ClassName #>SelectorCard
+            // ctrl<#= Table.EntityName #>SelectorCard
             // ====================================================
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -149,7 +149,7 @@ namespace <#= SolutionName #>.UI.Controls
             this.Controls.Add(this.pnlDetailsContainer);
             this.Controls.Add(this.gbSearch);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Name = "ctrl<#= Table.ClassName #>SelectorCard";
+            this.Name = "ctrl<#= Table.EntityName #>SelectorCard";
             this.Size = new System.Drawing.Size(750, 500);
             
             this.gbSearch.ResumeLayout(false);

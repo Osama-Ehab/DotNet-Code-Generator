@@ -16,8 +16,11 @@ namespace {{TARGET_NAMESPACE}}.UI.Interfaces
     }
     public interface IEditorControl : IIdentifiableControl
 {
-        
-        Task<bool> SaveDataAsync();
+
+    public event EventHandler OnDataLoaded;
+    public event EventHandler OnRequestFormClose;
+
+    Task<bool> SaveDataAsync();
         // Inside IEditorControl
         string ActionButtonText { get; } // e.g., "Save", "Update", "Register"
         bool IsReadOnly { get; }         // Tells the form to hide the Save button entirely

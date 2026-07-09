@@ -14,18 +14,9 @@ namespace <#= SolutionName #>.Application.Interfaces
     // ====================================================
     //  SERVICE INTERFACE
     // ====================================================
- public partial interface I<#= Table.ClassName #>Service  :
-        ICrudExtendedService<Create<#= Table.ClassName #>DTO, <#= Table.ClassName #>DTO,Update<#= Table.ClassName #>DTO,<#= Table.ClassName #>DetailsDTO, <#= Table.ClassName #>ListDTO,<#= Table.PkType #>>     {
+ public partial interface I<#= Table.EntityName #>Service  :
+        ICrudExtendedService<Create<#= Table.EntityName #>DTO, <#= Table.EntityName #>DTO,Update<#= Table.EntityName #>DTO,<#= Table.EntityName #>DetailsDTO, <#= Table.EntityName #>ListDTO,<#= Table.PkType #>>     {
 
-<# 
-        // Use .Any() so we only generate this method ONCE, 
-        // even if there are multiple sensitive columns.
-        if (Table.HasPassword) 
-        { 
-#>
-        Task<Result<bool>> ChangePasswordAsync(<#= Table.ClassName #>ChangePasswordDto dto);
-<# 
-        } 
-#>
+
     }
 }

@@ -15,7 +15,7 @@ using <#= SolutionName #>.UI.Interfaces;
 namespace <#= SolutionName #>.UI.Controls
 {
 
-    public partial class ctrl<#= Table.ClassName #>List : UserControl, IControlListWithNotifies
+    public partial class Basectrl<#= Table.EntityName #>List : UserControl, IControlListWithNotifies
     {
 
     // DECLARE THE HOOK (Notice it has no body!)
@@ -35,23 +35,23 @@ namespace <#= SolutionName #>.UI.Controls
         }
 
         private FilterBy _selectedFilter = FilterBy.None;
-        private List<<#= Table.ClassName #>ListDTO> _allRecords;
-        private readonly I<#= Table.ClassName #>Service _service;
+        private List<<#= Table.EntityName #>ListDTO> _allRecords;
+        private readonly I<#= Table.EntityName #>Service _service;
 
         // CHANGED: Now a strongly-ordered List for perfect UI Binding!
         public readonly List<KeyValuePair<FilterBy, string>> FilterDisplayNames = new List<KeyValuePair<FilterBy, string>>
         {
             new KeyValuePair<FilterBy, string>(FilterBy.None, "None"),
 <# foreach(var col in Table.SearchableColumns) { #>
-            new KeyValuePair<FilterBy, string>(FilterBy.<#= col.Name #>, "<#= col.FriendlyName #>"),
+            new KeyValuePair<FilterBy, string>(FilterBy.<#= col.Name #>, "<#= col.FriendlyNameAr #>"),
 <# } #>
         };
 
-        private static readonly Dictionary<FilterBy, Func<<#= Table.ClassName #>ListDTO, string, bool>> FilterStrategies =
-            new Dictionary<FilterBy, Func<<#= Table.ClassName #>ListDTO, string, bool>>
+        private static readonly Dictionary<FilterBy, Func<<#= Table.EntityName #>ListDTO, string, bool>> FilterStrategies =
+            new Dictionary<FilterBy, Func<<#= Table.EntityName #>ListDTO, string, bool>>
         {
 <# foreach(var col in Table.SearchableColumns) { 
-    if (col.HasAllowedValues) { #>
+    if (col.HasMetaAllowedValues) { #>
                 { FilterBy.<#= col.Name #>, (dto, text) => MatchDropdwonValues(dto, text, d => d.<#= col.Name #>) },
 <#  } else if (col.CSharpType == "string") { #>
                 { FilterBy.<#= col.Name #>, (dto, text) => MatchString(dto, text, d => d.<#= col.Name #>) },
@@ -65,7 +65,7 @@ namespace <#= SolutionName #>.UI.Controls
         // ====================================================
         // 2. IlistControl IMPLEMENTATION 
         // ====================================================
-        public Type EntityDtoType => typeof(<#= Table.ClassName #>ListDTO);
+        public Type EntityDtoType => typeof(<#= Table.EntityName #>ListDTO);
         public event EventHandler OnAddNew;
         public event EventHandler<DtoEventArgs> OnEdit;
         public event EventHandler<DtoEventArgs> OnShowDetails;
@@ -73,11 +73,11 @@ namespace <#= SolutionName #>.UI.Controls
         // ====================================================
         // 3. CONSTRUCTOR & INITIALIZATION
         // ====================================================
-        public ctrl<#= Table.ClassName #>List(I<#= Table.ClassName #>Service service)
+        public ctrl<#= Table.EntityName #>List(I<#= Table.EntityName #>Service service)
         {
             InitializeComponent();
             _service = service;
-            _allRecords = new List<<#= Table.ClassName #>ListDTO>();
+            _allRecords = new List<<#= Table.EntityName #>ListDTO>();
 
             // Setup Main Filter Dropdown
             CustomizeContextMenu();
@@ -103,15 +103,15 @@ namespace <#= SolutionName #>.UI.Controls
 
             if (_mode == Mode.AddNew)
             {
-                lblHeaderTitle.Text = "Add New <#= Table.ClassName #>";
+                lblHeaderTitle.Text = "Add New <#= Table.EntityName #>";
                 // Uses your helper to grab the "Add" version of this table's icon
-                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "add"); 
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.EntityName #>", "add"); 
             }
             else
             {
-                lblHeaderTitle.Text = "Update <#= Table.ClassName #>";
+                lblHeaderTitle.Text = "Update <#= Table.EntityName #>";
                 // Uses your helper to grab the "Edit" version of this table's icon
-                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.ClassName #>", "edit"); 
+                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, "<#= Table.EntityName #>", "edit"); 
             }
         }
 
@@ -122,11 +122,11 @@ namespace <#= SolutionName #>.UI.Controls
             var result = await _service.GetListAsync();
             if (result.IsSuccess)
             {
-                _allRecords = result.Data.ToList();
+                _allRecords = result.Value.ToList();
                 RefreshDataWithFilter();
             }
 
-            PopupMessage(result);
+            MessageServiceHelper.PopupMessage(result);
         }
 
         private void SetRecordsCountLabel() => lblRecordCount.SetRecordsCount(dgvList.Rows.Count);
@@ -134,7 +134,7 @@ namespace <#= SolutionName #>.UI.Controls
         // ====================================================
         // 4. SEARCH & FILTER EXECUTION
         // ====================================================
-        private List<<#= Table.ClassName #>ListDTO> GetFilteredRecords(FilterBy filterType, string searchText)
+        private List<<#= Table.EntityName #>ListDTO> GetFilteredRecords(FilterBy filterType, string searchText)
         {
             // If search text is empty (or "All" was selected), return everything
             if (filterType == FilterBy.None || string.IsNullOrWhiteSpace(searchText))
@@ -200,7 +200,7 @@ namespace <#= SolutionName #>.UI.Controls
                     cbDropdownFilter.DataSource = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("All", ""),
-<#      foreach(var val in col.AllowedFilterValues) { #>
+<#      foreach(var val in col.MetaAllowedValues) { #>
                         new KeyValuePair<string, string>("<#= val #>", "<#= val #>"),
 <#      } #>
                     };
@@ -265,19 +265,19 @@ namespace <#= SolutionName #>.UI.Controls
         // ====================================================
         // 7. SEARCH STRATEGY HELPERS
         // ====================================================
-        private bool MatchString(<#= Table.ClassName #>ListDTO dto, string searchText, Func<<#= Table.ClassName #>ListDTO, string> valueSelector)
+        private bool MatchString(<#= Table.EntityName #>ListDTO dto, string searchText, Func<<#= Table.EntityName #>ListDTO, string> valueSelector)
         {
             var value = valueSelector(dto);
             return value != null && value.Contains(searchText, StringComparison.OrdinalIgnoreCase);
         }
 
-        private bool MatchExact(<#= Table.ClassName #>ListDTO dto, string searchText, Func<<#= Table.ClassName #>ListDTO, object> valueSelector)
+        private bool MatchExact(<#= Table.EntityName #>ListDTO dto, string searchText, Func<<#= Table.EntityName #>ListDTO, object> valueSelector)
         {
             var value = valueSelector(dto);
             return value?.ToString() == searchText;
         }
 
-        private bool MatchDropdwonValues(<#= Table.ClassName #>ListDTO dto, string searchText, Func<<#= Table.ClassName #>ListDTO, object> valueSelector)
+        private bool MatchDropdwonValues(<#= Table.EntityName #>ListDTO dto, string searchText, Func<<#= Table.EntityName #>ListDTO, object> valueSelector)
         {
             var value = valueSelector(dto);
             return value?.ToString().Equals(searchText, StringComparison.OrdinalIgnoreCase) ?? false;

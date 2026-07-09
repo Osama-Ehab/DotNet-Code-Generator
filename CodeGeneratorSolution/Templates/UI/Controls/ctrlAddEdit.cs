@@ -48,99 +48,92 @@ namespace CodeGeneratorSolution.Templates.UI.Controls
             
             #line default
             #line hidden
-            this.Write(".UI.Helpers; // For FormValidationHelper\r\nusing ");
+            this.Write(".UI.Helpers; \r\nusing ");
             
             #line 9 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
-            this.Write(".UI.Interfaces; // For IEditorControl\r\n\r\n\r\nnamespace ");
+            this.Write(".UI.Interfaces; \r\nusing ");
             
-            #line 12 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 10 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
+            
+            #line default
+            #line hidden
+            this.Write(".Core.DTOs.Interfaces;\r\n\r\n\r\nnamespace ");
+            
+            #line 13 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SolutionName));
             
             #line default
             #line hidden
             this.Write(".UI.Controls\r\n{\r\n    public partial class ctrl");
             
-            #line 14 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 15 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write(@"AddEdit : UserControl, IEditorControl
-    {
-    // 1. Generate the Properties
-    public UserControl HeaderControl 
-    { 
-        get 
-        {
-            UserControl header = null;
-            // 2. Call the partial method hook!
-            OnProvideHeaderControl(ref header);
-            return header;
-        } 
-    }
-
-    public UserControl BottomControl 
-    { 
-        get 
-        {
-            UserControl bottom = null;
-            OnProvideBottomControl(ref bottom);
-            return bottom;
-        } 
-    }
-
-    // 3. Define the Partial Method Signatures
-    // If you don't implement these in a custom file, the C# compiler ignores them!
-    partial void OnProvideHeaderControl(ref UserControl header);
-    partial void OnProvideBottomControl(ref UserControl bottom);
-
-        public enum enMode { AddNew, Update }
-        
-        private enMode _mode = enMode.AddNew;
-        private readonly I");
+            this.Write("AddEdit : UserControl, IEditorControl\r\n    {\r\n\r\n        public string ActionButto" +
+                    "nText => \"Save\";\r\n\r\n        public bool IsReadOnly => false;\r\n\r\n        public s" +
+                    "tring Title => \"Add/Edit\";\r\n\r\n        // =======================================" +
+                    "=============\r\n        // 1. DYNAMIC CONTROLS (IEditorControl)\r\n        // =====" +
+                    "===============================================\r\n        public UserControl AsUs" +
+                    "erControl() => (UserControl)this;\r\n\r\n        public UserControl HeaderControl \r\n" +
+                    "        { \r\n            get \r\n            {\r\n                UserControl header " +
+                    "= null;\r\n                OnProvideHeaderControl(ref header);\r\n                re" +
+                    "turn header;\r\n            } \r\n        }\r\n        \r\n        public UserControl Bo" +
+                    "ttomControl \r\n        { \r\n            get \r\n            {\r\n                UserC" +
+                    "ontrol bottom = null;\r\n                OnProvideBottomControl(ref bottom);\r\n    " +
+                    "            return bottom;\r\n            } \r\n        }\r\n\r\n        // Partial Meth" +
+                    "od Signatures\r\n        partial void OnProvideHeaderControl(ref UserControl heade" +
+                    "r);\r\n        partial void OnProvideBottomControl(ref UserControl bottom);\r\n     " +
+                    "   partial void OnConfigureHeader(TableLayoutPanel headerPanel, PictureBox icon," +
+                    " Label title, ref bool isHandled);\r\n\r\n\r\n        // =============================" +
+                    "=======================\r\n        // 2. FIELDS & EVENTS\r\n        // =============" +
+                    "=======================================\r\n        public enum enMode { AddNew, Up" +
+                    "date }\r\n        \r\n        private enMode _mode = enMode.AddNew;\r\n        private" +
+                    " readonly I");
             
-            #line 46 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 61 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("Service _service;\r\n        private  ");
+            this.Write("Service _service;\r\n        private ");
             
-            #line 47 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 62 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
             this.Write(@" _currentId;
 
-
         public event EventHandler OnCancelRequested;  
         public event EventHandler OnSaveRequested;  
         public event EventHandler OnSaveComplete;  
-
-        // 1. Declare the events mandated by the interface
-        public event EventHandler OnDataLoaded;
         public event EventHandler<bool> OnValidationStateChanged;
+        public event EventHandler OnDataLoaded;
         public event EventHandler OnRequestFormClose;
+        public event EventHandler DataLoaded;
+
 
         // ====================================================
-        // CONSTRUCTOR (Dependency Injection)
+        // 3. CONSTRUCTOR (Dependency Injection)
         // ====================================================
-public ctrl");
+        public ctrl");
             
-            #line 62 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 76 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("AddEdit(I");
             
-            #line 62 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 76 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -148,54 +141,53 @@ public ctrl");
         {
             InitializeComponent();
             _service = service;
-             // Implementation: The user types an ID and hits Enter. Boom.
-        txtSearch.HandleEnterKey(() => btnSearch.PerformClick());
-
-           bool isHandled = false;
-
-            // 3. THE HOOK IS SAFE HERE!
-            OnConfigureHeader(this.pnlHeader, this.pbHeaderIcon, this.lblHeaderTitle, ref isHandled);
-        UpdateHeaderUI(bool isHandled = false;);
             
+            // Assuming you have txtSearch and btnSearch in your designer
+            if (txtSearch != null && btnSearch != null)
+            {
+                txtSearch.HandleEnterKey(() => btnSearch.PerformClick());
+            }
+
+            bool isHandled = false;
+            OnConfigureHeader(this.pnlHeader, this.pbHeaderIcon, this.lblHeaderTitle, ref isHandled);
+            UpdateHeaderUI(isHandled);
         }
 
         // ====================================================
-        // 1. DYNAMIC HEADER LOGIC
+        // 4. DYNAMIC HEADER LOGIC
         // ====================================================
         private void UpdateHeaderUI(bool isHandled)
         {
-            If(isHandled) return;
+            if (isHandled) return;
 
-            if (_mode == Mode.AddNew)
+            if (_mode == enMode.AddNew)
             {
-                lblHeaderTitle.Text = ""Add New ");
+                if (lblHeaderTitle != null) lblHeaderTitle.Text = ""Add New ");
             
-            #line 86 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 101 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.FriendlyName));
             
             #line default
             #line hidden
-            this.Write("\";\r\n                // Uses your helper to grab the \"Add\" version of this table\'s" +
-                    " icon\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
+            this.Write("\";\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
             
-            #line 88 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 102 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
-            this.Write("\", \"add\"); \r\n            }\r\n            else\r\n            {\r\n                lblH" +
-                    "eaderTitle.Text = \"Update ");
+            this.Write("\", \"add\"); \r\n            }\r\n            else\r\n            {\r\n                if (" +
+                    "lblHeaderTitle != null) lblHeaderTitle.Text = \"Update ");
             
-            #line 92 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 106 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.FriendlyName));
             
             #line default
             #line hidden
-            this.Write("\";\r\n                // Uses your helper to grab the \"Edit\" version of this table\'" +
-                    "s icon\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
+            this.Write("\";\r\n                ResourceImageHelper.ApplyEntityIcon(pbHeaderIcon, \"");
             
-            #line 94 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 107 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -203,104 +195,93 @@ public ctrl");
             }
         }
 
-        partial void OnConfigureHeader(TableLayoutPanel headerPanel, PictureBox icon, Label title, ref bool isHandled);
-
-       // ====================================================
-        // 1. LOAD DATA (Called by the Host Form)
         // ====================================================
-        public async Task LoadDataAsync( ");
+        // 5. LOAD DATA (Called by the Host Form)
+        // ====================================================
+        public async Task LoadDataAsync(object id)
+        {
+            _currentId = (");
             
-            #line 103 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 116 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkType));
             
             #line default
             #line hidden
-            this.Write(@" id)
-        {
-            _currentId = id;
+            this.Write(@")id;
             _mode = enMode.Update; 
-           UpdateHeaderUI();
+            UpdateHeaderUI(false); // Refresh Header title for Update Mode
             
-            // 1. Fetch the Data
-            var result = await _service.GetByIdAsync(id);
+            var result = await _service.GetByIdAsync(_currentId);
             
-            if (result.IsSuccess && result.Data != null)
+            if (result.IsSuccess && result.Value != null)
             {
-            // 2. Fire the event! The Host Form will hear this and update the Window Title.
-        OnDataLoaded?.Invoke(this, EventArgs.EventArgs.Empty);
-
-                // 2. Delegate to the Mapping Method!
-                FillControls(result.Data);
+                OnDataLoaded?.Invoke(this, EventArgs.Empty);
+                FillControl(result.Value);
                 
 ");
             
-            #line 120 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
- if (Table.Columns.Any(c => c.IsSensitive)) { 
+            #line 127 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+ if (Table.Columns.Any(c => c.MetaIsSensitive??false)) { 
             
             #line default
             #line hidden
-            this.Write("                // 3. Secure Sensitive Fields\r\n");
+            this.Write("                // Secure Sensitive Fields\r\n");
             
-            #line 122 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
- if( Table.HasPassword) { 
-            
-            #line default
-            #line hidden
-            this.Write("                txtPassword.Visible = false; \r\n                lblPassword.Visibl" +
-                    "e = false;\r\n");
-            
-            #line 125 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
- } 
+            #line 129 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+      if (Table.HasPassword) { 
             
             #line default
             #line hidden
+            this.Write("                if (txtPassword != null) txtPassword.Visible = false; \r\n         " +
+                    "       if (lblPassword != null) lblPassword.Visible = false;\r\n");
             
-            #line 126 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 132 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+      } 
+            
+            #line default
+            #line hidden
+            
+            #line 133 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
  } 
             
             #line default
             #line hidden
             this.Write("            }\r\n            else\r\n            {\r\n                OnCancelRequested" +
-                    "?.Invoke(this, EventArgs.Empty);\r\n            }\r\n                PopupMessage(re" +
-                    "sult);\r\n        }\r\n\r\n        // ================================================" +
-                    "====\r\n        // 3. EXECUTION (Called by Host Form\'s Save Button)\r\n        // ==" +
-                    "==================================================\r\n        public async Task<bo" +
-                    "ol> SaveAsync()\r\n        {\r\n            if (_mode == enMode.AddNew)\r\n           " +
-                    " {\r\n                // 1. Get the Data\r\n                var dto = GetCreateDto()" +
-                    ";\r\n\r\n                // 2. Send to Service\r\n                var result = await _" +
-                    "service.AddAsync(dto);\r\n                \r\n                // 3. Handle Result\r\n " +
-                    "               if (!result.IsSuccess) \r\n                { \r\n                    " +
-                    "FormValidationHelper.ShowErrors(this, errorProvider1, result.ValidationErrors); " +
-                    "\r\n                    return false; \r\n                }\r\n                \r\n     " +
-                    "           _currentId = result.Data;\r\n                OnSaveComplete?.Invoke(thi" +
-                    "s, EventArgs.Empty);\r\n                return true;\r\n            }\r\n            e" +
-                    "lse // UPDATE MODE\r\n            {\r\n                // 1. Get the Data\r\n         " +
-                    "       var dto = GetUpdateDto();\r\n\r\n                // 2. Send to Service\r\n     " +
-                    "           var result = await _service.UpdateAsync(dto);\r\n                \r\n    " +
-                    "            // 3. Handle Result\r\n                if (!result.IsSuccess) \r\n      " +
-                    "          { \r\n                    FormValidationHelper.ShowErrors(this, errorPro" +
-                    "vider1, result.ValidationErrors); \r\n                    return false; \r\n        " +
-                    "        }\r\n                \r\n                OnSaveComplete?.Invoke(this, EventA" +
-                    "rgs.Empty);\r\n                return true;\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n" +
-                    "    // ====================================================\r\n        // 4. UI TO" +
-                    " DTO MAPPING (Extracted for Clean Code)\r\n        // ============================" +
-                    "========================\r\n        \r\n        private Create");
+                    "?.Invoke(this, EventArgs.Empty);\r\n            }\r\n            MessageServiceHelpe" +
+                    "r.PopupMessage(result);\r\n        }\r\n\r\n        // ===============================" +
+                    "=====================\r\n        // 6. EXECUTION (Called by Host Form\'s Save Butto" +
+                    "n)\r\n        // ====================================================\r\n        pub" +
+                    "lic async Task<bool> SaveDataAsync()\r\n        {\r\n            if (_mode == enMode" +
+                    ".AddNew)\r\n            {\r\n                var dto = GetCreateDto();\r\n            " +
+                    "    var result = await _service.AddAsync(dto);\r\n                \r\n              " +
+                    "  MessageServiceHelper.PopupMessage(result);\r\n                if (!result.IsSucc" +
+                    "ess) return false;\r\n                \r\n                _currentId = result.Value;" +
+                    "\r\n                OnSaveComplete?.Invoke(this, EventArgs.Empty);\r\n              " +
+                    "  return true;\r\n            }\r\n            else // UPDATE MODE\r\n            {\r\n " +
+                    "               var dto = GetUpdateDto();\r\n                var result = await _se" +
+                    "rvice.UpdateAsync(dto);\r\n                \r\n                MessageServiceHelper." +
+                    "PopupMessage(result);\r\n                if (!result.IsSuccess) return false;\r\n   " +
+                    "             \r\n                OnSaveComplete?.Invoke(this, EventArgs.Empty);\r\n " +
+                    "               return true;\r\n            }\r\n        }\r\n\r\n        // ============" +
+                    "========================================\r\n        // 7. UI TO DTO MAPPING \r\n    " +
+                    "    // ====================================================\r\n        private Cre" +
+                    "ate");
             
-            #line 185 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 175 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO GetCreateDto()\r\n        {\r\n            return new Create");
             
-            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 177 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO \r\n            {\r\n");
             
-            #line 189 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 179 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
  foreach(var col in Table.Columns.Where(c => c.IncludeInInsert)) { 
     if (col.WinControl == "CheckBox") { 
             
@@ -308,241 +289,290 @@ public ctrl");
             #line hidden
             this.Write("                ");
             
-            #line 191 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 181 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 191 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 181 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(".Checked,\r\n");
             
-            #line 192 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 182 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
   } else if (col.WinControl == "DateTimePicker") { 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 193 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 183 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 193 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 183 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(".Value,\r\n");
             
-            #line 194 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  } else if (col.CSharpType != "string" && col.CSharpType != "bool" && col.CSharpType != "DateTime" && col.CSharpType != "byte[]") { 
+            #line 184 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else if (col.WinControl == "NumericUpDown") { 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 185 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
-            this.Write(" = ");
+            this.Write(" = (");
             
-            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 185 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
             
             #line default
             #line hidden
-            this.Write(".TryParse(");
+            this.Write(")");
             
-            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
-            
-            #line default
-            #line hidden
-            this.Write(".Text, out var v");
-            
-            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(") ? v");
-            
-            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" : default,\r\n");
-            
-            #line 196 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  } else { 
-            
-            #line default
-            #line hidden
-            this.Write("                ");
-            
-            #line 197 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = ");
-            
-            #line 197 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
-            
-            #line default
-            #line hidden
-            this.Write(".Text,\r\n");
-            
-            #line 198 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  }
-} 
-            
-            #line default
-            #line hidden
-            this.Write("            };\r\n        }\r\n\r\n        private Update");
-            
-            #line 203 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("DTO GetUpdateDto()\r\n        {\r\n            return new Update");
-            
-            #line 205 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("DTO \r\n            {\r\n                ");
-            
-            #line 207 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.PkName));
-            
-            #line default
-            #line hidden
-            this.Write(" = _currentId,\r\n");
-            
-            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
- foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { 
-    if (col.WinControl == "CheckBox") { 
-            
-            #line default
-            #line hidden
-            this.Write("                ");
-            
-            #line 210 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = ");
-            
-            #line 210 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
-            
-            #line default
-            #line hidden
-            this.Write(".Checked,\r\n");
-            
-            #line 211 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  } else if (col.WinControl == "DateTimePicker") { 
-            
-            #line default
-            #line hidden
-            this.Write("                ");
-            
-            #line 212 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" = ");
-            
-            #line 212 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 185 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(".Value,\r\n");
             
-            #line 213 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 186 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
   } else if (col.CSharpType != "string" && col.CSharpType != "bool" && col.CSharpType != "DateTime" && col.CSharpType != "byte[]") { 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 214 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 214 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.PrimitiveCSharpType));
             
             #line default
             #line hidden
             this.Write(".TryParse(");
             
-            #line 214 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(".Text, out var v");
             
-            #line 214 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(") ? v");
             
-            #line 214 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 187 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" : default,\r\n");
             
-            #line 215 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 188 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
   } else { 
             
             #line default
             #line hidden
             this.Write("                ");
             
-            #line 216 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 189 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" = ");
             
-            #line 216 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 189 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
             this.Write(".Text,\r\n");
             
-            #line 217 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  }
+            #line 190 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } 
+} 
+            
+            #line default
+            #line hidden
+            this.Write("            };\r\n        }\r\n\r\n        private Update");
+            
+            #line 195 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
+            
+            #line default
+            #line hidden
+            this.Write("DTO GetUpdateDto()\r\n        {\r\n            return new Update");
+            
+            #line 197 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
+            
+            #line default
+            #line hidden
+            this.Write("DTO \r\n            {\r\n                Id = _currentId,\r\n");
+            
+            #line 200 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+ foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { 
+    if (col.WinControl == "NumericUpDown") { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 202 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = (");
+            
+            #line 202 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
+            
+            #line default
+            #line hidden
+            this.Write(")");
+            
+            #line 202 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Value,\r\n");
+            
+            #line 203 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else if (col.WinControl == "CheckBox") { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 204 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 204 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Checked,\r\n");
+            
+            #line 205 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else if (col.WinControl == "DateTimePicker") { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 206 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 206 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Value,\r\n");
+            
+            #line 207 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else if (col.CSharpType != "string" && col.CSharpType != "bool" && col.CSharpType != "DateTime" && col.CSharpType != "byte[]") { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.PrimitiveCSharpType));
+            
+            #line default
+            #line hidden
+            this.Write(".TryParse(");
+            
+            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Text, out var v");
+            
+            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(") ? v");
+            
+            #line 208 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" : default,\r\n");
+            
+            #line 209 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else { 
+            
+            #line default
+            #line hidden
+            this.Write("                ");
+            
+            #line 210 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" = ");
+            
+            #line 210 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Text,\r\n");
+            
+            #line 211 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } 
 } 
             
             #line default
@@ -551,19 +581,29 @@ public ctrl");
         }
 
         // ====================================================
-        // 5. DTO TO UI MAPPING (Extracted for Clean Code)
+        // 8. DTO TO UI MAPPING 
         // ====================================================
-        
-        private void FillControls(");
+        public void FillControl(IDto dto)
+        {
+            if (dto == null) return;
+
+            var ");
             
-            #line 226 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 223 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
             
             #line default
             #line hidden
-            this.Write("DTO dto)\r\n        {\r\n            if (dto == null) return;\r\n\r\n");
+            this.Write(" = (");
             
-            #line 230 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 223 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
+            
+            #line default
+            #line hidden
+            this.Write("DTO)dto;\r\n\r\n");
+            
+            #line 225 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
  foreach(var col in Table.Columns.Where(c => c.IncludeInUpdate)) { 
     if (col.WinControl == "CheckBox") { 
             
@@ -571,117 +611,172 @@ public ctrl");
             #line hidden
             this.Write("            ");
             
-            #line 232 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 227 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Checked = dto.");
+            this.Write(".Checked = ");
             
-            #line 232 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 227 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 227 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(";\r\n");
             
-            #line 233 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 228 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
   } else if (col.WinControl == "DateTimePicker") { 
             
             #line default
             #line hidden
-            this.Write("            if (dto.");
             
-            #line 234 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 229 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+      if (col.IsNullable) { 
+            
+            #line default
+            #line hidden
+            this.Write("            if (");
+            
+            #line 230 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 230 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(".HasValue) \r\n            {\r\n                ");
             
-            #line 236 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 232 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Value = dto.");
+            this.Write(".Value = ");
             
-            #line 236 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 232 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 232 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
-            this.Write(".Value;\r\n");
+            this.Write(".Value;\r\n            }\r\n");
             
-            #line 237 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-      if (col.IsNullable) { 
+            #line 234 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+      } else { 
             
             #line default
             #line hidden
-            this.Write("                ");
+            this.Write("            ");
+            
+            #line 235 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
+            
+            #line default
+            #line hidden
+            this.Write(".Value = ");
+            
+            #line 235 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 235 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
+            
+            #line 236 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+      } 
+            
+            #line default
+            #line hidden
+            
+            #line 237 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } else if (col.WinControl == "NumericUpDown") { 
+            
+            #line default
+            #line hidden
+            this.Write("            ");
             
             #line 238 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Checked = true; // Enable the checkbox if it has a value\r\n");
+            this.Write(".Value = (decimal)");
+            
+            #line 238 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 238 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
+            
+            #line default
+            #line hidden
+            this.Write(";\r\n");
             
             #line 239 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-      } 
-            
-            #line default
-            #line hidden
-            this.Write("            }\r\n");
-            
-            #line 241 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-      if (col.IsNullable) { 
-            
-            #line default
-            #line hidden
-            this.Write("            else \r\n            {\r\n                ");
-            
-            #line 244 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
-            
-            #line default
-            #line hidden
-            this.Write(".Checked = false; // Uncheck if null\r\n            }\r\n");
-            
-            #line 246 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-      } 
-            
-            #line default
-            #line hidden
-            
-            #line 247 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
   } else { 
             
             #line default
             #line hidden
             this.Write("            ");
             
-            #line 248 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 240 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.ControlNameWithPrefix));
             
             #line default
             #line hidden
-            this.Write(".Text = dto.");
+            this.Write(".Text = ");
             
-            #line 248 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            #line 240 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.CamelCaseName));
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 240 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
-            this.Write("?.ToString();\r\n");
+            this.Write("?.ToString() ?? string.Empty;\r\n");
             
-            #line 249 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
-  }
+            #line 241 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\UI\Controls\ctrlAddEdit.tt"
+  } 
 } 
             
             #line default
             #line hidden
-            this.Write("        }\r\n\r\n\r\n\r\n\r\n}");
+            this.Write("        }\r\n    }\r\n}");
             return this.GenerationEnvironment.ToString();
         }
     }

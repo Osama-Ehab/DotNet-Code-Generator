@@ -4,7 +4,7 @@ using <#= SolutionName #>.Core.DTOs.Interfaces;
 namespace <#= SolutionName #>.Core.DTOs
 {
     // 1. Inherits ID from Base (standard Dto)
-    public class <#= Table.ClassName #>DTO : BaseIdentifiableDTO<<#= Table.PkType #>>
+    public class <#= Table.EntityName #>DTO : BaseIdentifiableDTO<<#= Table.PkType #>>
     {
 <# 
     foreach(var col in Table.StandrdDtoColumns) 
@@ -17,7 +17,7 @@ namespace <#= SolutionName #>.Core.DTOs
     }
 
     // 2. Inherits ID from Base  (Update Dto)
-    public class Update<#= Table.ClassName #>DTO : BaseIdentifiableDTO<<#= Table.PkType #>>
+    public class Update<#= Table.EntityName #>DTO : BaseIdentifiableDTO<<#= Table.PkType #>>
     {
 <# 
     foreach(var col in Table.UpdateDtoColumns) 
@@ -31,7 +31,7 @@ namespace <#= SolutionName #>.Core.DTOs
 
 
     //  (Create Dto)
-    public class Create<#= Table.ClassName #>DTO : IDto
+    public class Create<#= Table.EntityName #>DTO : IDto
     {
 <# 
     foreach(var col in Table.CreateDtoColumns) 
@@ -44,7 +44,7 @@ namespace <#= SolutionName #>.Core.DTOs
     }
 
     // 1. Inherits ID from Base (Detailed Dto)
-    public class <#= Table.ClassName #>DetailsDTO : BaseIdentifiableDTO<<#= Table.PkType #>>
+    public class <#= Table.EntityName #>DetailsDTO : BaseIdentifiableDTO<<#= Table.PkType #>>
     {
 <# 
     foreach(var col in Table.DetailedColumns) 
@@ -58,7 +58,7 @@ namespace <#= SolutionName #>.Core.DTOs
 
 
         // 1. Inherits ID from Base (List DTO)
-    public class <#= Table.ClassName #>ListDTO : BaseIdentifiableDTO<<#= Table.PkType #>>
+    public class <#= Table.EntityName #>ListDTO : BaseIdentifiableDTO<<#= Table.PkType #>>
     {
 <# 
     foreach(var col in Table.GridColumns) 
@@ -69,4 +69,6 @@ namespace <#= SolutionName #>.Core.DTOs
     } 
 #>
     }
+
+
 }

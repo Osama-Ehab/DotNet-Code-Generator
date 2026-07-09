@@ -35,12 +35,16 @@
     <Compile Remove="EmbeddedResources\Application\Result.cs" />
     <Compile Remove="EmbeddedResources\Application\Security\SecurityHelper.cs" />
     <Compile Remove="EmbeddedResources\Application\ServiceExecutor.cs" />
+    <Compile Remove="EmbeddedResources\Core\Context\AppLayoutContext.cs" />
     <Compile Remove="EmbeddedResources\Core\DTOs\BaseIdentifiableDTO.cs" />
     <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IDto.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\IUserSession.cs" />
+    <Compile Remove="EmbeddedResources\Core\DTOs\Interfaces\UserSessionDto.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Interfaces\IAuditableEntity.cs" />
     <Compile Remove="EmbeddedResources\Core\Entities\Interfaces\IEntity.cs" />
+    <Compile Remove="EmbeddedResources\Core\Security\ApplicationUserSession.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\BaseRepository.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
@@ -60,8 +64,8 @@
     <Compile Remove="EmbeddedResources\Infrastructure\Interfaces\IGetParameters.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
     <Compile Remove="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
-    <Compile Remove="EmbeddedResources\Properties\Resources.Designer.cs" />
-    <Compile Remove="EmbeddedResources\UI\Controls\BaseControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Controls\BaseControls\ShowDetailsBaseControl.cs" />
+    <Compile Remove="EmbeddedResources\UI\Controls\BaseControls\ShowDetailsBaseControl.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\CustomControls\RecordLabel.cs" />
     <Compile Remove="EmbeddedResources\UI\CustomControls\RecordLabel.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\Events\DtoEventArgs.cs" />
@@ -71,11 +75,14 @@
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericManage.Designer.cs" />
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericPopup.cs" />
     <Compile Remove="EmbeddedResources\UI\GenericForms\frmGenericPopup.Designer.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\AppIcons.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
     <Compile Remove="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\SegoeIcons.cs" />
+    <Compile Remove="EmbeddedResources\UI\Helpers\StringExtensions.cs" />
     <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IDetailsControl.cs" />
     <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IEditorControl.cs" />
     <Compile Remove="EmbeddedResources\UI\Interfaces\Controls\IIdentifiableControl.cs" />
@@ -124,12 +131,16 @@
     <EmbeddedResource Include="EmbeddedResources\Application\Result.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\Security\SecurityHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\Application\ServiceExecutor.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Context\AppLayoutContext.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\DTOs\BaseIdentifiableDTO.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IDto.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\IUserSession.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\DTOs\Interfaces\UserSessionDto.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\AuditableEntity.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Base\BaseEntity.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Interfaces\IAuditableEntity.cs" />
     <EmbeddedResource Include="EmbeddedResources\Core\Entities\Interfaces\IEntity.cs" />
+    <EmbeddedResource Include="EmbeddedResources\Core\Security\ApplicationUserSession.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\BaseRepository.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Enums\ErrorType.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Extensions\DataReaderExtensions.cs" />
@@ -148,8 +159,10 @@
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\IGetParameters.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\ErrorConfig.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Utilities\SqlErrorMapper.cs" />
-    <EmbeddedResource Include="EmbeddedResources\Properties\Resources.Designer.cs" />
-    <EmbeddedResource Include="EmbeddedResources\UI\Controls\BaseControl.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Controls\BaseControls\ShowDetailsBaseControl.cs">
+      <SubType>UserControl</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\UI\Controls\BaseControls\ShowDetailsBaseControl.Designer.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\CustomControls\RecordLabel.cs">
       <SubType>Component</SubType>
     </EmbeddedResource>
@@ -167,11 +180,14 @@
       <SubType>Form</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EmbeddedResources\UI\GenericForms\frmGenericPopup.Designer.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\AppIcons.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ControlExtensionsHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\CustomAttributesHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ImageLoaderHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\MessageServiceHelper.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Helpers\ResourceImageHelper.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\SegoeIcons.cs" />
+    <EmbeddedResource Include="EmbeddedResources\UI\Helpers\StringExtensions.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IDetailsControl.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IEditorControl.cs" />
     <EmbeddedResource Include="EmbeddedResources\UI\Interfaces\Controls\IIdentifiableControl.cs" />
@@ -210,6 +226,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
     <PackageReference Include="System.CodeDom" Version="10.0.3" />
   </ItemGroup>
 
@@ -238,7 +255,7 @@
       <LastGenOutput>MappingExtensionTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\Infrastructure\Mapping\DataMapperTemplate.tt">
+    <None Update="Templates\Infrastructure\Mapping\DataMapperTemplate.ttinclude">
       <LastGenOutput>DataMapperTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
@@ -282,9 +299,9 @@
       <LastGenOutput>ctrlShowDetails.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\UI\Controls\ctrlShowDetailsDesigner.tt">
-      <LastGenOutput>ctrlShowDetailsDesigner.cs</LastGenOutput>
+    <None Update="Templates\UI\Controls\ctrlShowDetailsControlDesigner.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ctrlShowDetailsControlDesigner.cs</LastGenOutput>
     </None>
     <None Update="Templates\UI\DependencyInjection\DependencyInjectionTemplate.tt">
       <LastGenOutput>DependencyInjectionTemplate.cs</LastGenOutput>
@@ -293,6 +310,10 @@
     <None Update="Templates\UI\DependencyInjection\ViewRegistryTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ViewRegistryTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\UI\Helpers\AppIcons.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>AppIcons.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -349,7 +370,7 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Templates\Infrastructure\Mapping\DataMapperTemplate.cs">
-      <DependentUpon>DataMapperTemplate.tt</DependentUpon>
+      <DependentUpon>DataMapperTemplate.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -403,10 +424,10 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templates\UI\Controls\ctrlShowDetailsDesigner.cs">
-      <DependentUpon>ctrlShowDetailsDesigner.tt</DependentUpon>
+    <Compile Update="Templates\UI\Controls\ctrlShowDetailsControlDesigner.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>ctrlShowDetailsControlDesigner.tt</DependentUpon>
     </Compile>
     <Compile Update="Templates\UI\DependencyInjection\DependencyInjectionTemplate.cs">
       <DependentUpon>DependencyInjectionTemplate.tt</DependentUpon>
@@ -417,6 +438,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ViewRegistryTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Templates\UI\Helpers\AppIcons.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppIcons.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -431,6 +457,12 @@
   <ItemGroup>
     <None Include="CSharp_Compiler\Infrastructure\Interfaces\CRUD\Read\ILookupRepository.cs" />
     <EmbeddedResource Include="EmbeddedResources\Infrastructure\Interfaces\CRUD\Read\ILookupRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ModernUI.Framework">
+      <HintPath>..\ModernUI.Framework\bin\Debug\net8.0-windows\ModernUI.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

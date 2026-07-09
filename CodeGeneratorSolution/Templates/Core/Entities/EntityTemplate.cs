@@ -45,20 +45,9 @@ namespace CodeGeneratorSolution.Templates.Core.Entities
             #line 9 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
  
 
-    // If table is auditable, find out what type 'CreatedBy' is (int, string, Guid?)
-    string userKeyType = "int"; // Default fallback
-    if (Table.IsAuditable)
-    {
-        var userCol = Table.Columns.FirstOrDefault(c => c.Name == "CreatedBy");
-        if (userCol != null)
-        {
-            userKeyType = userCol.CSharpType; // Could be "int", "int?", "Guid", etc.
-        }
-    }
-
     // 3. Construct the Base Class string
     string baseClass = Table.IsAuditable 
-        ? $"AuditableEntity<{Table.PkType}, {userKeyType}>" 
+        ? $"AuditableEntity<{Table.PkType}, {Table.PrimaryKey.PrimitiveCSharpType}>" 
         : $"Entity<{Table.PkType}>";
 
             
@@ -66,21 +55,21 @@ namespace CodeGeneratorSolution.Templates.Core.Entities
             #line hidden
             this.Write("    public class ");
             
-            #line 27 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write(" : ");
             
-            #line 27 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 16 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(baseClass));
             
             #line default
             #line hidden
             this.Write("\r\n    {\r\n");
             
-            #line 29 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 18 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
  
     foreach(var col in Table.Columns) 
     {
@@ -98,21 +87,21 @@ namespace CodeGeneratorSolution.Templates.Core.Entities
             #line hidden
             this.Write("        public ");
             
-            #line 41 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 30 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.CSharpType));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 41 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 30 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(col.Name));
             
             #line default
             #line hidden
             this.Write(" { get; set; }\r\n");
             
-            #line 42 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 31 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
  
     } 
 
@@ -123,7 +112,7 @@ namespace CodeGeneratorSolution.Templates.Core.Entities
                     "ation Properties for FKs\r\n        // ==========================================\r" +
                     "\n");
             
-            #line 48 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 37 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
  /*
     // If CreatedBy is a Foreign Key, you might want the object too
     if (isAuditable && Table.Columns.Any(c => c.Name == "CreatedBy" && c.IsForeignKey))
@@ -135,7 +124,7 @@ namespace CodeGeneratorSolution.Templates.Core.Entities
             this.Write("        // Navigation Property (Optional, if you use full ORM or manual Joins)\r\n " +
                     "       // public User CreatorUser { get; set; }\r\n");
             
-            #line 55 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
+            #line 44 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Core\Entities\EntityTemplate.tt"
  
     }*/
 

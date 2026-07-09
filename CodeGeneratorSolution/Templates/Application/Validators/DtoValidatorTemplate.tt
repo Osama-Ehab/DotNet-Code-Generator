@@ -12,9 +12,9 @@ namespace <#= SolutionName #>.Application.Validators
     // ====================================================
     // 1. CREATE DTO VALIDATOR
     // ====================================================
-     public partial class Create<#= Table.ClassName #>DTOValidator : BaseValidator<Create<#= Table.ClassName #>DTO>
+     public partial class Create<#= Table.EntityName #>DTOValidator : BaseValidator<Create<#= Table.EntityName #>DTO>
     {
-        public Create<#= Table.ClassName #>DTOValidator()
+        public Create<#= Table.EntityName #>DTOValidator()
         {
 <# 
         // Create DTO does NOT need the Primary Key
@@ -29,9 +29,9 @@ namespace <#= SolutionName #>.Application.Validators
     // ====================================================
     // 2. UPDATE DTO VALIDATOR
     // ====================================================
-     public  partial class Update<#= Table.ClassName #>DTOValidator : BaseValidator<Update<#= Table.ClassName #>DTO>
+     public  partial class Update<#= Table.EntityName #>DTOValidator : BaseValidator<Update<#= Table.EntityName #>DTO>
     {
-        public Update<#= Table.ClassName #>DTOValidator()
+        public Update<#= Table.EntityName #>DTOValidator()
         {
 <# 
 
@@ -45,27 +45,6 @@ CustomizeRules();
         }
         partial void CustomizeRules();
     }
-
-<# 
-    // ====================================================
-    // 3. CONDITIONAL PASSWORD VALIDATOR
-    // ====================================================
-    // Only generate this class IF the table actually has a "Password" column!
-    if (Table.HasPassword && Table.PkName != null) 
-    { 
-#>
-    public partial class Change<#= Table.ClassName #>PasswordDtoValidator : BaseValidator<Change<#= Table.ClassName #>PasswordDto>
-    {
-        public Change<#= Table.ClassName #>PasswordDtoValidator()
-        {
-            RuleFor(x => x.<#= Table.PrimaryKey.Name #>).GreaterThan(0);
-            RuleFor(x => x.OldPassword).NotEmpty().WithMessage("Old password is required.");
-            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).WithMessage("New password must be at least 8 characters.");
-        }
-    }
-<# 
-    } 
-#>
 
 }
 

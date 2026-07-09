@@ -1,0 +1,85 @@
+﻿<#+ public string GenerateMapToEntityMethod(dynamic Table)
+{
+    var sb = new System.Text.StringBuilder();
+    
+    sb.AppendLine($"        private {Table.EntityName} MapToEntity(IDataReader reader)");
+    sb.AppendLine("        {");
+    sb.AppendLine($"            return new {Table.EntityName}");
+    sb.AppendLine("            {");
+    
+    var lines = new System.Collections.Generic.List<string>();
+
+    // 1. الأعمدة العادية
+    foreach(var col in Table.Columns)
+    {       
+        if(col.IsAuditable) continue;
+        lines.Add($"                {col.Name} = reader.GetSafe<{col.CSharpType}>(\"{col.Name}\")");
+    }       
+
+    // 2. أعمدة المراقبة (Auditable Fields)
+    if(Table.IsAuditable)
+    { 
+        // افترضنا هنا أن مفتاح المستخدم هو int بناءً على قاعدة البيانات الخاصة بك
+        lines.Add($"                CreatedBy = reader.GetSafe<int>(\"CreatedBy\")");
+        lines.Add($"                CreatedDate = reader.GetSafe<DateTime>(\"CreatedDate\")");
+        lines.Add($"                ModifiedBy = reader.GetSafe<int?>(\"ModifiedBy\")");
+        lines.Add($"                ModifiedDate = reader.GetSafe<DateTime?>(\"ModifiedDate\")");
+    }
+
+    // 3. دمج الأسطر بفاصلة و سطر جديد بذكاء!
+    sb.AppendLine(string.Join("," + Environment.NewLine, lines));
+
+    sb.AppendLine("            };");
+    sb.AppendLine("        }");
+    
+    return sb.ToString();
+}
+
+public string GenerateMapToListDTOMethod(dynamic Table)
+{
+    var sb = new System.Text.StringBuilder();
+    
+    sb.AppendLine($"        private {Table.EntityName}ListDTO MapToListDTO(IDataReader reader)");
+    sb.AppendLine("        {");
+    sb.AppendLine($"            return new {Table.EntityName}ListDTO");
+    sb.AppendLine("            {");
+    
+    var lines = new System.Collections.Generic.List<string>();
+
+    foreach(var col in Table.GridColumns)
+    {       
+        lines.Add($"                {col.Name} = reader.GetSafe<{col.CSharpType}>(\"{col.Name}\")");
+    }       
+    
+    sb.AppendLine(string.Join("," + Environment.NewLine, lines));
+
+    sb.AppendLine("            };");
+    sb.AppendLine("        }");
+    
+    return sb.ToString();
+}
+
+public string GenerateMapToDetailsDTOMethod(dynamic Table)
+{
+    var sb = new System.Text.StringBuilder();
+    
+    sb.AppendLine($"        private {Table.EntityName}DetailsDTO MapToDetailsDTO(IDataReader reader)");
+    sb.AppendLine("        {");
+    sb.AppendLine($"            return new {Table.EntityName}DetailsDTO");
+    sb.AppendLine("            {");
+    
+    var lines = new System.Collections.Generic.List<string>();
+
+    foreach(var col in Table.DetailedColumns)
+    {       
+        lines.Add($"                {col.Name} = reader.GetSafe<{col.CSharpType}>(\"{col.Name}\")");
+    }       
+    
+    sb.AppendLine(string.Join("," + Environment.NewLine, lines));
+
+    sb.AppendLine("            };");
+    sb.AppendLine("        }");
+    
+    return sb.ToString();
+}
+ #>

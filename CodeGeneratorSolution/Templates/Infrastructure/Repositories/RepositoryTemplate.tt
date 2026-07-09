@@ -1,100 +1,135 @@
 ﻿<#@ template language="C#" inherits="CodeGeneratorSolution.Models.TemplateBase" #>
 <#@ import namespace="System.Linq" #>
+
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Dapper; // <-- السحر يبدأ هنا
 using <#= SolutionName #>.Core.Entities;
 using <#= SolutionName #>.Core.DTOs;
 using <#= SolutionName #>.Infrastructure.Interfaces;
-using <#= SolutionName #>.Infrastructure.Mapping; 
 
-namespace <#= SolutionName #>.Infrastructure.Repositories
+namespace <#= SolutionName #>.Infrastructure.Repositories.Generated
 {
-    public partial class <#= Table.ClassName #>Repository : BaseRepository
-            , I<#= Table.ClassName #>Repository
+    public partial class <#= Table.EntityName #>Repository : BaseRepository, I<#= Table.EntityName #>Repository
     {
-        // 1. INJECTION
-        public <#= Table.ClassName #>Repository(IConfiguration configuration) : base(configuration)
+        // =========================================================
+        // 1. USP NAMES (Safe Segregation Pattern)
+        // =========================================================
+        // جعلناها 'virtual' لكي تستطيع تغيير اسمها في الـ Custom Partial Class
+        protected virtual string GetByIdUspName => "usp_Base_<#= Table.Name #>_GetById";
+        protected virtual string GetAllUspName => "usp_Base_<#= Table.Name #>_GetAll";
+        protected virtual string InsertUspName => "usp_Base_<#= Table.Name #>_Insert";
+        protected virtual string UpdateUspName => "usp_Base_<#= Table.Name #>_Update";
+        protected virtual string DeleteUspName => "usp_Base_<#= Table.Name #>_Delete";
+        protected virtual string GetListUspName => "usp_Base_<#= Table.Name #>_GetList";
+        protected virtual string GetDetailsUspName => "usp_Base_<#= Table.Name #>_GetDetails";
+        protected virtual string ExistsUspName => "usp_Base_<#= Table.Name #>_Exists";
+
+        // =========================================================
+        // 2. INJECTION
+        // =========================================================
+        public <#= Table.EntityName #>Repository(IConfiguration configuration) : base(configuration)
         {
         }
 
         // =========================================================
-        // 2. STANDARD CRUD (Implementing IRepository<T, TKey>)
+        // 3. STANDARD CRUD (Dapper Powered)
         // =========================================================
 
-        public async Task<<#= Table.ClassName #>> GetByIdAsync( <#= Table.PkType #> id)
+        public async Task<<#= Table.EntityName #>> GetByIdAsync(<#= Table.PkType #> id)
         {
-            var param = new SqlParameter("@Id", id);
-            
-            // Utilizing the BaseRepository Tool
-            return await GetSingleAsync("usp_<#= Table.Name #>_GetById", param, reader => reader.ToEntity()); 
+            using var connection = CreateConnection();
+            // Dapper يقوم بالـ Mapping وتمرير البارامتر آلياً باستخدام الكائنات المجهولة (Anonymous Objects)
+            return await connection.QueryFirstOrDefaultAsync<<#= Table.EntityName #>>(
+                GetByIdUspName, 
+                new { Id = id }, 
+                commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<IReadOnlyList<<#= Table.ClassName #>>> GetAllAsync()
+        public async Task<IReadOnlyList<<#= Table.EntityName #>>> GetAllAsync()
         {
-            return await GetListAsync("usp_<#= Table.Name #>_GetAll", reader => reader.ToEntity());
+            using var connection = CreateConnection();
+            var result = await connection.QueryAsync<<#= Table.EntityName #>>(
+                GetAllUspName, 
+                commandType: CommandType.StoredProcedure);
+            return result.AsList();
         }
 
-        public async Task<<#= Table.PkType #>> AddAsync(<#= Table.ClassName #> entity)
+        public async Task<<#= Table.PkType #>> AddAsync(<#= Table.EntityName #> entity)
         {
-            var parameters = GetParameters(entity, isUpdate: false);
-            return await AddAsync<<#= Table.PkType #>>("usp_<#= Table.Name #>_Insert", parameters, "@NewId");
+            using var connection = CreateConnection();
+            // نمرر الـ entity بالكامل! Dapper سيفهم خصائصه ويصنع منها Parameters
+            // (يجب أن ينتهي استعلام Insert الخاص بك بـ SELECT SCOPE_IDENTITY();)
+            return await connection.ExecuteScalarAsync<<#= Table.PkType #>>(
+                InsertUspName, 
+                entity, 
+                commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<bool> UpdateAsync(<#= Table.ClassName #> entity)
+        public async Task<bool> UpdateAsync(<#= Table.EntityName #> entity)
         {
-            var parameters = GetParameters(entity, isUpdate: true);
-            return await ExecuteNonQueryAsync("usp_<#= Table.Name #>_Update", parameters);
+            using var connection = CreateConnection();
+            int rowsAffected = await connection.ExecuteAsync(
+                UpdateUspName, 
+                entity, 
+                commandType: CommandType.StoredProcedure);
+            return rowsAffected > 0;
         }
 
-        public async Task<bool> DeleteAsync( <#= Table.PkType #> id)
+        public async Task<bool> DeleteAsync(<#= Table.PkType #> id)
         {
-            var param = new SqlParameter[] { new SqlParameter("@Id", id) };
-            return await ExecuteNonQueryAsync("usp_<#= Table.Name #>_Delete", param);
-        }
-
-      
-
-        public SqlParameter[] GetParameters(<#= Table.ClassName #> entity, bool isUpdate)
-        {
-            var parameters = new List<SqlParameter>();
-<# foreach(var col in Table.Columns) { 
-    if (col.IsPrimaryKey) { #>
-            if (isUpdate) 
-                parameters.Add(new SqlParameter("<#= col.SqlParameterName #>", entity.<#= col.Name #>));
-<#  } else { #>
-            parameters.Add(new SqlParameter("<#= col.SqlParameterName #>", (object)entity.<#= col.Name #> ?? DBNull.Value));
-<#  } 
-} #>
-            return parameters.ToArray();
+            using var connection = CreateConnection();
+            int rowsAffected = await connection.ExecuteAsync(
+                DeleteUspName, 
+                new { Id = id }, 
+                commandType: CommandType.StoredProcedure);
+            return rowsAffected > 0;
         }
 
         // =========================================================
-        // 3. READ-MODEL DTOs & UNIQUE SELECTORS
+        // 4. READ-MODEL DTOs & PAGINATION
         // =========================================================
         
-        public async Task<IReadOnlyList<<#= Table.ClassName #>ListDTO>> GetListAsync()
+        // تمت إضافة منطق اللغات والـ Pagination (رقم الصفحة وحجمها)
+        public async Task<IReadOnlyList<<#= Table.EntityName #>ListDTO>> GetListAsync(string langCode, int pageNumber = 1, int pageSize = 10)
         {
-            // Utilizing the BaseRepository Tool to map directly to a ListDTO!
-            return await GetListAsync("usp_<#= Table.Name #>_GetList", reader => reader.ToListDTO());
+            using var connection = CreateConnection();
+            
+            // DynamicParameters تتيح لنا إضافة البارامترات بمرونة
+            var parameters = new DynamicParameters();
+            parameters.Add("@LangCode", langCode);
+            parameters.Add("@PageNumber", pageNumber);
+            parameters.Add("@PageSize", pageSize);
+
+            var result = await connection.QueryAsync<<#= Table.EntityName #>ListDTO>(
+                GetListUspName, 
+                parameters, 
+                commandType: CommandType.StoredProcedure);
+                
+            return result.AsList();
         }
 
 <# foreach(var col in Table.Columns.Where(c => c.IsUniqueSelector)) { #>
-        public async Task<<#= Table.ClassName #>DetailsDTO> GetDetailsAsync(<#= col.CSharpType #> <#= col.CamelCaseName #>)
+        public async Task<<#= Table.EntityName #>DetailsDTO> GetDetailsAsync(<#= col.CSharpType #> <#= col.CamelCaseName #>)
         {
-            var param = new SqlParameter("<#= col.SqlParameterName #>", <#= col.CamelCaseName #>);
-            
-            // Utilizing the generic GetSingleAsync to return a DetailsDTO instead of an Entity
-            return await GetSingleAsync("usp_<#= Table.Name #>_GetDetails", param, reader => reader.ToDetailsDTO()); 
+            using var connection = CreateConnection();
+            return await connection.QueryFirstOrDefaultAsync<<#= Table.EntityName #>DetailsDTO>(
+                GetDetailsUspName, 
+                new { <#= col.Name #> = <#= col.CamelCaseName #> }, 
+                commandType: CommandType.StoredProcedure);
         }
 
         public async Task<bool> ExistsAsync(<#= col.CSharpType #> <#= col.CamelCaseName #>)
         {
-            var param =  new SqlParameter("<#= col.SqlParameterName #>",<#= col.CamelCaseName #>);
-            return await ExistsAsync("usp_<#= Table.Name #>_Exists", param);
+            using var connection = CreateConnection();
+            return await connection.ExecuteScalarAsync<bool>(
+                ExistsUspName, 
+                new { <#= col.Name #> = <#= col.CamelCaseName #> }, 
+                commandType: CommandType.StoredProcedure);
         }
 <# } #>
     }

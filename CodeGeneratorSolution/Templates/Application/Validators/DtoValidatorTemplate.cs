@@ -53,21 +53,21 @@ namespace CodeGeneratorSolution.Templates.Application.Validators
                     "===================\r\n     public partial class Create");
             
             #line 15 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTOValidator : BaseValidator<Create");
             
             #line 15 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO>\r\n    {\r\n        public Create");
             
             #line 17 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -89,21 +89,21 @@ namespace CodeGeneratorSolution.Templates.Application.Validators
                     "===========\r\n     public  partial class Update");
             
             #line 32 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTOValidator : BaseValidator<Update");
             
             #line 32 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
             this.Write("DTO>\r\n    {\r\n        public Update");
             
             #line 34 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Table.EntityName));
             
             #line default
             #line hidden
@@ -121,67 +121,12 @@ namespace CodeGeneratorSolution.Templates.Application.Validators
             
             #line default
             #line hidden
-            this.Write("CustomizeRules();\r\n        }\r\n        partial void CustomizeRules();\r\n    }\r\n\r\n");
-            
-            #line 49 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
- 
-    // ====================================================
-    // 3. CONDITIONAL PASSWORD VALIDATOR
-    // ====================================================
-    // Only generate this class IF the table actually has a "Password" column!
-    if (Table.HasPassword && Table.PkName != null) 
-    { 
-
-            
-            #line default
-            #line hidden
-            this.Write("    public partial class Change");
-            
-            #line 57 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("PasswordDtoValidator : BaseValidator<Change");
-            
-            #line 57 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("PasswordDto>\r\n    {\r\n        public Change");
-            
-            #line 59 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.ClassName));
-            
-            #line default
-            #line hidden
-            this.Write("PasswordDtoValidator()\r\n        {\r\n            RuleFor(x => x.");
-            
-            #line 61 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(Table.PrimaryKey.Name));
-            
-            #line default
-            #line hidden
-            this.Write(@").GreaterThan(0);
-            RuleFor(x => x.OldPassword).NotEmpty().WithMessage(""Old password is required."");
-            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).WithMessage(""New password must be at least 8 characters."");
-        }
-    }
-");
-            
-            #line 66 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
- 
-    } 
-
-            
-            #line default
-            #line hidden
-            this.Write("\r\n}\r\n\r\n");
+            this.Write("CustomizeRules();\r\n        }\r\n        partial void CustomizeRules();\r\n    }\r\n\r\n}\r" +
+                    "\n\r\n");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 72 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
+        #line 51 "C:\Users\OsamaEhab\source\repos\CodeGeneratorSolution\Templates\Application\Validators\DtoValidatorTemplate.tt"
  
     // ====================================================
     // T4 HELPER METHOD (Runs during generation)

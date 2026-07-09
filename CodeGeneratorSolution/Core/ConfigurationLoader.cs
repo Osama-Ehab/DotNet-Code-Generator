@@ -31,6 +31,9 @@ namespace CodeGeneratorSolution.Core
             if (string.IsNullOrWhiteSpace(configObject.OutputRootDirectory))
                 throw new InvalidOperationException("Output directory is missing in appsettings.json!");
 
+            if (string.IsNullOrWhiteSpace(configObject.ResourcesPath))
+                throw new InvalidOperationException("ResourcesPath is missing in appsettings.json!");
+
             return configObject;
         }
     }
